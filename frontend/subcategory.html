@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/subcategory.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/chatbot.css">
+    <title>Products Page</title>
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-section"></div>
+    <div id="overlay"></div>
+    <script src="js/header.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script>
+      // WhatsApp Button (left corner, all pages)
+      (function() {
+        if (!document.getElementById('whatsapp-btn')) {
+          var wa = document.createElement('div');
+          wa.id = 'whatsapp-btn';
+          wa.innerHTML = '<img src="assets/whatsapp_icon.png" alt="WhatsApp">';
+          wa.title = 'Chat on WhatsApp';
+          wa.onclick = function() {
+            window.open('https://wa.me/919999999999', '_blank');
+          };
+          document.body.appendChild(wa);
+        }
+      })();
+    </script>
+    <script>
+        // Load the header component dynamically with correct path
+        (function() {
+            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            fetch(basePath + 'header.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-section').innerHTML = data;
+                    if (typeof setupHeaderMenu === 'function') setupHeaderMenu();
+                });
+        })();
+    </script>
+        
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Switches</h1>
+            <p>Explore our precision-engineered RF and microwave switches designed specifically for aerospace applications. Our high-reliability switching solutions meet rigorous aerospace standards with exceptional performance in extreme environments.</p>
+        </div>
+        <div class="hero-image">
+            <img src="assets/RF-Microwave/Switches/Primary_Switches.png" alt="Test Equipment" class="product-image">
+        </div>
+    </section>
+    
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="intro-text">
+            <p>Explore our precision-engineered RF and microwave switches designed specifically for aerospace applications. Our high-reliability switching solutions meet rigorous aerospace standards with exceptional performance in extreme environments.</p>
+        </div>
+        
+        <!-- Products Table -->
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>IMAGE</th>
+                    <th>MODEL NUMBER</th>
+                    <th>SPECIFICATIONS</th>
+                    <th>PERFORMANCE</th>
+                    <th>OUTPUT LEVEL</th>
+                    <th>ADDITIONAL FEATURES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Products will be dynamically populated -->
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Footer -->
+    <div id="footer-section"></div>
+
+    <script>
+        // Load the footer component dynamically with correct path
+        (function() {
+            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            fetch(basePath + 'footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer-section').innerHTML = data;
+                });
+        })();
+    </script>
+
+    <script>
+        // Fetch and populate products data
+        async function loadProducts() {
+            try {
+                const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+                
+                // Get the selected product data from sessionStorage
+                const selectedProduct = JSON.parse(sessionStorage.getItem('selectedProduct') || '{}');
+                const category = selectedProduct.category;
+                const subcategory = selectedProduct.name;
+                
+                // Fetch the products data
+                const response = await fetch(basePath + 'data/products.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                const tbody = document.querySelector('.products-table tbody');
+                
+                // Clear existing rows
+                tbody.innerHTML = '';
+                
+                // Get products based on category and subcategory
+                let products = [];
+                if (category === 'RF and Microwave') {
+                    if (subcategory === 'Switches') {
+                        products = Object.values(data.products.switches);
+                    } else if (subcategory === 'Amplifiers') {
+                        products = Object.values(data.products.amplifiers);
+                    } else if (subcategory === 'Passive Components') {
+                        products = Object.values(data.products.passive_components);
+                    }
+                }
+
+                if (products.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="no-products">No products found for this category.</td></tr>';
+                    return;
+                }
+                
+                // Update hero section
+                document.querySelector('.hero-content h1').textContent = subcategory;
+                document.querySelector('.hero-content p').textContent = selectedProduct.subproducts ? 
+                    selectedProduct.subproducts.join('. ') : 
+                    'Explore our precision-engineered products designed specifically for your needs.';
+                
+                if (selectedProduct.image) {
+                    document.querySelector('.hero-image img').src = selectedProduct.image;
+                }
+                
+                // Populate products
+                // Determine the key for the category in products.json
+                let categoryKey = null;
+                if (category === 'RF and Microwave') {
+                    if (subcategory === 'Switches') categoryKey = 'switches';
+                    else if (subcategory === 'Amplifiers') categoryKey = 'amplifiers';
+                    else if (subcategory === 'Passive Components') categoryKey = 'passive_components';
+                }
+                products.forEach(product => {
+                    const row = document.createElement('tr');
+                    // Create image cell
+                    const imageCell = document.createElement('td');
+                    const productImage = document.createElement('img');
+                    productImage.src = basePath + product.image;
+                    productImage.alt = product.name;
+                    productImage.className = 'product-thumbnail';
+                    productImage.onerror = function() {
+                        this.src = basePath + 'assets/placeholder.png';
+                    };
+                    imageCell.appendChild(productImage);
+
+                    // Create model number cell with link
+                    const modelCell = document.createElement('td');
+                    const modelLink = document.createElement('a');
+                    // Find the product key (ID) for this product
+                    let productId = product.name;
+                    if (categoryKey && data.products[categoryKey]) {
+                        for (const [key, value] of Object.entries(data.products[categoryKey])) {
+                            if (value.name === product.name) {
+                                productId = key;
+                                break;
+                            }
+                        }
+                    }
+                    modelLink.href = `productpagemain.html?category=${encodeURIComponent(categoryKey)}&id=${encodeURIComponent(productId)}`;
+                    modelLink.textContent = product.name;
+                    modelLink.className = 'product-name';
+                    modelCell.appendChild(modelLink);
+
+                    // Create other cells
+                    const specsCell = document.createElement('td');
+                    specsCell.innerHTML = product.tableSpecs?.specifications || 'N/A';
+                    const perfCell = document.createElement('td');
+                    perfCell.innerHTML = product.tableSpecs?.performance || 'N/A';
+                    const outputCell = document.createElement('td');
+                    outputCell.innerHTML = product.tableSpecs?.outputLevel || 'N/A';
+                    const featuresCell = document.createElement('td');
+                    featuresCell.innerHTML = product.tableSpecs?.additionalFeatures || 'N/A';
+
+                    // Append all cells to row
+                    row.appendChild(imageCell);
+                    row.appendChild(modelCell);
+                    row.appendChild(specsCell);
+                    row.appendChild(perfCell);
+                    row.appendChild(outputCell);
+                    row.appendChild(featuresCell);
+                    tbody.appendChild(row);
+                });
+                
+            } catch (error) {
+                console.error('Error loading products:', error);
+                const tbody = document.querySelector('.products-table tbody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="error-message">
+                            Error loading products: ${error.message}. Please try again later.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Load products when page loads
+        document.addEventListener('DOMContentLoaded', loadProducts);
+    </script>
+</body>
+</html>

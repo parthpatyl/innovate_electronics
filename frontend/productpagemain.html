@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chatbot.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/productpagestyle.css">
+    <link rel="stylesheet" href="css/header.css">
+    <title>Product Main Page</title>
+</head>
+
+<body>
+        <div id="header-section"></div>
+    <div id="overlay"></div>
+    <script src="js/header.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script>
+      // WhatsApp Button (left corner, all pages)
+      (function() {
+        if (!document.getElementById('whatsapp-btn')) {
+          var wa = document.createElement('div');
+          wa.id = 'whatsapp-btn';
+          wa.innerHTML = '<img src="assets/whatsapp_icon.png" alt="WhatsApp">';
+          wa.title = 'Chat on WhatsApp';
+          wa.onclick = function() {
+            window.open('https://wa.me/919999999999', '_blank');
+          };
+          document.body.appendChild(wa);
+        }
+      })();
+    </script>
+    <script>
+        // Load the header component dynamically with correct path
+        (function() {
+            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            fetch(basePath + 'header.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-section').innerHTML = data;
+                    if (typeof setupHeaderMenu === 'function') setupHeaderMenu();
+                });
+        })();
+    </script>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="hero-heading-group">
+                    <h1 id="product-title">IE-SP4T-1025-1095-1.5-Ni-RI</h1>
+                    <h2 id="product-category">Switches</h2>
+                </div>
+            </div>
+            <div class="hero-image-container">
+                <img id="main-product-image" src="assets/RF-Microwave/Switches/IE-SP4T-1025-1095-1.5-Ni-RI.png" alt="Product Image">
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Container with Gallery and Content -->
+    <div class="main-container" style="max-width: 1200px; margin: 32px auto; padding: 0 16px;">
+        <div class="content-wrapper" style="display: flex; gap: 32px;">
+            <!-- Product Gallery Thumbnails -->
+            <div class="product-gallery" style="display: flex; flex-direction: column; gap: 16px; width: 200px; flex-shrink: 0;">
+                <!-- Thumbnails will be dynamically populated -->
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="main-content" style="flex: 1;">
+                <div class="tab-nav">
+                    <button class="tab-button active" onclick="openTab(event, 'overview')">OVERVIEW</button>
+                    <button class="tab-button" onclick="openTab(event, 'specifications')">SPECIFICATIONS</button>
+                    <button class="tab-button" onclick="openTab(event, 'library')">LIBRARY</button>
+                </div>
+
+                <!-- Overview Tab -->
+                <div id="overview" class="tab-content active clearfix">
+                    <div class="side-nav">
+                        <div class="side-nav-item active" onclick="openSideContent(event, 'description')">Description</div>
+                        <div class="side-nav-item" onclick="openSideContent(event, 'features')">Features</div>
+                        <div class="side-nav-item" onclick="openSideContent(event, 'applications')">Applications</div>
+                    </div>
+
+                    <div class="content-area">
+                        <div id="description" class="side-content active">
+                            <div class="description-box">
+                                <!-- Description items will be dynamically populated -->
+                            </div>
+                        </div>
+
+                        <div id="features" class="side-content" style="display: none;">
+                            <ul class="features-list">
+                                <!-- Features will be dynamically populated -->
+                            </ul>
+                        </div>
+
+                        <div id="applications" class="side-content" style="display: none;">
+                            <ul class="features-list">
+                                <!-- Applications will be dynamically populated -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Specifications Tab -->
+                <div id="specifications" class="tab-content">
+                    <div class="table-heading">Electrical Information</div>
+                    <table>
+                        <tr>
+                            <th>PARAMETER</th>
+                            <th>SPECIFICATION</th>
+                        </tr>
+                        <!-- Electrical specifications will be dynamically populated -->
+                    </table>
+
+                    <div class="table-heading">Mechanical Information</div>
+                    <table>
+                        <tr>
+                            <th>ITEM</th>
+                            <th>DESCRIPTION</th>
+                        </tr>
+                        <!-- Mechanical specifications will be dynamically populated -->
+                    </table>
+                </div>
+
+                <!-- Library Tab -->
+
+                <div id="library" class="tab-content">
+                    <div class="side-nav">
+                        <div class="side-nav-item active" onclick="openSideContent(event, 'catalouge')">Catalogue</div>
+                        <div class="side-nav-item" onclick="openSideContent(event, 'drawings')">Drawings</div>
+                        <div class="side-nav-item" onclick="openSideContent(event, 'testReports')">Test Reports</div>
+                        <div class="side-nav-item" onclick="openSideContent(event, 'executionFiles')">Execution Files</div>
+                    </div>
+                    <div class="content-area">
+                        <div id="catalouge" class="side-content active">
+                            <ul class="catalouge-list">
+                                <!-- Dynamic content for catalogue will be inserted here -->
+                            </ul>
+                        </div>
+                        <div id="drawings" class="side-content" style="display: none;">
+                            <ul class="library-list">
+                                <!-- Dynamic content for drawings will be inserted here -->
+                            </ul>
+                        </div>
+                        <div id="testReports" class="side-content" style="display: none;">
+                            <ul class="library-list">
+                                <!-- Dynamic content for test reports will be inserted here -->
+                            </ul>
+                        </div>
+                        <div id="executionFiles" class="side-content" style="display: none;">
+                            <ul class="library-list">
+                                <!-- Dynamic content for execution files will be inserted here -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Tab Navigation -->
+    <script>
+        let productData = null;
+        let currentCategory = 'switches';
+
+        // Function to handle category changes
+        function onCategoryChange(category) {
+            currentCategory = category;
+            const categoryProducts = productData.products[category];
+            if (categoryProducts) {
+                updateProductGallery(categoryProducts);
+
+                // Load default or first product from the new category
+                const defaultProductId = Object.keys(categoryProducts)[0];
+                if (defaultProductId) {
+                    loadProduct(defaultProductId);
+                }
+            }
+        }
+
+        // Fetch product data from JSON file
+        async function fetchProductData() {
+            try {
+                // Use relative path for fetch, works for both direct and server
+                const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+                const response = await fetch(basePath + 'data/products.json');
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching product data:', error);
+                // Optionally show a user-facing error
+                document.querySelector('.main-content').innerHTML = '<p style="color:red">Error loading product data. Please try again later.</p>';
+                return null;
+            }
+        }
+
+        // Update product gallery
+        function updateProductGallery(products) {
+            const gallery = document.querySelector('.product-gallery');
+            gallery.innerHTML = Object.entries(products)
+                .map(([id, product]) => `
+                    <div class="product-thumb-container" onclick="loadProduct('${id}')" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;margin-bottom:8px;">
+                        <div class="product-thumb-wrapper" style="position:relative;overflow:hidden;border-radius:4px;border:1px solid #eee;background:#fff;transition:all 0.2s ease;width:100%;">
+                            <img class="product-thumb" 
+                                 src="${product.image}" 
+                                 alt="${product.name}" 
+                                 style="height:150px;width:100%;object-fit:contain;cursor:pointer;padding:12px;transition:transform 0.3s ease;">
+                        </div>
+                        <div class="product-thumb-name" style="text-align:center;margin-top:8px;font-size:13px;font-weight:500;color:#666;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${product.name}</div>
+                    </div>
+                `)
+                .join('');
+
+            // Add hover effect for zoom
+            const thumbWrappers = document.querySelectorAll('.product-thumb-wrapper');
+            thumbWrappers.forEach(wrapper => {
+                wrapper.addEventListener('mouseenter', function() {
+                    const img = this.querySelector('.product-thumb');
+                    img.style.transform = 'scale(1.1)';
+                });
+                wrapper.addEventListener('mouseleave', function() {
+                    const img = this.querySelector('.product-thumb');
+                    img.style.transform = 'scale(1)';
+                });
+            });
+
+            // Add active state to current product
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentProductId = urlParams.get('id') || 'IE-SP4T-1025-1095-1.5-Ni-RI';
+            const currentThumb = gallery.querySelector(`[onclick="loadProduct('${currentProductId}')"]`);
+            if (currentThumb) {
+                const thumbWrapper = currentThumb.querySelector('.product-thumb-wrapper');
+                thumbWrapper.style.border = '1px solid #ddd';
+                thumbWrapper.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+            }
+        }
+
+        // Load specific product
+        function loadProduct(productName) {
+            const product = productData.products[currentCategory][productName];
+            if (product) {
+                // Update active state in gallery
+                const gallery = document.querySelector('.product-gallery');
+                const allThumbWrappers = gallery.querySelectorAll('.product-thumb-wrapper');
+                allThumbWrappers.forEach(wrapper => {
+                    wrapper.style.border = '1px solid #eee';
+                    wrapper.style.boxShadow = 'none';
+                });
+                const selectedThumb = gallery.querySelector(`[onclick="loadProduct('${productName}')"] .product-thumb-wrapper`);
+                if (selectedThumb) {
+                    selectedThumb.style.border = '1px solid #ddd';
+                    selectedThumb.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+                }
+
+                updateHeroSection(product);
+                updateOverviewTab(product);
+                updateSpecificationsTab(product);
+                updateLibraryTab(product);
+                
+                // Update URL without page reload
+                const url = new URL(window.location);
+                url.searchParams.set('id', productName);
+                url.searchParams.set('category', currentCategory);
+                window.history.pushState({}, '', url);
+            }
+        }
+
+        // Update hero section with product data
+        function updateHeroSection(product) {
+            const mainImg = document.getElementById('main-product-image');
+            const title = document.getElementById('product-title');
+            const category = document.getElementById('product-category');
+
+            mainImg.src = product.image;
+            mainImg.alt = product.name;
+            title.textContent = product.name;
+            category.textContent = product.category;
+        }
+
+        // Update overview tab content
+        function updateOverviewTab(product) {
+            // Update description
+            const descriptionBox = document.querySelector('#description .description-box');
+            descriptionBox.innerHTML = product.overview.description
+                .map(item => `<div class="description-item">${item}</div>`)
+                .join('');
+
+            // Update features
+            const featuresList = document.querySelector('#features .features-list');
+            featuresList.innerHTML = product.overview.features
+                .map(feature => `<li>${feature}</li>`)
+                .join('');
+
+            // Update applications
+            const applicationsList = document.querySelector('#applications .features-list');
+            applicationsList.innerHTML = product.overview.applications
+                .map(app => `<li>${app}</li>`)
+                .join('');
+        }
+
+        // Update specifications tab content
+        function updateSpecificationsTab(product) {
+            const specsContent = document.getElementById('specifications');
+            
+            // Create electrical specifications table
+            const electricalTable = `
+                <div class="table-heading">Electrical Information</div>
+                <table>
+                    <tr>
+                        <th>PARAMETER</th>
+                        <th>SPECIFICATION</th>
+                    </tr>
+                    ${product.specifications.electrical
+                        .map(spec => `
+                            <tr>
+                                <td>${spec.parameter}</td>
+                                <td>${spec.specification}</td>
+                            </tr>
+                        `).join('')}
+                </table>
+            `;
+
+            // Create mechanical specifications table
+            const mechanicalTable = `
+                <div class="table-heading">Mechanical Information</div>
+                <table>
+                    <tr>
+                        <th>ITEM</th>
+                        <th>DESCRIPTION</th>
+                    </tr>
+                    ${product.specifications.mechanical
+                        .map(spec => `
+                            <tr>
+                                <td>${spec.item}</td>
+                                <td>${spec.description}</td>
+                            </tr>
+                        `).join('')}
+                </table>
+            `;
+
+            specsContent.innerHTML = electricalTable + mechanicalTable;
+        }
+
+        // Update library tab content
+        function updateLibraryTab(product) {
+            // Update catalogue
+            const catalogueList = document.querySelector("#catalouge .catalouge-list");
+            catalogueList.innerHTML = product.library.catalogue
+                .map(item => {
+                    const isPDF = item.link.match(/\.pdf$/i);
+                    return `<li><a href="${item.link}" target="_blank">${item.name}${isPDF ? ' (PDF)' : ''}</a></li>`;
+                })
+                .join("");
+
+            // Update drawings
+            const drawingsList = document.querySelector("#drawings .library-list");
+            drawingsList.innerHTML = product.library.drawings
+                .map(drawing => {
+                    const isImage = drawing.link.match(/\.(jpg|jpeg|png|gif)$/i);
+                    if (isImage) {
+                        return `<li><img src="${drawing.link}" alt="${drawing.name}" class="drawing-image"></li>`;
+                    } else {
+                        return `<li><a href="${drawing.link}" target="_blank">${drawing.name}</a></li>`;
+                    }
+                })
+                .join("");
+
+            // Update test reports
+            const testReportsList = document.querySelector("#testReports .library-list");
+            testReportsList.innerHTML = product.library.testReports
+                .map(report => {
+                    const isPDF = report.link.match(/\.pdf$/i);
+                    return `<li><a href="${report.link}" target="_blank">${report.name}${isPDF ? ' (PDF)' : ''}</a></li>`;
+                })
+                .join("");
+
+            // Update execution files
+            const executionFilesList = document.querySelector("#executionFiles .library-list");
+            executionFilesList.innerHTML = product.library.executionFiles
+                .map(file => {
+                    const isPDF = file.link.match(/\.pdf$/i);
+                    return `<li><a href="${file.link}" target="_blank">${file.name}${isPDF ? ' (PDF)' : ''}</a></li>`;
+                })
+                .join("");
+        }
+
+        // Initialize page with product data
+        async function initializePage() {
+            const data = await fetchProductData();
+            if (data) {
+                productData = data;
+                
+                // Get category and product ID from URL or use defaults
+                const urlParams = new URLSearchParams(window.location.search);
+                const productId = urlParams.get('id') || 'IE-SP4T-1025-1095-1.5-Ni-RI';
+                const category = urlParams.get('category') || 'switches';
+                currentCategory = category;
+
+                const categoryProducts = data.products[category];
+                if (categoryProducts) {
+                    updateProductGallery(categoryProducts);
+                    const product = categoryProducts[productId] || Object.values(categoryProducts)[0];
+                    if (product) {
+                        updateHeroSection(product);
+                        updateOverviewTab(product);
+                        updateSpecificationsTab(product);
+                        updateLibraryTab(product);
+                    }
+                } else {
+                    // Show a message if category not found
+                    document.querySelector('.main-content').innerHTML = '<p style="color:red">Category not found.</p>';
+                }
+            }
+        }
+
+        // Initialize page when DOM is loaded
+        document.addEventListener("DOMContentLoaded", initializePage);
+
+        // Tab navigation
+        function openTab(evt, tabName) {
+            var i, tabContent, tabButtons;
+
+            // Hide all tab content
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].className = tabContent[i].className.replace(" active", "");
+            }
+
+            // Remove active class from all tab buttons
+            tabButtons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].className = tabButtons[i].className.replace(" active", "");
+            }
+
+            // Show the selected tab and add active class to the button
+            document.getElementById(tabName).className += " active";
+            evt.currentTarget.className += " active";
+        }
+
+        // Side nav functionality
+        function openSideContent(evt, contentName) {
+            var i, sideContent, sideNavItems;
+
+            // Hide all side content
+            sideContent = document.getElementsByClassName("side-content");
+            for (i = 0; i < sideContent.length; i++) {
+                sideContent[i].style.display = "none";
+            }
+
+            // Remove active class from all side nav items
+            sideNavItems = document.getElementsByClassName("side-nav-item");
+            for (i = 0; i < sideNavItems.length; i++) {
+                sideNavItems[i].className = sideNavItems[i].className.replace(" active", "");
+            }
+
+            // Show the selected content and add active class to the nav item
+            document.getElementById(contentName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+
+    <div id="footer-section"></div>
+
+    <script>
+        // Load the footer component dynamically with correct path
+        (function() {
+            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            fetch(basePath + 'footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer-section').innerHTML = data;
+                });
+        })();
+    </script>
+</body>
+
+</html>

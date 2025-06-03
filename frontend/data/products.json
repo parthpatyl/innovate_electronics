@@ -1,0 +1,884 @@
+{
+  "products": {
+    "switches": {
+      "IE-SP4T-1025-1095-1.5-Ni-RI": {
+        "name": "IE-SP4T-1025-1095-1.5-Ni-RI",
+        "category": "Switches",
+        "image": "assets/RF-Microwave/Switches/IE-SP4T-1025-1095-1.5-Ni-RI.png",
+        "tableSpecs": {
+          "specifications": "9 kHz to 20 GHz",
+          "performance": "5 ms",
+          "outputLevel": "-130 dBm to +20 dBm<br>(standard output)",
+          "additionalFeatures": "-136 dBc/Hz (typ.)<br>(10 GHz, 10 kHz offset)"
+        },
+        "overview": {
+          "description": [
+            "Absorptive SP4T, Solid State Switch",
+            "1 MHz - 6 GHz",
+            "50Ω",
+            "Connector Type: SMA"
+          ],
+          "features": [
+            "High switching speed",
+            "Wide frequency range",
+            "100% Tested",
+            "Low insertion loss/USB power & control",
+            "High speed switching (3 μsec typ)",
+            "High power handling (+27 dBm max)"
+          ],
+          "applications": [
+            "Multiple Receiver Systems",
+            "Redundancy and Reliability",
+            "Test and Measurement"
+          ]
+        },
+        "specifications": {
+          "electrical": [
+            {
+              "parameter": "Frequency Band",
+              "specification": "1025-1095 MHz"
+            },
+            {
+              "parameter": "VSWR",
+              "specification": "1.4:1"
+            },
+            {
+              "parameter": "Insertion loss",
+              "specification": "1.5dB"
+            },
+            {
+              "parameter": "Isolation",
+              "specification": "40dB"
+            },
+            {
+              "parameter": "Switching Speed",
+              "specification": "5 µS (Max.)"
+            },
+            {
+              "parameter": "Input power",
+              "specification": "10W CW, 100W Peak"
+            },
+            {
+              "parameter": "DC Voltage",
+              "specification": "+5V @400mA (Max)"
+            }
+          ],
+          "mechanical": [
+            {
+              "item": "RF Connectors",
+              "description": "SMA (F)"
+            },
+            {
+              "item": "Power and control",
+              "description": "9 Pin D Sub Connector"
+            },
+            {
+              "item": "Control Signal",
+              "description": "RS422 INTERFACE"
+            },
+            {
+              "item": "Dimension",
+              "description": "45x45x15 mm"
+            },
+            {
+              "item": "Body Material",
+              "description": "EL NICKEL"
+            }
+          ]
+        },
+        "library": {
+          "catalogue": [
+            {
+              "name": "Catalogue 1",
+              "link": "assets/Ku_LNA_Spec_02_(002).pdf"
+            },
+            {
+              "name": "Catalogue 2",
+              "link": "assets/DWG_SP4T_PROVISIONAL.pdf"
+            }
+          ],
+          "drawings": [
+            {
+              "name": "Drawing 1",
+              "link": "assets/schematicdiagram.png"
+            },
+            {
+              "name": "Drawing 2",
+              "link": "assets/3D.jpg"
+            },
+            {
+              "name": "3D Model View 1",
+              "link": "assets/3D(1).jpg"
+            },
+            {
+              "name": "3D Model View 2",
+              "link": "assets/DIAGRAM.jpg"
+            }
+          ],
+          "testReports": [
+            {
+              "name": "Test Report 1",
+              "link": "assets/IE-SP4T-1025-1095-1.5-Ni-RI.pdf"
+            },
+            {
+              "name": "Test Report 2",
+              "link": "assets/TBIE-SP8T-0150-XX DataSheet.pdf"
+            }
+          ],
+          "executionFiles": [
+            {
+              "name": "Execution File 1",
+              "link": "assets/DWG_SP4T_PROVISIONAL.pdf"
+            },
+            {
+              "name": "Execution File 2",
+              "link": "assets/Ku_LNA_Spec_02_(002).pdf"
+            },
+            {
+              "name": "Execution File 3",
+              "link": "assets/1355627_003.pdf"
+            }
+          ]
+        }
+      },
+      "Primary_Switches": {
+        "name": "Primary Switches",
+        "category": "Switches",
+        "image": "assets/RF-Microwave/Switches/Primary_Switches.png",
+        "tableSpecs": {
+          "specifications": "0.1 TO 50 GHz",
+          "performance": "≤600 μs",
+          "outputLevel": "Min: -144 dBm<br>Max: +30 dBm",
+          "additionalFeatures": "&lt;-131 dBc/Hz (typ.)<br>(1 GHz, 20 kHz offset)"
+        },
+        "overview": {
+          "description": [
+            "Primary RF Switch System",
+            "Multi-band Operation",
+            "50Ω Impedance",
+            "High Power Handling"
+          ],
+          "features": [
+            "Multiple switch configurations",
+            "High reliability",
+            "Low insertion loss",
+            "Fast switching speed",
+            "Wide frequency range",
+            "High power handling capability"
+          ],
+          "applications": [
+            "RF Test Systems",
+            "Communication Systems",
+            "Radar Systems",
+            "Satellite Ground Stations"
+          ]
+        },
+        "specifications": {
+          "electrical": [
+            {
+              "parameter": "Frequency Range",
+              "specification": "DC - 18 GHz"
+            },
+            {
+              "parameter": "VSWR",
+              "specification": "1.5:1"
+            },
+            {
+              "parameter": "Insertion Loss",
+              "specification": "1.0 dB"
+            },
+            {
+              "parameter": "Isolation",
+              "specification": "45 dB"
+            },
+            {
+              "parameter": "Switching Speed",
+              "specification": "10 µS"
+            },
+            {
+              "parameter": "Power Handling",
+              "specification": "20W CW"
+            }
+          ],
+          "mechanical": [
+            {
+              "item": "RF Connectors",
+              "description": "SMA (F)"
+            },
+            {
+              "item": "Control Interface",
+              "description": "USB/RS232"
+            },
+            {
+              "item": "Power Supply",
+              "description": "12V DC"
+            },
+            {
+              "item": "Dimensions",
+              "description": "120x80x25 mm"
+            },
+            {
+              "item": "Housing",
+              "description": "Aluminum"
+            }
+          ]
+        },
+        "library": {
+          "catalogue": [
+            {
+              "name": "Primary Switches Catalogue",
+              "link": "assets/Primary_Switches_Catalogue.pdf"
+            }
+          ],
+          "drawings": [
+            {
+              "name": "Primary Switch Drawing",
+              "link": "assets/Primary_Switches_Drawing.png"
+            }
+          ],
+          "testReports": [
+            {
+              "name": "Primary Switch Test Report",
+              "link": "assets/Primary_Switches_TestReport.pdf"
+            }
+          ],
+          "executionFiles": [
+            {
+              "name": "Primary Switch Execution File",
+              "link": "assets/Primary_Switches_Execution.pdf"
+            }
+          ]
+        }
+      },
+      "TBIE-SW-SP8T-0218-X": {
+        "name": "TBIE-SW-SP8T-0218-X",
+        "category": "Switches",
+        "image": "assets/RF-Microwave/Switches/TBIE-SW-SP8T-0218-X.png",
+        "tableSpecs": {
+          "specifications": "1025-1095 MHz",
+          "performance": "≤600 μs",
+          "outputLevel": "Min: -144 dBm<br>Max: +30 dBm",
+          "additionalFeatures": "&lt;-131 dBc/Hz (typ.)<br>(1 GHz, 20 kHz offset)"
+        },
+        "overview": {
+          "description": [
+            "SP8T Solid State Switch",
+            "Wideband Operation",
+            "50Ω Impedance",
+            "High Power Handling"
+          ],
+          "features": [
+            "8-way switching capability",
+            "High isolation",
+            "Low insertion loss",
+            "Fast switching speed",
+            "Wide frequency range",
+            "High reliability"
+          ],
+          "applications": [
+            "Multi-channel Systems",
+            "Test Equipment",
+            "Communication Systems",
+            "Radar Systems"
+          ]
+        },
+        "specifications": {
+          "electrical": [
+            {
+              "parameter": "Frequency Range",
+              "specification": "DC - 20 GHz"
+            },
+            {
+              "parameter": "VSWR",
+              "specification": "1.6:1"
+            },
+            {
+              "parameter": "Insertion Loss",
+              "specification": "1.2 dB"
+            },
+            {
+              "parameter": "Isolation",
+              "specification": "50 dB"
+            },
+            {
+              "parameter": "Switching Speed",
+              "specification": "8 µS"
+            },
+            {
+              "parameter": "Power Handling",
+              "specification": "25W CW"
+            }
+          ],
+          "mechanical": [
+            {
+              "item": "RF Connectors",
+              "description": "SMA (F)"
+            },
+            {
+              "item": "Control Interface",
+              "description": "TTL/CMOS"
+            },
+            {
+              "item": "Power Supply",
+              "description": "5V DC"
+            },
+            {
+              "item": "Dimensions",
+              "description": "100x75x20 mm"
+            },
+            {
+              "item": "Housing",
+              "description": "Aluminum"
+            }
+          ]
+        },
+        "library": {
+          "catalogue": [
+            {
+              "name": "TBIE Catalogue",
+              "link": "assets/TBIE-SP8T-0218-X_Catalogue.pdf"
+            }
+          ],
+          "drawings": [
+            {
+              "name": "TBIE Drawing",
+              "link": "assets/TBIE-SP8T-0218-X_Drawing.png"
+            }
+          ],
+          "testReports": [
+            {
+              "name": "TBIE Test Report",
+              "link": "assets/TBIE-SP8T-0218-X_TestReport.pdf"
+            }
+          ],
+          "executionFiles": [
+            {
+              "name": "TBIE Execution File",
+              "link": "assets/TBIE-SP8T-0218-X_Execution.pdf"
+            }
+          ]
+        }
+      }
+    },
+    "amplifiers": {
+      "IE-1.950-18.05-2.2.1-FE": {
+        "name": "IE-1.950-18.05-2.2.1-FE",
+        "category": "DIFM Receiver",
+        "image": "assets/RF-Microwave/Amplifiers/Screenshot 2025-06-02 200304.png",
+        "tableSpecs": {
+          "specifications": "1.950-18.05 GHz",
+          "performance": "270-300 ns throughput",
+          "outputLevel": "-50 to +10 dBm",
+          "additionalFeatures": "12-bit digital frequency resolution"
+        },
+        "overview": {
+          "description": [
+            "DIFM 2-18 GHz Receiver",
+            "Wide frequency range",
+            "High dynamic range",
+            "Rugged construction"
+          ],
+          "features": [
+            "Low Insertion Loss",
+            "High Frequency",
+            "High Accuracy",
+            "Digital frequency Resolution: 12 Bits",
+            "Throughput time: 270-300 ns",
+            "Dynamic Range: -50 to 10 dBm"
+          ],
+          "applications": [
+            "Naval Radar",
+            "Military & Space",
+            "Electronic support measures",
+            "Test and Measurement"
+          ]
+        },
+        "specifications": {
+          "electrical": [
+            {
+              "parameter": "Frequency Range",
+              "specification": "1.950 -18.05 GHz"
+            },
+            {
+              "parameter": "Bandwidth",
+              "specification": "1.8 - 18.2 GHz"
+            },
+            {
+              "parameter": "Frequency Resolution",
+              "specification": "3.93 MHz"
+            },
+            {
+              "parameter": "Digital frequency Resolution",
+              "specification": "12 Bits"
+            },
+            {
+              "parameter": "Throughput time",
+              "specification": "270 - 300 ns"
+            },
+            {
+              "parameter": "Dynamic Range",
+              "specification": "-50 to 10 dBm"
+            },
+            {
+              "parameter": "Signal/Noise ratio",
+              "specification": "3 dB"
+            },
+            {
+              "parameter": "VSWR",
+              "specification": "2.2:1"
+            },
+            {
+              "parameter": "Frequency Error (RMS) at 3dB SNR",
+              "specification": "4.5MHz"
+            },
+            {
+              "parameter": "Frequency Peak Error at 3 dB SNR",
+              "specification": "15 MHz"
+            },
+            {
+              "parameter": "Simultaneous Signal Level",
+              "specification": "6 dBc"
+            },
+            {
+              "parameter": "Power consumption",
+              "specification": "22 Watts"
+            }
+          ],
+          "mechanical": [
+            {
+              "item": "Dimensions",
+              "description": "152.00 x 147.00 x 30.00 mm"
+            },
+            {
+              "item": "Weight",
+              "description": "<1.5 kg"
+            },
+            {
+              "item": "Operating Temperature",
+              "description": "-40 to 85 °C"
+            },
+            {
+              "item": "Overload Power",
+              "description": "15 dBm"
+            }
+          ]
+        },
+        "library": {
+          "catalogue": [
+            {
+              "name": "DIFM Receiver Catalogue",
+              "link": "assets/DIFM_Receiver_Catalogue.pdf"
+            }
+          ],
+          "drawings": [
+            {
+              "name": "Outline Drawing",
+              "link": "assets/DIFM_Receiver_Drawing.png"
+            },
+            {
+              "name": "Top View",
+              "link": "assets/DIFM_Receiver_TopView.png"
+            }
+          ],
+          "testReports": [
+            {
+              "name": "DIFM Test Report",
+              "link": "assets/DIFM_Receiver_TestReport.pdf"
+            }
+          ],
+          "executionFiles": [
+            {
+              "name": "DIFM Execution File",
+              "link": "assets/DIFM_Receiver_Execution.pdf"
+            }
+          ]
+        }
+      },
+      "IE-2-18-2.0.1-FE": {
+        "name": "IE-2-18-2.0.1-FE",
+        "category": "Limiting Amplifier",
+        "image": "assets/RF-Microwave/Amplifiers/Screenshot 2025-06-02 200304.png",
+        "tableSpecs": {
+          "specifications": "2.0 TO 18 GHz",
+          "performance": "Noise Figure: 2.5 dB Typ.",
+          "outputLevel": "+20dBm",
+          "additionalFeatures": "Harmonic Rejection: -10 dBc Typ"
+        },
+        "overview": {
+          "description": [
+            "Limiting Amplifier 2-18 GHz",
+            "High gain",
+            "Flat frequency response",
+            "Reliable performance"
+          ],
+          "features": [
+            "Maximum output power",
+            "Noise Figure: 2.5 dB Typ.",
+            "Harmonic Rejection: -10 dBc",
+            "VSWR I/P / O/P: 2.0:1 Max",
+            "Output Power: +20dBm",
+            "Military standard construction"
+          ],
+          "applications": [
+            "Naval Systems",
+            "Radar Systems",
+            "Military & Space",
+            "Electronic warfare system"
+          ]
+        },
+        "specifications": {
+          "electrical": [
+            {
+              "parameter": "Frequency Range",
+              "specification": "2.0 TO 18 GHz"
+            },
+            {
+              "parameter": "Max I/P power",
+              "specification": "-40 to +10 dBm"
+            },
+            {
+              "parameter": "Output Power",
+              "specification": "+20dBm"
+            },
+            {
+              "parameter": "Noise Figure",
+              "specification": "2.5 dB Typ."
+            },
+            {
+              "parameter": "Harmonic Rejection",
+              "specification": "-10 dBc Typ, -7dBm min"
+            },
+            {
+              "parameter": "VSWR I/P / O/P",
+              "specification": "2.0:1 Max"
+            },
+            {
+              "parameter": "Output Power Variation vs Input Power",
+              "specification": "±2.0dB over operating temp"
+            },
+            {
+              "parameter": "DC Voltage Supply",
+              "specification": "-12V, 100mA and +12V, 500mA"
+            }
+          ],
+          "mechanical": [
+            {
+              "item": "Connectors",
+              "description": "SMA Female, Diameter 0.015\" RF Pins"
+            },
+            {
+              "item": "Operating Temperature",
+              "specification": "-45 to +85C"
+            },
+            {
+              "item": "Storage Temperature",
+              "specification": "-55 to +125C"
+            },
+            {
+              "item": "Finish",
+              "specification": "Polyurethane Gray"
+            },
+            {
+              "item": "Humidity",
+              "specification": "MIL-STD-202F, METHOD 103B COND B"
+            },
+            {
+              "item": "Shock",
+              "specification": "MIL-STD-202F, METHOD 213B COND B"
+            },
+            {
+              "item": "Altitude",
+              "specification": "MIL-STD-202F, METHOD 105C COND B"
+            }
+          ]
+        },
+        "library": {
+          "catalogue": [
+            {
+              "name": "Limiting Amplifier Catalogue",
+              "link": "assets/Limiting_Amplifier_Catalogue.pdf"
+            }
+          ],
+          "drawings": [
+            {
+              "name": "Outline Drawing",
+              "link": "assets/Limiting_Amplifier_Drawing.png"
+            }
+          ],
+          "testReports": [
+            {
+              "name": "Limiting Amplifier Test Report",
+              "link": "assets/Limiting_Amplifier_TestReport.pdf"
+            }
+          ],
+          "executionFiles": [
+            {
+              "name": "Limiting Amplifier Execution File",
+              "link": "assets/Limiting_Amplifier_Execution.pdf"
+            }
+          ]
+        }
+      }
+    },
+    "passive_components": {
+      "IE-1.950-18.05-2.2.1-FE": {
+        "name": "IE-1.950-18.05-2.2.1-FE",
+        "category": "DIFM Receiver",
+        "image": "assets/RF-Microwave/Passive Components/Passive_components.png",
+        "tableSpecs": {
+          "specifications": "1.950-18.05 GHz",
+          "performance": "270-300 ns throughput",
+          "outputLevel": "-50 to +10 dBm",
+          "additionalFeatures": "12-bit digital frequency resolution"
+        },
+        "overview": {
+          "description": [
+            "DIFM 2-18 GHz Receiver",
+            "Wide frequency range",
+            "High dynamic range",
+            "Rugged construction"
+          ],
+          "features": [
+            "Low Insertion Loss",
+            "High Frequency",
+            "High Accuracy",
+            "Digital frequency Resolution: 12 Bits",
+            "Throughput time: 270-300 ns",
+            "Dynamic Range: -50 to 10 dBm"
+          ],
+          "applications": [
+            "Naval Radar",
+            "Military & Space",
+            "Electronic support measures",
+            "Test and Measurement"
+          ]
+        },
+        "specifications": {
+          "electrical": [
+            {
+              "parameter": "Frequency Range",
+              "specification": "1.950 -18.05 GHz"
+            },
+            {
+              "parameter": "Bandwidth",
+              "specification": "1.8 - 18.2 GHz"
+            },
+            {
+              "parameter": "Frequency Resolution",
+              "specification": "3.93 MHz"
+            },
+            {
+              "parameter": "Digital frequency Resolution",
+              "specification": "12 Bits"
+            },
+            {
+              "parameter": "Throughput time",
+              "specification": "270 - 300 ns"
+            },
+            {
+              "parameter": "Dynamic Range",
+              "specification": "-50 to 10 dBm"
+            },
+            {
+              "parameter": "Signal/Noise ratio",
+              "specification": "3 dB"
+            },
+            {
+              "parameter": "VSWR",
+              "specification": "2.2:1"
+            },
+            {
+              "parameter": "Frequency Error (RMS) at 3dB SNR",
+              "specification": "4.5MHz"
+            },
+            {
+              "parameter": "Frequency Peak Error at 3 dB SNR",
+              "specification": "15 MHz"
+            },
+            {
+              "parameter": "Simultaneous Signal Level",
+              "specification": "6 dBc"
+            },
+            {
+              "parameter": "Power consumption",
+              "specification": "22 Watts"
+            }
+          ],
+          "mechanical": [
+            {
+              "item": "Dimensions",
+              "description": "152.00 x 147.00 x 30.00 mm"
+            },
+            {
+              "item": "Weight",
+              "description": "<1.5 kg"
+            },
+            {
+              "item": "Operating Temperature",
+              "description": "-40 to 85 °C"
+            },
+            {
+              "item": "Overload Power",
+              "description": "15 dBm"
+            }
+          ]
+        },
+        "library": {
+          "catalogue": [
+            {
+              "name": "DIFM Receiver Catalogue",
+              "link": "assets/DIFM_Receiver_Catalogue.pdf"
+            }
+          ],
+          "drawings": [
+            {
+              "name": "Outline Drawing",
+              "link": "assets/DIFM_Receiver_Drawing.png"
+            },
+            {
+              "name": "Top View",
+              "link": "assets/DIFM_Receiver_TopView.png"
+            }
+          ],
+          "testReports": [
+            {
+              "name": "DIFM Test Report",
+              "link": "assets/DIFM_Receiver_TestReport.pdf"
+            }
+          ],
+          "executionFiles": [
+            {
+              "name": "DIFM Execution File",
+              "link": "assets/DIFM_Receiver_Execution.pdf"
+            }
+          ]
+        }
+      },
+      "IE-2-18-2.0.1-FE": {
+        "name": "IE-2-18-2.0.1-FE",
+        "category": "Limiting Amplifier",
+        "image": "assets/RF-Microwave/Passive Components/Passive_components.png",
+        "tableSpecs": {
+          "specifications": "2.0 TO 18 GHz",
+          "performance": "Noise Figure: 2.5 dB Typ.",
+          "outputLevel": "+20dBm",
+          "additionalFeatures": "Harmonic Rejection: -10 dBc Typ"
+        },
+        "overview": {
+          "description": [
+            "Limiting Amplifier 2-18 GHz",
+            "High gain",
+            "Flat frequency response",
+            "Reliable performance"
+          ],
+          "features": [
+            "Maximum output power",
+            "Noise Figure: 2.5 dB Typ.",
+            "Harmonic Rejection: -10 dBc",
+            "VSWR I/P / O/P: 2.0:1 Max",
+            "Output Power: +20dBm",
+            "Military standard construction"
+          ],
+          "applications": [
+            "Naval Systems",
+            "Radar Systems",
+            "Military & Space",
+            "Electronic warfare system"
+          ]
+        },
+        "specifications": {
+          "electrical": [
+            {
+              "parameter": "Frequency Range",
+              "specification": "2.0 TO 18 GHz"
+            },
+            {
+              "parameter": "Max I/P power",
+              "specification": "-40 to +10 dBm"
+            },
+            {
+              "parameter": "Output Power",
+              "specification": "+20dBm"
+            },
+            {
+              "parameter": "Noise Figure",
+              "specification": "2.5 dB Typ."
+            },
+            {
+              "parameter": "Harmonic Rejection",
+              "specification": "-10 dBc Typ, -7dBm min"
+            },
+            {
+              "parameter": "VSWR I/P / O/P",
+              "specification": "2.0:1 Max"
+            },
+            {
+              "parameter": "Output Power Variation vs Input Power",
+              "specification": "±2.0dB over operating temp"
+            },
+            {
+              "parameter": "DC Voltage Supply",
+              "specification": "-12V, 100mA and +12V, 500mA"
+            }
+          ],
+          "mechanical": [
+            {
+              "item": "Connectors",
+              "description": "SMA Female, Diameter 0.015\" RF Pins"
+            },
+            {
+              "item": "Operating Temperature",
+              "specification": "-45 to +85C"
+            },
+            {
+              "item": "Storage Temperature",
+              "specification": "-55 to +125C"
+            },
+            {
+              "item": "Finish",
+              "specification": "Polyurethane Gray"
+            },
+            {
+              "item": "Humidity",
+              "specification": "MIL-STD-202F, METHOD 103B COND B"
+            },
+            {
+              "item": "Shock",
+              "specification": "MIL-STD-202F, METHOD 213B COND B"
+            },
+            {
+              "item": "Altitude",
+              "specification": "MIL-STD-202F, METHOD 105C COND B"
+            }
+          ]
+        },
+        "library": {
+          "catalogue": [
+            {
+              "name": "Limiting Amplifier Catalogue",
+              "link": "assets/Limiting_Amplifier_Catalogue.pdf"
+            }
+          ],
+          "drawings": [
+            {
+              "name": "Outline Drawing",
+              "link": "assets/Limiting_Amplifier_Drawing.png"
+            }
+          ],
+          "testReports": [
+            {
+              "name": "Limiting Amplifier Test Report",
+              "link": "assets/Limiting_Amplifier_TestReport.pdf"
+            }
+          ],
+          "executionFiles": [
+            {
+              "name": "Limiting Amplifier Execution File",
+              "link": "assets/Limiting_Amplifier_Execution.pdf"
+            }
+          ]
+        }
+      }
+    }
+  }
+} 

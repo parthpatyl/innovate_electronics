@@ -1,0 +1,159 @@
+#chatbot-window {
+  position: fixed;
+  bottom: 110px;
+  right: 50px;
+  width: 400px;
+  height: 420px; /* Increased window height for more content */
+  max-width: 120vw;
+  max-height: 100vh; /* Prevents overflow on small screens */
+  background: #f4f4f4;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  z-index: 10000;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: inherit;
+}
+#chatbot-window.open {
+  display: flex;
+}
+.chatbot-header {
+  background: #f33434;
+  color: #fff;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1rem;
+}
+#chatbot-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.chatbot-messages {
+  background: #fff;
+  flex: 1;
+  padding: 18px 14px; /* More padding for better readability */
+  overflow-y: auto;
+  min-height: 180px;  /* Increased min-height */
+  max-height: 370px;  /* Increased max-height */
+  font-size: 1.08rem; /* Slightly larger font */
+  border-bottom: 1px solid #f2f2f2;
+  border-radius: 0 0 8px 8px;
+}
+.chatbot-input-area {
+  display: flex;
+  border-top: 1px solid #eee;
+  background: #fafbfc;
+  padding: 10px 10px 8px 10px; /* More padding for comfort */
+}
+.chatbot-input-area input[type="text"] {
+  flex: 1;
+  border: none;
+  padding: 10px 12px;
+  font-size: 1rem;
+  outline: none;
+  background: #fff;
+  border-radius: 6px;
+  margin-right: 8px;
+  box-shadow: 0 1px 4px rgba(99,99,99,0.07);
+  transition: box-shadow 0.18s;
+}
+.chatbot-input-area input[type="text"]:focus {
+  box-shadow: 0 2px 8px rgba(243,52,52,0.13);
+  border: 1px solid #f33434;
+}
+.chatbot-input-area button {
+  border: none;
+  color: #ff0000;
+  background: none;
+  font-size: 1.5rem;
+  padding: 0 5px;
+  border-radius: 15px;
+  cursor: pointer;
+  margin: 0;
+}
+/* Chatbot Contact Options Styles */
+.contact-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* further reduced gap */
+  margin: 2px 0;
+}
+.contact-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(99,99,99,0.06);
+  padding: 6px 4px; /* further reduced padding */
+  display: flex;
+  flex-direction: column;
+  gap: 3px; /* further reduced gap */
+  border: 1px solid #ececec;
+}
+.contact-title {
+  font-weight: 600;
+  font-size: 1rem; /* smaller */
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #f33434;
+}
+.contact-status {
+  margin-left: auto;
+  font-size: 0.95rem;
+  padding: 0 5px;
+  border-radius: 7px;
+  background: #ffeaea;
+  color: #f33434;
+  border: 1px solid #fbbcbc;
+}
+.contact-desc {
+  font-size: 0.87rem;
+  color: #555;
+  line-height: 1.2;
+}
+.contact-btn {
+  background: #fff;
+  color: #f33434;
+  border: 1px solid #f33434;
+  border-radius: 5px;
+  padding: 2px 8px; /* smaller */
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1px;
+  transition: 0.2s, color 0.2s;
+}
+.contact-btn:hover {
+  background: #f33434;
+  color: #fff;
+}
+.contact-link {
+  color: #f33434;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: underline;
+  margin-top: 1px;
+}
+.user-msg {
+  display: block;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #fff;
+  background: linear-gradient(90deg, #f33434 70%, #ff7e5f 100%);
+  padding: 8px 18px;
+  border-radius: 18px 18px 4px 18px;
+  font-weight: 500;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(243,52,52,0.07);
+  max-width: 80%;
+  word-break: break-word;
+  text-align: right;
+}

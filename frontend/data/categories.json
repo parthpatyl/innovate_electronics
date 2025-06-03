@@ -1,0 +1,161 @@
+{
+  "categories": [
+      {
+          "title": "RF and Microwave",
+          "headerImage": "assets/image35.png",
+          "items": [
+              {
+                  "name": "Switches",
+                  "image": "assets/RF-Microwave/Switches/Primary_Switches.png",
+                  "subproducts": [
+                      "SP4T SOLID STATE SWITCH (Model: IE-SP4T-1025-1095-1.5-Ni-RI)",
+                      "SP8T PIN DIODE ABSORPITIVE SWITCH OPERATING (Model: IE-SW-SP8T-0218-X, TBIE-SW-SP8T-0218-X)"
+                  ]
+              },
+              {
+                  "name": "Cable Assembly",
+                  "image": "assets/RF-Microwave/Cable Assembly/Cable_assembly.png"
+              },
+              {
+                  "name": "Waveguides",
+                  "image": "assets/RF-Microwave/Waveguide/Primary-Waveguide.png",
+                  "subproducts": [
+                      "WAVEGUIDE BEND 90° H Plane (Model: IE-WGB-WR975-1.05-4-AL-SE)",
+                      "WAVEGUIDE TERMINATION (Model: IE-WGT-WR42-T101-1-SE)",
+                      "WAVEGUIDE TWIST (Model: IE-WR650-1.10-4-AL-SE)",
+                      "STRAIGHT WAVEGUIDE (Model: IE-WR650-1.06-4-AL-SE)",
+                      "WAVEGUIDE ADAPTER (Model: IE-WR75-1.25-6-AL-SE, IE-WR137-1.25-6-AL-SE, IE-WR229-1.25-6-AL-SE)",
+                      "WAVEGUIDE BEND 90° E Plane (Model: IE-WR975-1.08-AL-SE)"
+                  ]
+              },
+              {
+                  "name": "Amplifiers",
+                  "image": "assets/RF-Microwave/Amplifiers/Amplifiers.png",
+                  "subproducts": [
+                      "DIFM 2-18 GHz (Model: IE-1.950-18.05-2.2:1-FE)",
+                      "LIMITING AMPLIFIER (Model: IE-2-18-2.0:1-FE)"
+                  ]
+              },
+              {
+                  "name": "Filters",
+                  "image": "assets/RF-Microwave/Filters/Filters.png"
+              },
+              {
+                  "name": "Passive Components",
+                  "image": "assets/RF-Microwave/Passive Components/Passive_components.png",
+                  "subproducts": [
+                      "GNSS ACTIVE POWER SPLITTER (Model: IE-1.15-2.6GHz-2.6-12-AL-EE)",
+                      "GNSS ATOMIC POWER SPLITTER"
+                  ]
+              },
+              {
+                  "name": "Antennas",
+                  "image": "assets/RF-Microwave/Attenas/Atennas.png"
+              }
+          ]
+      },
+      {
+          "title": "Test & Measurement",
+          "headerImage": "assets/image36.png",
+          "items": [
+              {
+                  "name": "Vibration Test Machine",
+                  "image": "assets/Test Measurement/VIBRATION TEST MACHINE/Vibration Chamber.jpg",
+                  "subproducts": [
+                      "Vibration Shakers / Test Systems (Range: 50–20,000 Kgf)",
+                      "Shock Test Machine",
+                      "Bump Test Machine",
+                      "Vibration Control Systems"
+                  ]
+              },
+              {
+                  "name": "Environmental Chamber",
+                  "image": "assets/Test Measurement/ENVIRONMENTAL CHAMBER/Nano Env Chamber .jpg",
+                  "subproducts": [
+                      "Environmental Test Chambers",
+                      "Rain Chambers",
+                      "Vibration Chambers",
+                      "Thermal Shock Chambers",
+                      "Walk-in Chambers",
+                      "Altitude Chambers",
+                      "Dust Chambers",
+                      "Salt Spray Chambers",
+                      "Battery Test Chambers"
+                  ]
+              },
+              {
+                  "name": "EMI EMC Chamber",
+                  "image": "assets/Test Measurement/EMI EMC CHAMBER/Anachoic Chamber.jpeg",
+                  "subproducts": [
+                      "Semi-Anechoic Chamber",
+                      "Automotive Chamber",
+                      "RF Shield Box",
+                      "RF Shield Room"
+                  ]
+              },
+              {
+                  "name": "Anechoic Chamber",
+                  "image": "assets/Test Measurement/Anechoic_Chamber/Anechoic_Chamber.jpg",
+                  "subproducts": [
+                      "Compact Antenna Test Range (CATR)"
+                  ]
+              },
+              {
+                  "name": "EMI EMC Scanner/Probe",
+                  "image": "assets/Test Measurement/EMI_EMC_Scanner/EMI_EMC_Scanner.png",
+                  "subproducts": [
+                      "EMScanner",
+                      "EMScannerR"
+                  ]
+              },
+              {
+                  "name": "Reverberation Chamber",
+                  "image": "assets/Test Measurement/Reverberation_Chamber/Reverberation-Chamber 2.jpg"
+              }
+          ]
+      },
+      {
+          "title": "Speciality Materials",
+          "headerImage": "assets/image49.png",
+          "items": [
+              {
+                  "name": "Rohacell Sheets",
+                  "image": "assets/Specaility Materails/Rohacell_Sheets/Rohacell_sheets.png"
+              },
+              {
+                  "name": "Rohacell Shapes",
+                  "image": "assets/Specaility Materails/Rochacell Shapes/Rohacell_Shapes.png"
+              },
+              {
+                  "name": "Composite Components",
+                  "image": "assets/Specaility Materails/Composite_Components/Composite_components.png",
+                  "subproducts": [
+                      "Nose Cone",
+                      "Carbon Fiber Reinforced Polymer (CFRP)",
+                      "Glass Fiber Reinforced Polymer (GFRP): Wings, tail surfaces"
+                  ]
+              },
+              {
+                  "name": "Acoustic Insulation Foam",
+                  "image": "assets/Specaility Materails/Acoustic_Insulation/ACOUSTIC INSULATION.png",
+                  "subproducts": [
+                      "Acoustic Containers",
+                      "Acoustic Noise Test Booths",
+                      "Acoustic Doors"
+                  ]
+              },
+              {
+                  "name": "Thermal Insulation Foam",
+                  "image": "assets/Specaility Materails/Thermal_Insulation/THERMAL INSULATION.png",
+                  "subproducts": [
+                      "Thermal Insulation (Polyimide) Foam (Solimide)"
+                  ]
+              },
+              {
+                  "name": "Turnkey Solution (Radome)",
+                  "image": "assets/Specaility Materails/Turnkey_Solutions/TURNKEY_SOLUTION.png"
+              }
+          ]
+      }
+  ]
+}

@@ -1,0 +1,159 @@
+/* Standard size for product images in the products table */
+.product-thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            color: #333;
+        }
+        /* Navigation */
+        nav {
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+
+        .main-nav li {
+            padding: 15px 25px;
+        }
+
+        .main-nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            padding: 10px 30px;
+            background-color: #f9f9f9;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #0073b7;
+            text-decoration: none;
+        }
+
+.hero {
+    display: flex;
+    background: linear-gradient(to left, #bebebe, #242424f0) !important;
+    color: white;
+    padding: 50px 200px 50px 200px;
+}
+
+.hero-content {
+    flex: 1;
+    padding-right: 30px;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 1.5rem;
+    line-height: 1.6;
+}
+
+.hero-image img{
+    width: 300px;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Main content */
+        .main-content {
+            padding: 40px;
+        }
+
+        .intro-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-left: 65px;
+            margin-bottom: 40px;
+        }
+
+        /* Products table */
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .products-table th {
+            background-color: #6c7680;
+            color: white;
+            padding: 10px 15px;
+            text-align: left;
+        }
+
+        .products-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .products-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .product-row {
+            display: flex;
+            align-items: center;
+        }
+
+        .product-image {
+            width: 100px;
+            margin-right: 15px;
+        }
+
+        .product-name {
+            color: #0073b7;
+            font-weight: bold;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .product-details {
+            font-size: 14px;
+            color: #666;
+        }
+        /* WhatsApp Button Styles */
+#whatsapp-btn {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 9999;
+    cursor: pointer;
+    padding: 10px;
+    transition: box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#whatsapp-btn img {
+    width: 60px;
+    height: 60px;
+    display: block;
+}

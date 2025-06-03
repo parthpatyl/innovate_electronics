@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>What Are We</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/menupages.css">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+</head>
+<body>
+    <div id="header-section"></div>
+    <div id="overlay"></div>
+    <script src="js/header.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script>
+      // WhatsApp Button (left corner, all pages)
+      (function() {
+        if (!document.getElementById('whatsapp-btn')) {
+          var wa = document.createElement('div');
+          wa.id = 'whatsapp-btn';
+          wa.innerHTML = '<img src="assets/whatsapp_icon.png" alt="WhatsApp">';
+          wa.title = 'Chat on WhatsApp';
+          wa.onclick = function() {
+            window.open('https://wa.me/919999999999', '_blank');
+          };
+          document.body.appendChild(wa);
+        }
+      })();
+    </script>
+    <script>
+        // Load the header component dynamically with correct path
+        (function() {
+            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            fetch(basePath + 'header.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-section').innerHTML = data;
+                    if (typeof setupHeaderMenu === 'function') setupHeaderMenu();
+                });
+        })();
+    </script>
+  <main>
+    <section>
+      <p>This page describes who we are, our mission, values, and vision.</p>
+    </section>
+  </main>
+
+      <div id="footer-section"></div>
+
+    <!-- Chatbot widget script included above -->
+
+    <script>
+        // Load the footer component dynamically with correct path
+        (function() {
+            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            fetch(basePath + 'footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer-section').innerHTML = data;
+                });
+        })();
+    </script>
+</body>
+</html>

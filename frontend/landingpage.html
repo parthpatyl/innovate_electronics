@@ -99,12 +99,30 @@
                     // Add only first 6 items to the category
                     category.items.slice(0, 6).forEach(item => {
                         const itemElement = document.createElement('a');
+                        // Mapping for subcategory to key for sessionStorage
+                        const subcategoryKeyMap = {
+                            'Switches': 'switches',
+                            'Amplifiers': 'amplifiers',
+                            'Passive Components': 'passive_components',
+                            'Waveguides': 'waveguides',
+                            // Add more subcategories as needed
+                        };
                         itemElement.href = "subcategory.html";
                         itemElement.classList.add('img-container');
                         itemElement.innerHTML = `
                             <img src="${item.image}" alt="${item.name}">
                             <p>${item.name}</p>
                         `;
+                        itemElement.addEventListener('click', function(e) {
+                            // Save selected product info to sessionStorage for subcategory page
+                            sessionStorage.setItem('selectedProduct', JSON.stringify({
+                                category: category.title,
+                                name: item.name,
+                                image: item.image,
+                                subproducts: item.subproducts || [],
+                                key: subcategoryKeyMap[item.name] || null
+                            }));
+                        });
                         categoryImagesContainer.appendChild(itemElement);
                     });
 

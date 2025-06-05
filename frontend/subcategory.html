@@ -121,12 +121,16 @@
                 // Get products based on category and subcategory
                 let products = [];
                 if (category === 'RF and Microwave') {
-                    if (subcategory === 'Switches') {
-                        products = Object.values(data.products.switches);
-                    } else if (subcategory === 'Amplifiers') {
-                        products = Object.values(data.products.amplifiers);
-                    } else if (subcategory === 'Passive Components') {
-                        products = Object.values(data.products.passive_components);
+                    const subcategoryKeyMap = {
+                        'Switches': 'switches',
+                        'Amplifiers': 'amplifiers',
+                        'Passive Components': 'passive_components',
+                        'Waveguides': 'waveguides',
+                        // Add more subcategories here as needed
+                    };
+                    const key = subcategoryKeyMap[subcategory];
+                    if (key && data.products[key]) {
+                        products = Object.values(data.products[key]);
                     }
                 }
 
@@ -149,9 +153,14 @@
                 // Determine the key for the category in products.json
                 let categoryKey = null;
                 if (category === 'RF and Microwave') {
-                    if (subcategory === 'Switches') categoryKey = 'switches';
-                    else if (subcategory === 'Amplifiers') categoryKey = 'amplifiers';
-                    else if (subcategory === 'Passive Components') categoryKey = 'passive_components';
+                    const subcategoryKeyMap = {
+                        'Switches': 'switches',
+                        'Amplifiers': 'amplifiers',
+                        'Passive Components': 'passive_components',
+                        'Waveguides': 'waveguides',
+                        // Add more subcategories here as needed
+                    };
+                    categoryKey = subcategoryKeyMap[subcategory];
                 }
                 products.forEach(product => {
                     const row = document.createElement('tr');

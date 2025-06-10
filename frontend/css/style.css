@@ -720,21 +720,128 @@ video {
     margin-right: 4px;
 }
 
+.events {
+    padding: 40px 20px;
+    background-color: #f9f9f9;
+}
+
+.events .section-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.events .section-title h2 {
+    font-size: 2.5rem;
+    color: #2b5876;
+    position: relative;
+    display: inline-block;
+}
+
+.events-carousel-container {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+    overflow: hidden;
+}
+
+.events-carousel-track {
+    display: flex;
+    gap: 24px;
+    transition: transform 0.5s ease-in-out;
+}
+
+.event {
+    flex: 0 0 calc(33.333% - 16px);
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.event:hover {
+    transform: translateY(-5px);
+}
+
+.event-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.event-date {
+    background: #2b5876;
+    color: white;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    position: relative;
+    margin-top: -20px;
+    margin-left: 16px;
+    margin-right: 16px;
+    border-radius: 4px;
+    z-index: 1;
+}
+
+.event h3 {
+    padding: 16px;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.register-btn {
+    display: block;
+    width: calc(100% - 32px);
+    margin: 0 16px 16px;
+    padding: 12px;
+    background: #2b5876;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.register-btn:hover {
+    background: #1e3f54;
+}
+
+.view-all-events {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.view-all-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background: transparent;
+    color: #2b5876;
+    border: 2px solid #2b5876;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.view-all-btn:hover {
+    background: #2b5876;
+    color: white;
+}
+
 @media (max-width: 1024px) {
-    .carousel-container {
-        max-width: 800px;
-        padding: 24px 50px;
+    .event {
+        flex: 0 0 calc(50% - 12px);
     }
 }
 
 @media (max-width: 768px) {
-    .carousel-container {
-        max-width: 100%;
-        padding: 24px 40px;
+    .event {
+        flex: 0 0 calc(100% - 0px);
     }
     
-    .carousel-arrow {
-        width: 40px;
-        height: 40px;
+    .events .section-title h2 {
+        font-size: 2rem;
     }
 }

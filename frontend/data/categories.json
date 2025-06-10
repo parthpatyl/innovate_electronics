@@ -70,7 +70,7 @@
               },
               {
                   "name": "Environmental Chamber",
-                  "image": "assets/Test Measurement/ENVIRONMENTAL CHAMBER/Nano Env Chamber .jpg",
+                  "image": "./assets/Test Measurement/ENVIRONMENTAL CHAMBER/Nano Env Chamber.jpg",
                   "subproducts": [
                       "Environmental Test Chambers",
                       "Rain Chambers",
@@ -110,7 +110,7 @@
               },
               {
                   "name": "Reverberation Chamber",
-                  "image": "assets/Test Measurement/Reverberation_Chamber/Reverberation-Chamber 2.jpg"
+                  "image": "assets/Test Measurement/Reverberation_Chamber/Reverberation-Chamber.jpg"
               }
           ]
       },

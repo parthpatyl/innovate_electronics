@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/chatbot.css">
     <link rel="stylesheet" href="css/headerIndex.css">
     <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/events.css">
 </head>
 <body>
 
@@ -141,235 +142,96 @@
     <section id="latest-articles" class="latest-articles">
         <div class="section-title">
             <h2>Latest Blogs</h2>
-            <!-- <div class="inline-logo-stack">
-                <img src="assets/logo text.png" alt="Electronics" class="inline-logo-bottom">
-            </div> -->
         </div>
         <div class="carousel-container">
             <button class="carousel-arrow left" aria-label="Previous">&#10094;</button>
             <div class="carousel-track">
-                <div class="article">
+                <a href="blogs.html" class="article">
                     <img src="assets/blog.jpeg" alt="Space Propulsion" class="article-img">
                     <h3>Thrusters and Theories: Navigating the New Frontiers of Space Propulsion</h3>
-                </div>
-                <div class="article">
+                </a>
+                <a href="blogs.html" class="article">
                     <img src="assets/blog.jpeg" alt="Modern Aircraft" class="article-img">
                     <h3>From Rivets to Rockets: The Timeless Craftsmanship Behind Modern Aircraft</h3>
-                </div>
-                <div class="article">
+                </a>
+                <a href="blogs.html" class="article">
                     <img src="assets/blog.jpeg" alt="Hypersonic Travel" class="article-img">
                     <h3>Celestial Highways: The Future of Hypersonic Travel and Orbital Tourism</h3>
-                </div>
-                <div class="article">
+                </a>
+                <a href="blogs.html" class="article">
                     <img src="assets/blog.jpeg" alt="Space Propulsion" class="article-img">
                     <h3>Thrusters and Theories: Navigating the New Frontiers of Space Propulsion</h3>
-                </div>
-                <div class="article">
+                </a>
+                <a href="blogs.html" class="article">
                     <img src="assets/blog.jpeg" alt="Modern Aircraft" class="article-img">
                     <h3>From Rivets to Rockets: The Timeless Craftsmanship Behind Modern Aircraft</h3>
-                </div>
-                <div class="article">
+                </a>
+                <a href="blogs.html" class="article">
                     <img src="assets/blog.jpeg" alt="Hypersonic Travel" class="article-img">
                     <h3>Celestial Highways: The Future of Hypersonic Travel and Orbital Tourism</h3>
-                </div>
-                <div class="article">
+                </a>
+                <a href="blogs.html" class="article">
                     <img src="assets/blog.jpeg" alt="Aerospace Engineering" class="article-img">
                     <h3>AI in the Air: How Machine Learning is Reshaping Aerospace Engineering</h3>
-                </div>
+                </a>
             </div>
             <button class="carousel-arrow right" aria-label="Next">&#10095;</button>
         </div>
-        <script>
-        // Carousel Logic
-        (function() {
-            const track = document.querySelector('.carousel-track');
-            const articles = Array.from(track.children);
-            const leftBtn = document.querySelector('.carousel-arrow.left');
-            const rightBtn = document.querySelector('.carousel-arrow.right');
-            let currentIndex = 0;
-            const itemsPerView = 3;
-            const totalItems = articles.length;
-            
-            function updateCarousel() {
-                const articleWidth = articles[0].offsetWidth;
-                const gap = 24; // matches CSS gap
-                const offset = currentIndex * (articleWidth + gap);
-                track.style.transform = `translateX(-${offset}px)`;
-                
-                // Update button states
-                leftBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
-                rightBtn.style.opacity = currentIndex >= totalItems - itemsPerView ? '0.5' : '1';
-            }
-            
-            function moveCarousel(direction) {
-                if (direction === 'left' && currentIndex > 0) {
-                    currentIndex--;
-                    updateCarousel();
-                } else if (direction === 'right' && currentIndex < totalItems - itemsPerView) {
-                    currentIndex++;
-                    updateCarousel();
-                }
-            }
-            
-            leftBtn.addEventListener('click', () => moveCarousel('left'));
-            rightBtn.addEventListener('click', () => moveCarousel('right'));
-            
-            // Touch support for mobile
-            let startX = 0;
-            let isDragging = false;
-            
-            track.addEventListener('touchstart', e => {
-                startX = e.touches[0].clientX;
-                isDragging = true;
-            });
-            
-            track.addEventListener('touchmove', e => {
-                if (!isDragging) return;
-                const currentX = e.touches[0].clientX;
-                const diff = startX - currentX;
-                
-                if (Math.abs(diff) > 50) {
-                    moveCarousel(diff > 0 ? 'right' : 'left');
-                    isDragging = false;
-                }
-            });
-            
-            track.addEventListener('touchend', () => {
-                isDragging = false;
-            });
-            
-            // Handle window resize
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(updateCarousel, 250);
-            });
-            
-            // Initial setup
-            updateCarousel();
-        })();
-        </script>
+        <div class="view-all-events">
+            <a href="blogs.html" class="view-all-btn">View All Events</a>
+        </div>
     </section>
 
     <section id="events" class="events">
         <div class="section-title">
             <h2>Latest Events & Webinars</h2>
-            <!-- <div class="inline-logo-stack">
-                <img src="assets/logo text.png" alt="Electronics" class="inline-logo-bottom">
-            </div> -->
         </div>
         <div class="carousel-container events-carousel-container">
             <button class="carousel-arrow left events-arrow" aria-label="Previous">&#10094;</button>
             <div class="carousel-track events-carousel-track">
-                <div class="event">
+                <a href="events.html" class="event">
                     <img src="assets/event1.jpeg" alt="Event 1" class="event-img">
+                    <div class="event-date">June 15, 2025</div>
                     <h3>Webinar on RF Technologies</h3>
                     <button class="register-btn">Register Now</button>
-                </div>
-                <div class="event">
+                </a>
+                <a href="events.html" class="event">
                     <img src="assets/event1.jpeg" alt="Event 2" class="event-img">
+                    <div class="event-date">June 20, 2025</div>
                     <h3>Advanced Microwave Systems</h3>
                     <button class="register-btn">Register Now</button>
-                </div>
-                <div class="event">
+                </a>
+                <a href="events.html" class="event">
                     <img src="assets/event1.jpeg" alt="Event 3" class="event-img">
+                    <div class="event-date">June 25, 2025</div>
                     <h3>Innovations in Electronics</h3>
                     <button class="register-btn">Register Now</button>
-                </div>
-                <div class="event">
-                    <img src="assets/event1.jpeg" alt="Event 1" class="event-img">
-                    <h3>Webinar on RF Technologies</h3>
+                </a>
+                <a href="events.html" class="event">
+                    <img src="assets/event1.jpeg" alt="Event 4" class="event-img">
+                    <div class="event-date">July 1, 2025</div>
+                    <h3>EMI/EMC Testing Workshop</h3>
                     <button class="register-btn">Register Now</button>
-                </div>
-                <div class="event">
-                    <img src="assets/event1.jpeg" alt="Event 2" class="event-img">
-                    <h3>Advanced Microwave Systems</h3>
+                </a>
+                <a href="events.html" class="event">
+                    <img src="assets/event1.jpeg" alt="Event 5" class="event-img">
+                    <div class="event-date">July 5, 2025</div>
+                    <h3>5G Technology Summit</h3>
                     <button class="register-btn">Register Now</button>
-                </div>
-                <div class="event">
-                    <img src="assets/event1.jpeg" alt="Event 3" class="event-img">
-                    <h3>Innovations in Electronics</h3>
+                </a>
+                <a href="events.html" class="event">
+                    <img src="assets/event1.jpeg" alt="Event 6" class="event-img">
+                    <div class="event-date">July 10, 2025</div>
+                    <h3>Antenna Design Masterclass</h3>
                     <button class="register-btn">Register Now</button>
-                </div>
-                <div class="event">
-                    <img src="assets/event1.jpeg" alt="Event 1" class="event-img">
-                    <h3>Webinar on RF Technologies</h3>
-                    <button class="register-btn">Register Now</button>
-                </div>
-                <div class="event">
-                    <img src="assets/event1.jpeg" alt="Event 2" class="event-img">
-                    <h3>Advanced Microwave Systems</h3>
-                    <button class="register-btn">Register Now</button>
-                </div>
-                <div class="event">
-                    <img src="assets/event1.jpeg" alt="Event 3" class="event-img">
-                    <h3>Innovations in Electronics</h3>
-                    <button class="register-btn">Register Now</button>
-                </div>
+                </a>
             </div>
             <button class="carousel-arrow right events-arrow" aria-label="Next">&#10095;</button>
         </div>
+        <div class="view-all-events">
+            <a href="events.html" class="view-all-btn">View All Events</a>
+        </div>
     </section>
-
-    <script>
-    // Events Carousel Logic
-    (function() {
-        const track = document.querySelector('.events-carousel-track');
-        const events = Array.from(track.children);
-        const leftBtn = document.querySelector('.carousel-arrow.left.events-arrow');
-        const rightBtn = document.querySelector('.carousel-arrow.right.events-arrow');
-        let currentIndex = 0;
-        const itemsPerView = 3;
-        const totalItems = events.length;
-        
-        function updateCarousel() {
-            const eventWidth = events[0].offsetWidth;
-            const gap = 24; // matches CSS gap
-            const offset = currentIndex * (eventWidth + gap);
-            track.style.transform = `translateX(-${offset}px)`;
-            leftBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
-            rightBtn.style.opacity = currentIndex >= totalItems - itemsPerView ? '0.5' : '1';
-        }
-        function moveCarousel(direction) {
-            if (direction === 'left' && currentIndex > 0) {
-                currentIndex--;
-                updateCarousel();
-            } else if (direction === 'right' && currentIndex < totalItems - itemsPerView) {
-                currentIndex++;
-                updateCarousel();
-            }
-        }
-        leftBtn.addEventListener('click', () => moveCarousel('left'));
-        rightBtn.addEventListener('click', () => moveCarousel('right'));
-        // Touch support for mobile
-        let startX = 0;
-        let isDragging = false;
-        track.addEventListener('touchstart', e => {
-            startX = e.touches[0].clientX;
-            isDragging = true;
-        });
-        track.addEventListener('touchmove', e => {
-            if (!isDragging) return;
-            const currentX = e.touches[0].clientX;
-            const diff = startX - currentX;
-            if (Math.abs(diff) > 50) {
-                moveCarousel(diff > 0 ? 'right' : 'left');
-                isDragging = false;
-            }
-        });
-        track.addEventListener('touchend', () => {
-            isDragging = false;
-        });
-        // Handle window resize
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(updateCarousel, 250);
-        });
-        // Initial setup
-        updateCarousel();
-    })();
-    </script>
 
     <section class="testimonials">
         <p class="testimonial-title">What Our Clients Say</p>
@@ -426,6 +288,94 @@
             .then(data => {
                 document.getElementById('footer-section').innerHTML = data;
             });
+    </script>
+
+    <script>
+        // Generic Carousel Initialization Function
+        function initializeCarousel(options) {
+            const track = document.querySelector(options.trackSelector);
+            const items = Array.from(track.children);
+            const leftBtn = document.querySelector(options.leftBtnSelector);
+            const rightBtn = document.querySelector(options.rightBtnSelector);
+            let currentIndex = 0;
+            const itemsPerView = 3;
+            const totalItems = items.length;
+            
+            function updateCarousel() {
+                const itemWidth = items[0].offsetWidth;
+                const gap = 24; // matches CSS gap
+                const offset = currentIndex * (itemWidth + gap);
+                track.style.transform = `translateX(-${offset}px)`;
+                
+                // Update button states
+                leftBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+                rightBtn.style.opacity = currentIndex >= totalItems - itemsPerView ? '0.5' : '1';
+            }
+            
+            function moveCarousel(direction) {
+                if (direction === 'left' && currentIndex > 0) {
+                    currentIndex--;
+                    updateCarousel();
+                } else if (direction === 'right' && currentIndex < totalItems - itemsPerView) {
+                    currentIndex++;
+                    updateCarousel();
+                }
+            }
+            
+            leftBtn.addEventListener('click', () => moveCarousel('left'));
+            rightBtn.addEventListener('click', () => moveCarousel('right'));
+            
+            // Touch support for mobile
+            let startX = 0;
+            let isDragging = false;
+            
+            track.addEventListener('touchstart', e => {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+            });
+            
+            track.addEventListener('touchmove', e => {
+                if (!isDragging) return;
+                const currentX = e.touches[0].clientX;
+                const diff = startX - currentX;
+                
+                if (Math.abs(diff) > 50) {
+                    moveCarousel(diff > 0 ? 'right' : 'left');
+                    isDragging = false;
+                }
+            });
+            
+            track.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+            
+            // Handle window resize
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(updateCarousel, 250);
+            });
+            
+            // Initial setup
+            updateCarousel();
+        }
+
+        // Initialize both carousels when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize blogs carousel
+            initializeCarousel({
+                trackSelector: '.carousel-track',
+                leftBtnSelector: '.carousel-arrow.left:not(.events-arrow)',
+                rightBtnSelector: '.carousel-arrow.right:not(.events-arrow)'
+            });
+
+            // Initialize events carousel
+            initializeCarousel({
+                trackSelector: '.events-carousel-track',
+                leftBtnSelector: '.carousel-arrow.left.events-arrow',
+                rightBtnSelector: '.carousel-arrow.right.events-arrow'
+            });
+        });
     </script>
 
 </body>

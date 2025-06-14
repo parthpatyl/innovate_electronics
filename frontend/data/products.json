@@ -881,440 +881,806 @@
       }
     },
     "waveguides": {
-      "IE-WGB-WR975-1.05-4-AL-SE": {
-        "name": "IE-WGB-WR975-1.05-4-AL-SE",
-        "category": "Waveguide Bend",
-        "image": "assets/RF-Microwave/Waveguide/Primary-Waveguide.png",
-        "tableSpecs": {
-          "specifications": "0.75-1.15 GHz",
-          "performance": "VSWR 1.08 (Max)",
-          "outputLevel": "Precision model VSWR 1.05 (Max)",
-          "additionalFeatures": "Operating Temperature: -40°C to +125°C"
+        "IE- WR 650-1.06-AL-SE": {
+    "name": "STRAIGHT WAVEGUIDE",
+    "model": "IE- WR 650-1.06-AL-SE",
+    "category": "Straight Waveguide",
+    "image": "assets/RF-Microwave/Waveguide/STRAIGHT WAVEGUIDE.png",
+    "tableSpecs": {
+      "specifications": "1.12-1.70 GHz",
+      "performance": "VSWR 1.06 (Max)",
+      "outputLevel": "Operating Temperature: -40°C to +125°C"
+    },
+    "overview": {
+      "description": [
+        "Straight Waveguide",
+        "Frequency Range: 1.12-1.70 GHz",
+        "Material: Aluminium",
+        "Connector Type: Straight Waveguide with Cover Flange"
+      ],
+      "features": [
+        "High electrical stability",
+        "Low Insertion Loss",
+        "Rugged Construction",
+        "Wide Frequency Range"
+      ],
+      "applications": [
+        "Satellite",
+        "Radar",
+        "Military & Space",
+        "Commercial communication systems",
+        "Test set-up"
+      ]
+    },
+    "specifications": {
+      "electrical": [
+        {
+          "parameter": "Frequency Range",
+          "specification": "1.12-1.70 GHz"
         },
-        "overview": {
-          "description": [
-            "90° H Plane Waveguide Bend",
-            "Frequency Range: 0.75-1.15 GHz",
-            "Material: Aluminium",
-            "Connector Type: WR975 with Cover Flange"
-          ],
-          "features": [
-            "Low Insertion Loss",
-            "Distortion of Electric Field",
-            "Corrosion Resistant Paint",
-            "Customizable Dimensions"
-          ],
-          "applications": [
-            "Satellite",
-            "Radar",
-            "Military & Space",
-            "Commercial communication systems",
-            "Test set-up"
-          ]
+        {
+          "parameter": "VSWR",
+          "specification": "1.03 (Typ), 1.06 (Max)"
         },
-        "specifications": {
-          "electrical": [
-            {
-              "parameter": "Frequency Range",
-              "specification": "0.75-1.15 GHz"
-            },
-            {
-              "parameter": "VSWR",
-              "specification": "1.08 (Max), Precision model 1.05 (Max)"
-            },
-            {
-              "parameter": "Operating Temperature",
-              "specification": "-40°C to +125°C"
-            }
-          ],
-          "mechanical": [
-            {
-              "item": "Waveguide Port",
-              "description": "WR Bend with Cover Flange"
-            },
-            {
-              "item": "Finish",
-              "description": "Corrosion Resistant Paint"
-            },
-            {
-              "item": "Waveguide Type",
-              "description": "WR-90°"
-            },
-            {
-              "item": "Dimension",
-              "description": "300 mm"
-            },
-            {
-              "item": "Body Material",
-              "description": "Aluminium (AL)"
-            }
-          ]
-        },
-        "library": {
-          "catalogue": [],
-          "drawings": [],
-          "testReports": [],
-          "executionFiles": []
+        {
+          "parameter": "Operating Temperature",
+          "specification": "-40°C to +125°C"
         }
-      },
-      "IE-WR975-1.08-AL-SE": {
-        "name": "IE-WR975-1.08-AL-SE",
-        "category": "Waveguide Bend",
-        "image": "assets/RF-Microwave/Waveguide/Primary-Waveguide.png",
-        "tableSpecs": {
-          "specifications": "0.75-1.15 GHz",
-          "performance": "VSWR 1.08 (Max)",
-          "outputLevel": "Precision model VSWR 1.05 (Max)",
-          "additionalFeatures": "Operating Temperature: -40°C to +125°C"
+      ],
+      "mechanical": [
+        {
+          "item": "Waveguide Port",
+          "description": "Straight Waveguide with Cover Flange"
         },
-        "overview": {
-          "description": [
-            "90° E Plane Waveguide Bend",
-            "Frequency Range: 0.75-1.15 GHz",
-            "Material: Aluminium",
-            "Connector Type: WR975 with Cover Flange"
-          ],
-          "features": [
-            "Low Insertion Loss",
-            "Distortion of Electric Field",
-            "Corrosion Resistant Paint",
-            "Customizable Dimensions"
-          ],
-          "applications": [
-            "Satellite",
-            "Radar",
-            "Military & Space",
-            "Commercial communication systems",
-            "Test set-up"
-          ]
+        {
+          "item": "Finish",
+          "description": "Corrosion Resistant Paint"
         },
-        "specifications": {
-          "electrical": [
-            {
-              "parameter": "Frequency Range",
-              "specification": "0.75-1.15 GHz"
-            },
-            {
-              "parameter": "VSWR",
-              "specification": "1.08 (Max), Precision model 1.05 (Max)"
-            },
-            {
-              "parameter": "Operating Temperature",
-              "specification": "-40°C to +125°C"
-            }
-          ],
-          "mechanical": [
-            {
-              "item": "Waveguide Port",
-              "description": "WR Bend with Cover Flange"
-            },
-            {
-              "item": "Finish",
-              "description": "Corrosion Resistant Paint"
-            },
-            {
-              "item": "Waveguide Type",
-              "description": "WR-90°"
-            },
-            {
-              "item": "Body Material",
-              "description": "Aluminium (AL)"
-            }
-          ]
+        {
+          "item": "Waveguide Type",
+          "description": "WR-Straight"
         },
-        "library": {
-          "catalogue": [],
-          "drawings": [],
-          "testReports": [],
-          "executionFiles": []
+        {
+          "item": "Dimension",
+          "description": "350 mm"
+        },
+        {
+          "item": "Body Material",
+          "description": "Aluminium (AL)"
         }
-      },
-      "IE-WR650-1.10-4-AL-SE (TWIST)": {
-        "name": "IE-WR650-1.10-4-AL-SE (TWIST)",
-        "category": "Waveguide Twist",
-        "image": "assets/RF-Microwave/Waveguide/Primary-Waveguide.png",
-        "tableSpecs": {
-          "specifications": "1.12-1.70 GHz",
-          "performance": "VSWR 1.10 (Max)",
-          "outputLevel": "Operating Temperature: -40°C to +125°C",
-          "additionalFeatures": "Customizable Twist Angle"
+      ]
+    },
+    "library": {
+      "catalogue": [],
+      "drawings": [],
+      "testReports": [],
+      "executionFiles": []
+    }
+  },
+  "IE-WGT-WR42-T101-1-SE": {
+    "name": "WAVEGUIDE TERMINATION",
+    "model": "IE-WGT-WR42-T101-1-SE",
+    "category": "Waveguide Termination",
+    "image": "assets/RF-Microwave/Waveguide/WAVEGUIDE_TERMINATION.png",
+    "tableSpecs": {
+      "specifications": "18.00-26.50 GHz",
+      "performance": "VSWR 1.10 (max)",
+      "outputLevel": "Operating Temperature: -40°C to +125°C",
+      "additionalFeatures": "Average Power: 100 Watts"
+    },
+    "overview": {
+      "description": [
+        "Waveguide Termination",
+        "Frequency Range: 18.00-26.50 GHz",
+        "Material: Aluminium",
+        "Connector Type: WR with Cover Flange"
+      ],
+      "features": [
+        "Low Insertion Loss",
+        "Low Return Loss",
+        "100% Tested",
+        "Fast Delivery Time"
+      ],
+      "applications": [
+        "5G & 6G System",
+        "System Setups",
+        "Accurate System Measurements",
+        "General Labs Test"
+      ]
+    },
+    "specifications": {
+      "electrical": [
+        {
+          "parameter": "VSWR",
+          "specification": "1.10 (max)"
         },
-        "overview": {
-          "description": [
-            "Waveguide Twist",
-            "Frequency Range: 1.12-1.70 GHz",
-            "Material: Aluminium",
-            "Connector Type: WR with Cover Flange"
-          ],
-          "features": [
-            "Low Insertion Loss",
-            "Distortion of Electric Field",
-            "Corrosion Resistant Paint",
-            "Customizable Dimensions and Twist Angle"
-          ],
-          "applications": [
-            "Satellite",
-            "Radar",
-            "Military & Space",
-            "Commercial communication systems",
-            "Test set-up"
-          ]
-        },
-        "specifications": {
-          "electrical": [
-            {
-              "parameter": "Frequency Range",
-              "specification": "1.12-1.70 GHz"
-            },
-            {
-              "parameter": "VSWR",
-              "specification": "1.10 (Max)"
-            },
-            {
-              "parameter": "Operating Temperature",
-              "specification": "-40°C to +125°C"
-            }
-          ],
-          "mechanical": [
-            {
-              "item": "Waveguide Port",
-              "description": "WR with Cover Flange"
-            },
-            {
-              "item": "Finish",
-              "description": "Corrosion Resistant Paint"
-            },
-            {
-              "item": "Waveguide Type",
-              "description": "WR Twist-650"
-            },
-            {
-              "item": "Body Material",
-              "description": "Aluminium (AL)"
-            }
-          ]
-        },
-        "library": {
-          "catalogue": [],
-          "drawings": [],
-          "testReports": [],
-          "executionFiles": []
+        {
+          "parameter": "Operating Temperature",
+          "specification": "-40°C to +125°C"
         }
-      },
-      "IE-WR650-1.10-AL-SE": {
-        "name": "IE-WR650-1.10-AL-SE",
-        "category": "Waveguide Load",
-        "image": "assets/RF-Microwave/Waveguide/Primary-Waveguide.png",
-        "tableSpecs": {
-          "specifications": "1.12-1.70 GHz",
-          "performance": "VSWR 1.10 (Max)",
-          "outputLevel": "Operating Temperature: -40°C to +125°C",
-          "additionalFeatures": "Average Power: 150 W"
+      ],
+      "mechanical": [
+        {
+          "item": "Flange",
+          "description": "CPRG-1, CPRF-2, Cover-3, Choke-4"
         },
-        "overview": {
-          "description": [
-            "Waveguide Load",
-            "Frequency Range: 1.12-1.70 GHz",
-            "Material: Aluminium",
-            "Connector Type: WR with Cover Flange"
-          ],
-          "features": [
-            "Low Insertion Loss",
-            "Distortion of Electric Field",
-            "Corrosion Resistant Paint",
-            "Customizable Dimensions"
-          ],
-          "applications": [
-            "Satellite",
-            "Radar",
-            "Military & Space",
-            "Commercial communication systems",
-            "Test set-up"
-          ]
+        {
+          "item": "Finish",
+          "description": "Corrosion Resistant Paint"
         },
-        "specifications": {
-          "electrical": [
-            {
-              "parameter": "Frequency Range",
-              "specification": "1.12-1.70 GHz"
-            },
-            {
-              "parameter": "VSWR",
-              "specification": "1.10 (Max)"
-            },
-            {
-              "parameter": "Operating Temperature",
-              "specification": "-40°C to +125°C"
-            }
-          ],
-          "mechanical": [
-            {
-              "item": "Waveguide Port",
-              "description": "WR with Cover Flange"
-            },
-            {
-              "item": "Finish",
-              "description": "Corrosion Resistant Paint"
-            },
-            {
-              "item": "Waveguide Type",
-              "description": "WR-650"
-            },
-            {
-              "item": "Body Material",
-              "description": "Aluminium (AL)"
-            }
-          ]
+        {
+          "item": "Body Material",
+          "description": "Aluminium (AL)"
         },
-        "library": {
-          "catalogue": [],
-          "drawings": [],
-          "testReports": [],
-          "executionFiles": []
+        {
+          "item": "Dimension",
+          "description": "75 mm"
         }
-      },
-      "IE-WR229-1.25-6-AL-SE": {
-        "name": "IE-WR229-1.25-6-AL-SE",
-        "category": "Waveguide Adapter",
-        "image": "assets/RF-Microwave/Waveguide/Primary-Waveguide.png",
-        "tableSpecs": {
-          "specifications": "3.3-4.9 GHz",
-          "performance": "VSWR 1.25 (Max)",
-          "outputLevel": "Operating Temperature: -40°C to +125°C",
-          "additionalFeatures": "100% Tested"
+      ]
+    },
+    "library": {
+      "catalogue": [],
+      "drawings": [],
+      "testReports": [],
+      "executionFiles": []
+    }
+  },
+  "IE-WR75-1.25-AL-SE": {
+    "name": "WAVEGUIDE ADAPTER",
+    "model": "IE-WR75-1.25-AL-SE",
+    "category": "Waveguide Adapter",
+    "image": "assets/RF-Microwave/Waveguide/Primary-Waveguide.png",
+    "tableSpecs": {
+      "specifications": "10-15 GHz",
+      "performance": "VSWR 1.25 (max)",
+      "additionalFeatures": "100% Tested"
+    },
+    "overview": {
+      "description": [
+        "Waveguide Adapter",
+        "Frequency Range: 10-15 GHz",
+        "Material: Aluminium",
+        "Connector Type: WR75 with Cover Flange and SMA(F)"
+      ],
+      "features": [
+        "Low Insertion Loss",
+        "Low Return Loss",
+        "100% Tested",
+        "Fast Delivery Time"
+      ],
+      "applications": [
+        "5G & 6G System",
+        "System Setups",
+        "Accurate System Measurements",
+        "General Labs Test"
+      ]
+    },
+    "specifications": {
+      "electrical": [
+        {
+          "parameter": "Frequency Range",
+          "specification": "10-15 GHz"
         },
-        "overview": {
-          "description": [
-            "Waveguide Adapter",
-            "Frequency Range: 3.3-4.9 GHz",
-            "Material: Aluminium",
-            "Connector Type: WR229 with Cover Flange and SMA(F)"
-          ],
-          "features": [
-            "Low Insertion Loss",
-            "Low Return Loss",
-            "Anticorrosion Paint",
-            "Fast Delivery Time"
-          ],
-          "applications": [
-            "5G & 6G System",
-            "System Setups",
-            "Accurate System Measurements",
-            "General Labs Test"
-          ]
-        },
-        "specifications": {
-          "electrical": [
-            {
-              "parameter": "Frequency Range",
-              "specification": "3.3-4.9 GHz"
-            },
-            {
-              "parameter": "VSWR",
-              "specification": "1.25 (Max)"
-            }
-          ],
-          "mechanical": [
-            {
-              "item": "Waveguide Port",
-              "description": "WR229 with Cover Flange"
-            },
-            {
-              "item": "Coaxial Port",
-              "description": "SMA(F)"
-            },
-            {
-              "item": "Finish",
-              "description": "Anticorrosion Paint"
-            },
-            {
-              "item": "Waveguide Type",
-              "description": "WR229"
-            },
-            {
-              "item": "Body Material",
-              "description": "Aluminium"
-            }
-          ]
-        },
-        "library": {
-          "catalogue": [],
-          "drawings": [],
-          "testReports": [],
-          "executionFiles": []
+        {
+          "parameter": "VSWR",
+          "specification": "1.25 (max)"
         }
-      },
-      "IE-WR137-1.25-6-AL-SE": {
-        "name": "IE-WR137-1.25-6-AL-SE",
-        "category": "Waveguide Adapter",
-        "image": "assets/RF-Microwave/Waveguide/Primary-Waveguide.png",
-        "tableSpecs": {
-          "specifications": "5.8-8.2 GHz",
-          "performance": "VSWR 1.25 (Max)",
-          "outputLevel": "Operating Temperature: -40°C to +125°C",
-          "additionalFeatures": "100% Tested"
+      ],
+      "mechanical": [
+        {
+          "item": "Waveguide Port",
+          "description": "WR75 with Cover Flange"
         },
-        "overview": {
-          "description": [
-            "Waveguide Adapter",
-            "Frequency Range: 5.8-8.2 GHz",
-            "Material: Aluminium",
-            "Connector Type: WR137 with Cover Flange and SMA(F)"
-          ],
-          "features": [
-            "Low Insertion Loss",
-            "Low Return Loss",
-            "Anticorrosion Paint",
-            "Fast Delivery Time"
-          ],
-          "applications": [
-            "5G & 6G System",
-            "System Setups",
-            "Accurate System Measurements",
-            "General Labs Test"
-          ]
+        {
+          "item": "Coaxial Port",
+          "description": "SMA(F)"
         },
-        "specifications": {
-          "electrical": [
-            {
-              "parameter": "Frequency Range",
-              "specification": "5.8-8.2 GHz"
-            },
-            {
-              "parameter": "VSWR",
-              "specification": "1.25 (Max)"
-            }
-          ],
-          "mechanical": [
-            {
-              "item": "Waveguide Port",
-              "description": "WR137 with Cover Flange"
-            },
-            {
-              "item": "Coaxial Port",
-              "description": "SMA(F)"
-            },
-            {
-              "item": "Finish",
-              "description": "Anticorrosion Paint"
-            },
-            {
-              "item": "Waveguide Type",
-              "description": "WR137"
-            },
-            {
-              "item": "Body Material",
-              "description": "Aluminium"
-            }
-          ]
+        {
+          "item": "Finish",
+          "description": "Anti-corrosion Paint"
         },
-        "library": {
-          "catalogue": [],
-          "drawings": [],
-          "testReports": [],
-          "executionFiles": []
+        {
+          "item": "Waveguide Type",
+          "description": "WR75"
+        },
+        {
+          "item": "Body Material",
+          "description": "Aluminium (AL)"
         }
-      }
+      ]
+    },
+    "library": {
+      "catalogue": [],
+      "drawings": [],
+      "testReports": [],
+      "executionFiles": []
+    }
+  },
+  "IE-WR975-1.05-AL-SE": {
+    "name": "WAVEGUIDE BEND 90° H Plane",
+    "model": "IE-WR975-1.05-AL-SE",
+    "category": "Waveguide Bend 90° H Plane",
+    "image": "assets/RF-Microwave/Waveguide/WAVEGUIDE_BEND_90°_H_Plane.png",
+    "tableSpecs": {
+      "specifications": "0.75-1.15 GHz",
+      "performance": "VSWR 1.05 (Max)",
+      "outputLevel": "Operating Temperature: -40°C to +125°C"
+    },
+    "overview": {
+      "description": [
+        "90° H Plane Waveguide Bend",
+        "Frequency Range: 0.75-1.15 GHz",
+        "Material: Aluminium",
+        "Connector Type: WR Bend with Cover Flange"
+      ],
+      "features": [
+        "Distortion of Electric Field",
+        "Low Insertion Loss",
+        "Material and Construction",
+        "Frequency Range"
+      ],
+      "applications": [
+        "Satellite",
+        "Radar",
+        "Military & Space",
+        "Commercial communication systems",
+        "Test set-up"
+      ]
+    },
+    "specifications": {
+      "electrical": [
+        {
+          "parameter": "Frequency Range",
+          "specification": "0.75-1.15 GHz"
+        },
+        {
+          "parameter": "VSWR",
+          "specification": "1.08 (Max), Precision model 1.05 (Max)"
+        },
+        {
+          "parameter": "Operating Temperature",
+          "specification": "-40°C to +125°C"
+        }
+      ],
+      "mechanical": [
+        {
+          "item": "Waveguide Port",
+          "description": "WR Bend with Cover Flange"
+        },
+        {
+          "item": "Finish",
+          "description": "Corrosion Resistant Paint"
+        },
+        {
+          "item": "Waveguide Type",
+          "description": "WR-90°"
+        },
+        {
+          "item": "Dimension",
+          "description": "300 mm"
+        },
+        {
+          "item": "Body Material",
+          "description": "Aluminium (AL)"
+        }
+      ]
+    },
+    "library": {
+      "catalogue": [],
+      "drawings": [],
+      "testReports": [],
+      "executionFiles": []
+    }
+  },
+  "IE-SE-T-650": {
+    "name": "WAVEGUIDE Twist",
+    "model": "IE-SE-T-650",
+    "category": "Waveguide Twist",
+    "image": "assets/RF-Microwave/Waveguide/WAVEGUIDE_TWIST.png",
+    "tableSpecs": {
+      "specifications": "1.12-1.70 GHz",
+      "performance": "VSWR 1.10 (Max)",
+      "outputLevel": "Operating Temperature: -40°C to +125°C"
+    },
+    "overview": {
+      "description": [
+        "Waveguide Twist",
+        "Frequency Range: 1.12-1.70 GHz",
+        "Material: Aluminium",
+        "Connector Type: WR with Cover Flange"
+      ],
+      "features": [
+        "Distortion of Electric Field",
+        "Low Insertion Loss",
+        "Jacket Material",
+        "Core Construction",
+        "Frequency Range"
+      ],
+      "applications": [
+        "Satellite",
+        "Radar",
+        "Military & Space",
+        "Commercial communication systems",
+        "Test set-up"
+      ]
+    },
+    "specifications": {
+      "electrical": [
+        {
+          "parameter": "Frequency Range",
+          "specification": "1.12-1.70 GHz"
+        },
+        {
+          "parameter": "VSWR",
+          "specification": "1.10 (Max)"
+        },
+        {
+          "parameter": "Operating Temperature",
+          "specification": "-40°C to +125°C"
+        }
+      ],
+      "mechanical": [
+        {
+          "item": "Waveguide Port",
+          "description": "WR with Cover Flange"
+        },
+        {
+          "item": "Finish",
+          "description": "Corrosion Resistant Paint"
+        },
+        {
+          "item": "Waveguide Type",
+          "description": "WR Twist-650"
+        },
+        {
+          "item": "Dimension",
+          "description": "650 mm"
+        },
+        {
+          "item": "Body Material",
+          "description": "Aluminium (AL)"
+        }
+      ]
+    },
+    "library": {
+      "catalogue": [],
+      "drawings": [],
+      "testReports": [],
+      "executionFiles": []
+    }
+  },
+  "Waveguide Bend 90° H Plane": {
+    "name": "Waveguide Bend 90° H Plane",
+    "category": "IE-WGB-WR975 series",
+    "image": "assets/RF-Microwave/Waveguide/WAVEGUIDE_BEND_90°_H_Plane.png",
+    "tableSpecs": {
+      "specifications": "0.75-1.15 GHz",
+      "performance": "VSWR 1.08 (Max)",
+      "outputLevel": "Precision model VSWR 1.05 (Max)",
+      "additionalFeatures": "Operating Temperature: -40°C to +125°C"
+    },
+    "overview": {
+      "description": [
+        "90° H Plane Waveguide Bend",
+        "Frequency Range: 0.75-1.15 GHz",
+        "Material: Aluminium",
+        "Connector Type: WR975 with Cover Flange"
+      ],
+      "features": [
+        "Low Insertion Loss",
+        "Distortion of Electric Field",
+        "Material and Construction",
+        "Frequency Range"
+      ],
+      "applications": [
+        "Satellite",
+        "Radar",
+        "Military & Space",
+        "Commercial communication systems",
+        "Test set-up"
+      ]
+    },
+    "specifications": {
+      "electrical": [
+        {
+          "parameter": "Frequency Range",
+          "specification": "0.75-1.15 GHz"
+        },
+        {
+          "parameter": "VSWR",
+          "specification": "1.08 (Max), Precision model 1.05 (Max)"
+        },
+        {
+          "parameter": "Operating Temperature",
+          "specification": "-40°C to +125°C"
+        }
+      ],
+      "mechanical": [
+        {
+          "item": "Waveguide Port",
+          "description": "WR Bend with Cover Flange"
+        },
+        {
+          "item": "Finish",
+          "description": "Corrosion Resistant Paint"
+        },
+        {
+          "item": "Waveguide Type",
+          "description": "WR-90°"
+        },
+        {
+          "item": "Dimension",
+          "description": "300 mm"
+        },
+        {
+          "item": "Body Material",
+          "description": "Aluminium (AL)"
+        }
+      ]
+    },
+    "library": {
+      "catalogue": [],
+      "drawings": [],
+      "testReports": [],
+      "executionFiles": []
+    }
+  },
+  "Waveguide Bend 90° E Plane": {
+    "name": "Waveguide Bend 90° E Plane",
+    "category": "IE-WR975 Series",
+    "image": "assets/RF-Microwave/Waveguide/Primary-Waveguide.png",
+    "tableSpecs": {
+      "specifications": "0.75-1.15 GHz",
+      "performance": "VSWR 1.08 (Max)",
+      "outputLevel": "Precision model VSWR 1.05 (Max)",
+      "additionalFeatures": "Operating Temperature: -40°C to +125°C"
+    },
+    "overview": {
+      "description": [
+        "90° E Plane Waveguide Bend",
+        "Frequency Range: 0.75-1.15 GHz",
+        "Material: Aluminium",
+        "Connector Type: WR975 with Cover Flange"
+      ],
+      "features": [
+        "Low Insertion Loss",
+        "Distortion of Electric Field",
+        "Material and Construction",
+        "Frequency Range"
+      ],
+      "applications": [
+        "Satellite",
+        "Radar",
+        "Military & Space",
+        "Commercial communication systems",
+        "Test set-up"
+      ]
+    },
+    "specifications": {
+      "electrical": [
+        {
+          "parameter": "Frequency Range",
+          "specification": "0.75-1.15 GHz"
+        },
+        {
+          "parameter": "VSWR",
+          "specification": "1.08 (Max), Precision model 1.05 (Max)"
+        },
+        {
+          "parameter": "Operating Temperature",
+          "specification": "-40°C to +125°C"
+        }
+      ],
+      "mechanical": [
+        {
+          "item": "Waveguide Port",
+          "description": "WR Bend with Cover Flange"
+        },
+        {
+          "item": "Finish",
+          "description": "Corrosion Resistant Paint"
+        },
+        {
+          "item": "Waveguide Type",
+          "description": "WR-90°"
+        },
+        {
+          "item": "Body Material",
+          "description": "Aluminium, Brass, Copper"
+        }
+      ]
+    },
+    "library": {
+      "catalogue": [],
+      "drawings": [],
+      "testReports": [],
+      "executionFiles": []
+    }
+  },
+  "IE-WR650-1.10-4-AL-SE (TWIST)": {
+    "name": "Waveguide Twist",
+    "category": "IE-WR650-1.10-4-AL-SE (TWIST)",
+    "image": "assets/RF-Microwave/Waveguide/WAVEGUIDE_TWIST.png",
+    "tableSpecs": {
+      "specifications": "1.12-1.70 GHz",
+      "performance": "VSWR 1.10 (Max)",
+      "outputLevel": "Operating Temperature: -40°C to +125°C"
+    },
+    "overview": {
+      "description": [
+        "Waveguide Twist",
+        "Frequency Range: 1.12-1.70 GHz",
+        "Material: Aluminium",
+        "Connector Type: WR with Cover Flange"
+      ],
+      "features": [
+        "Low Insertion Loss",
+        "Distortion of Electric Field",
+        "Jacket Material",
+        "Core Construction",
+        "Frequency Range"
+      ],
+      "applications": [
+        "Satellite",
+        "Radar",
+        "Military & Space",
+        "Commercial communication systems",
+        "Test set-up"
+      ]
+    },
+    "specifications": {
+      "electrical": [
+        {
+          "parameter": "Frequency Range",
+          "specification": "1.12-1.70 GHz"
+        },
+        {
+          "parameter": "VSWR",
+          "specification": "1.10 (Max)"
+        },
+        {
+          "parameter": "Operating Temperature",
+          "specification": "-40°C to +125°C"
+        }
+      ],
+      "mechanical": [
+        {
+          "item": "Waveguide Port",
+          "description": "WR with Cover Flange"
+        },
+        {
+          "item": "Finish",
+          "description": "Corrosion Resistant Paint"
+        },
+        {
+          "item": "Waveguide Type",
+          "description": "WR Twist-650"
+        },
+        {
+          "item": "Body Material",
+          "description": "Aluminium (AL)"
+        }
+      ]
+    },
+    "library": {
+      "catalogue": [],
+      "drawings": [],
+      "testReports": [],
+      "executionFiles": []
+    }
+  },
+  "IE-WR650-1.10-AL-SE": {
+    "name": "Waveguide Load",
+    "category": "IE-WR650-1.10-AL-SE",
+    "image": "assets/RF-Microwave/Waveguide/WAVEGUIDE_load.png",
+    "tableSpecs": {
+      "specifications": "1.12-1.70 GHz",
+      "performance": "VSWR 1.10 (Max)",
+      "outputLevel": "Operating Temperature: -40°C to +125°C",
+      "additionalFeatures": "Average Power: 150 W"
+    },
+    "overview": {
+      "description": [
+        "Waveguide Load",
+        "Frequency Range: 1.12-1.70 GHz",
+        "Material: Aluminium",
+        "Connector Type: WR with Cover Flange"
+      ],
+      "features": [
+        "Low Insertion Loss",
+        "Distortion of Electric Field",
+        "Corrosion Resistant Paint",
+        "Customizable Dimensions"
+      ],
+      "applications": [
+        "Satellite",
+        "Radar",
+        "Military & Space",
+        "Commercial communication systems",
+        "Test set-up"
+      ]
+    },
+    "specifications": {
+      "electrical": [
+        {
+          "parameter": "Frequency Range",
+          "specification": "1.12-1.70 GHz"
+        },
+        {
+          "parameter": "VSWR",
+          "specification": "1.10 (Max)"
+        },
+        {
+          "parameter": "Operating Temperature",
+          "specification": "-40°C to +125°C"
+        }
+      ],
+      "mechanical": [
+        {
+          "item": "Waveguide Port",
+          "description": "WR with Cover Flange"
+        },
+        {
+          "item": "Finish",
+          "description": "Corrosion Resistant Paint"
+        },
+        {
+          "item": "Waveguide Type",
+          "description": "WR-650"
+        },
+        {
+          "item": "Body Material",
+          "description": "Aluminium (AL)"
+        }
+      ]
+    },
+    "library": {
+      "catalogue": [],
+      "drawings": [],
+      "testReports": [],
+      "executionFiles": []
+    }
+  },
+  "Waveguide Adapter": {
+    "name": "Waveguide Adapter",
+    "category": "IE-WR229 Series",
+    "image": "assets/RF-Microwave/Waveguide/Primary-Waveguide.png",
+    "tableSpecs": {
+      "specifications": "3.3-4.9 GHz",
+      "performance": "VSWR 1.25 (Max)",
+      "additionalFeatures": "100% Tested"
+    },
+    "overview": {
+      "description": [
+        "Waveguide Adapter",
+        "Frequency Range: 3.3-4.9 GHz",
+        "Material: Aluminium",
+        "Connector Type: WR229 with Cover Flange and SMA(F) and Anti Corrosion Paint"
+      ],
+      "features": [
+        "Low Insertion Loss",
+        "Low Return Loss",
+        "100% Tested",
+        "Fast Delivery Time"
+      ],
+      "applications": [
+        "5G & 6G System",
+        "System Setups",
+        "Accurate System Measurements",
+        "General Labs Test"
+      ]
+    },
+    "specifications": {
+      "electrical": [
+        {
+          "parameter": "Frequency Range",
+          "specification": "3.3-4.9 GHz"
+        },
+        {
+          "parameter": "VSWR",
+          "specification": "1.25 (Max)"
+        }
+      ],
+      "mechanical": [
+        {
+          "item": "Waveguide Port",
+          "description": "WR229 with Cover Flange"
+        },
+        {
+          "item": "Coaxial Port",
+          "description": "SMA(F)"
+        },
+        {
+          "item": "Finish",
+          "description": "Anticorrosion Paint"
+        },
+        {
+          "item": "Waveguide Type",
+          "description": "WR229"
+        },
+        {
+          "item": "Body Material",
+          "description": "Aluminium"
+        }
+      ]
+    },
+    "library": {
+      "catalogue": [],
+      "drawings": [],
+      "testReports": [],
+      "executionFiles": []
+    }
+  },
+  "IE-WR137-1.25-6-AL-SE": {
+    "name": "Waveguide Adapter",
+    "category": "IE-WR137-1.25-6-AL-SE",
+    "image": "assets/RF-Microwave/Waveguide/Primary-Waveguide.png",
+    "tableSpecs": {
+      "specifications": "5.8-8.2 GHz",
+      "performance": "VSWR 1.25 (Max)",
+      "additionalFeatures": "100% Tested"
+    },
+    "overview": {
+      "description": [
+        "Waveguide Adapter",
+        "Frequency Range: 5.8-8.2 GHz",
+        "Material: Aluminium",
+        "Connector Type: WR137 with Cover Flange and SMA(F) and Anti Corrosion Paint"
+      ],
+      "features": [
+        "Low Insertion Loss",
+        "Low Return Loss",
+        "100% Tested",
+        "Fast Delivery Time"
+      ],
+      "applications": [
+        "5G & 6G System",
+        "System Setups",
+        "Accurate System Measurements",
+        "General Labs Test"
+      ]
+    },
+    "specifications": {
+      "electrical": [
+        {
+          "parameter": "Frequency Range",
+          "specification": "5.8-8.2 GHz"
+        },
+        {
+          "parameter": "VSWR",
+          "specification": "1.25 (Max)"
+        }
+      ],
+      "mechanical": [
+        {
+          "item": "Waveguide Port",
+          "description": "WR137 with Cover Flange"
+        },
+        {
+          "item": "Coaxial Port",
+          "description": "SMA(F)"
+        },
+        {
+          "item": "Finish",
+          "description": "Anticorrosion Paint"
+        },
+        {
+          "item": "Waveguide Type",
+          "description": "WR137"
+        },
+        {
+          "item": "Body Material",
+          "description": "Aluminium"
+        }
+      ]
+    },
+    "library": {
+      "catalogue": [],
+      "drawings": [],
+      "testReports": [],
+      "executionFiles": []
+    }
+  }
     }
   }
 }

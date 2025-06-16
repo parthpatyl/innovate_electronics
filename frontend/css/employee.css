@@ -1,0 +1,284 @@
+/* Employee Portal Styles */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background-image: url('../assets/PCB_SWITCH_PATTERN.png'); 
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.employee-portal {
+    max-width: 1600px;
+    margin: 100px auto;
+    padding: 2rem;
+    min-height: 70vh;
+}
+
+/* Login Section */
+.login-container {
+    background: #fff;
+    max-width: 800px;
+    height: 500px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    text-align: center;
+}
+
+.login-container h2 {
+    color: #d12028;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 1.8rem;
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 1.8rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus {
+    border-color: #d12028;
+    outline: none;
+    box-shadow: 0 2px 12px rgba(209,32,40,0.15);
+}
+
+.login-btn {
+    background: linear-gradient(90deg, #d12028 0%, #e84a51 100%);
+    color: #fff;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 16px rgba(209,32,40,0.15);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.login-btn:hover {
+    background: linear-gradient(90deg, #b51820 0%, #d12028 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(209,32,40,0.25);
+}
+
+/* Portal Content */
+.portal-content {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    padding: 2.5rem;
+    margin: 2rem 0;
+}
+
+.portal-content h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #d12028;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    letter-spacing: 1px;
+}
+
+.resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.8rem;
+    margin-top: 2rem;
+}
+
+.resource-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.8rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.resource-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 32px rgba(209,32,40,0.15);
+}
+
+.resource-card h2 {
+    color: #d12028;
+    margin-bottom: 1.2rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.resource-card h2 i {
+    margin-right: 12px;
+    font-size: 1.5rem;
+}
+
+.resource-card ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+
+.resource-card li {
+    margin-bottom: 0.8rem;
+    padding-left: 1.8rem;
+    position: relative;
+    line-height: 1.6;
+}
+
+.resource-card li:before {
+    content: "•";
+    color: #d12028;
+    position: absolute;
+    left: 0;
+    font-size: 1.4rem;
+    top: -2px;
+}
+
+.sub-list {
+    margin-top: 0.8rem;
+    padding-left: 1.2rem;
+    font-size: 0.95rem;
+}
+
+.sub-list li {
+    margin-bottom: 0.5rem;
+}
+
+.sub-list li:before {
+    content: "◦";
+    color: #666;
+}
+
+.download-link {
+    color: #d12028;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s;
+    display: inline-block;
+    padding: 0.2rem 0;
+}
+
+.download-link:hover {
+    color: #b51820;
+    text-decoration: underline;
+}
+
+/* Button Styles from contactus.css */
+.directions-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #d12028;
+    color: white !important;
+    padding: 0.8rem 1.8rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-weight: 600;
+    text-decoration: none !important;
+    border: none;
+    cursor: pointer;
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+
+.directions-btn:hover {
+    background: #b51820;
+    text-decoration: none !important;
+}
+
+/* Value Card Styles from whatarewe.css */
+.value-card {
+    background: #f8f9fa;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(209,32,40,0.07);
+    padding: 1.8rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.value-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 6px 24px rgba(209,32,40,0.13);
+}
+
+.value-card h3 {
+    color: #d12028;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.value-card p {
+    color: #444;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Icons */
+.icon-hr:before { content: "👥"; }
+.icon-training:before { content: "🎓"; }
+.icon-download:before { content: "📥"; }
+.icon-travel:before { content: "✈️"; }
+.icon-sales:before { content: "💰"; }
+.icon-feedback:before { content: "💬"; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .employee-portal {
+        padding: 1.5rem;
+    }
+    
+    .login-container, .portal-content {
+        padding: 1.8rem;
+    }
+    
+    .resources-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .portal-content h1 {
+        font-size: 1.8rem;
+    }
+    
+    .login-container h2 {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container, .portal-content {
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    .resource-card {
+        padding: 1.5rem;
+    }
+    
+    .portal-content h1 {
+        font-size: 1.6rem;
+    }
+}

@@ -1,63 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Employee Zone</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/menupages.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/chatbot.css">
-</head>
-<body>
-    <div id="header-section"></div>
-    <div id="overlay"></div>
-    <script src="js/header.js"></script>
-    <script src="js/chatbot.js"></script>
-    <script>
-      // WhatsApp Button (left corner, all pages)
-      (function() {
-        if (!document.getElementById('whatsapp-btn')) {
-          var wa = document.createElement('div');
-          wa.id = 'whatsapp-btn';
-          wa.innerHTML = '<img src="assets/whatsapp_icon.png" alt="WhatsApp">';
-          wa.title = 'Chat on WhatsApp';
-          wa.onclick = function() {
-            window.open('https://wa.me/919999999999', '_blank');
-          };
-          document.body.appendChild(wa);
-        }
-      })();
-    </script>
-    <script>
-        // Load the header component dynamically with correct path
-        (function() {
-            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-            fetch(basePath + 'header.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-section').innerHTML = data;
-                    if (typeof setupHeaderMenu === 'function') setupHeaderMenu();
-                });
-        })();
-    </script>
-  <main>
-    <section>
-      <p>This page is for employees. It might include login, notices, and internal resources.</p>
-    </section>
-  </main>
-      <div id="footer-section"></div>
 
-    <script>
-        // Load the footer component dynamically with correct path
-        (function() {
-            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-            fetch(basePath + 'footer.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('footer-section').innerHTML = data;
-                });
-        })();
-    </script>
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Zone</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+  <link rel="stylesheet" href="css/employee.css">
+</head>
+
+<body>
+  <div id="header-section"></div>
+  <div id="overlay"></div>
+  <script src="js/header.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script>
+    // WhatsApp Button (left corner, all pages)
+    (function () {
+      if (!document.getElementById('whatsapp-btn')) {
+        var wa = document.createElement('div');
+        wa.id = 'whatsapp-btn';
+        wa.innerHTML = '<img src="assets/whatsapp_icon.png" alt="WhatsApp">';
+        wa.title = 'Chat on WhatsApp';
+        wa.onclick = function () {
+          window.open('https://wa.me/919999999999', '_blank');
+        };
+        document.body.appendChild(wa);
+      }
+    })();
+  </script>
+  <script>
+    // Load the header component dynamically with correct path
+    (function () {
+      const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+      fetch(basePath + 'header.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('header-section').innerHTML = data;
+          if (typeof setupHeaderMenu === 'function') setupHeaderMenu();
+        });
+    })();
+  </script>
+
+  <main class="employee-portal">
+    <div class="login-container" id="loginContainer">
+      <h2>Employee Login</h2>
+      <form id="loginForm">
+        <div class="input-group">
+          <input type="text" id="username" placeholder="Enter Username" required>
+        </div>
+        <div class="input-group">
+          <input type="password" id="password" placeholder="Enter Password" required>
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+    </div>
+
+    <div class="portal-content" id="portalContent" style="display:none;">
+      <h1>Employee Resources Portal</h1>
+
+      <div class="resources-grid">
+        <!-- HR & Admin Resources -->
+        <div class="resource-card">
+          <h2><i class="icon-hr"></i> HR & Admin Resources</h2>
+          <ul>
+            <li><a href="#" class="download-link">Downloadable HR policies</a>
+              <ul class="sub-list">
+                <li>Annexure I Joining</li>
+                <li>Annexure II Induction</li>
+                <li>Annexure III Confidential and Non Competition</li>
+                <li>Annexure IV HR</li>
+                <li>Annexure IX Incentive & Bonus</li>
+                <li>Annexure V Information Technology</li>
+                <li>Annexure VI Holiday Entitlement & Leave Policy</li>
+                <li>Annexure VII Travel & Claim</li>
+                <li>Annexure VIII Relieving</li>
+                <li>Code of Conduct</li>
+                <li>Mandatory Training Agreement on Letterhead</li>
+                <li>Standard Operating Procedures SOP R1</li>
+              </ul>
+            </li>
+            <li><a href="#" class="download-link">Leave request form</a></li>
+            <li><a href="#" class="download-link">Form 16 (downloadable yearly)</a></li>
+            <li><a href="#" class="download-link">Onboarding documents for new employees</a></li>
+          </ul>
+        </div>
+
+        <!-- Training & Development -->
+        <div class="resource-card">
+          <h2><i class="icon-training"></i> Training & Development</h2>
+          <ul>
+            <li><a href="#" class="download-link">Internal training videos or links</a></li>
+            <li><a href="#" class="download-link">Product catalog & technical documentation</a></li>
+            <li><a href="#" class="download-link">Recording of webinars / internal meetings</a></li>
+            <li>Presentation of Products
+              <ul class="sub-list">
+                <li>YIC EM Scanner</li>
+                <li>YIC RF Scanner</li>
+                <li>YIC NFP Kit</li>
+                <li>Aercion EMI EMC Chamber</li>
+                <li>Aracion Anechoic Chamber</li>
+                <li>Aracion Shielded Box</li>
+                <li>DESPL Vibration Chamber</li>
+                <li>DESPL Product Presentation</li>
+                <li>CME Environmental chamber</li>
+                <li>CME Rain Chamber</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Downloads Section -->
+        <div class="resource-card">
+          <h2><i class="icon-download"></i> Downloads Section</h2>
+          <ul>
+            <li><a href="#" class="download-link">Company letterhead templates</a></li>
+            <li><a href="#" class="download-link">Email drafts templates</a></li>
+            <li><a href="#" class="download-link">Company Profile</a></li>
+            <li><a href="#" class="download-link">SOP</a></li>
+            <li><a href="#" class="download-link">Monthly sales review formats</a></li>
+          </ul>
+        </div>
+
+        <!-- Travel & Field Visit Tools -->
+        <div class="resource-card">
+          <h2><i class="icon-travel"></i> Travel & Field Visit Tools</h2>
+          <ul>
+            <li><a href="#" class="download-link">Weekly planner sheet</a></li>
+            <li><a href="#" class="download-link">Travel reimbursement claim</a>
+              <ul class="sub-list">
+                <li>Outstation plan</li>
+                <li>Local travel Plan</li>
+              </ul>
+            </li>
+            <li><a href="#" class="download-link">Travel Claim policy document</a></li>
+          </ul>
+        </div>
+
+        <!-- Sales & Marketing Tools -->
+        <div class="resource-card">
+          <h2><i class="icon-sales"></i> Sales & Marketing Tools</h2>
+          <ul>
+            <li><a href="#" class="download-link">Customer List (view/download)</a></li>
+            <li>Logos and images
+              <ul class="sub-list">
+                <li>IE Logo for circular fitment</li>
+                <li>IE Logo with white background</li>
+                <li>Background_IE-SVM</li>
+                <li>Logo High Resolution</li>
+                <li>Logo Very High Resolution</li>
+                <li>Logo Transparent</li>
+                <li>Innovate Building R2</li>
+                <li>IE NEW LOGO - .CDR</li>
+              </ul>
+            </li>
+            <li>Pre-filled quotation & PO templates
+              <ul class="sub-list">
+                <li>INR</li>
+                <li>USD</li>
+                <li>INR Local (within_India _Purchase)Quotation - Govt</li>
+                <li>INR Local (within_India _Purchase)Quotation – Private</li>
+                <li>INR Local (within_india_PO) Format</li>
+                <li>INR Local (within_india_Purchase)Quotation – PSU</li>
+                <li>INR Quotation-Defence</li>
+                <li>INR Quotation-GeM</li>
+                <li>INR Quotation-PSU</li>
+                <li>INR Quotation-Private</li>
+                <li>INR Quotation-Space</li>
+                <li>INR PO on Principal</li>
+                <li>USD PO On Principal</li>
+                <li>USD Quotation-Defence & Space</li>
+                <li>NRE & PRODUCT COSTING format</li>
+              </ul>
+            </li>
+            <li><a href="#" class="download-link">Eliminating terms & conditions</a></li>
+          </ul>
+        </div>
+
+        <!-- Suggestions & Feedback -->
+        <div class="resource-card">
+          <h2><i class="icon-feedback"></i> Suggestions & Feedback</h2>
+          <ul>
+            <li><a href="#" class="download-link">Anonymous feedback form</a></li>
+            <li><a href="#" class="download-link">Innovation ideas submission box</a></li>
+            <li><a href="#" class="download-link">Employee grievances box</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-section"></div>
+
+  <script>
+    // Load the footer component dynamically with correct path
+    (function () {
+      const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+      fetch(basePath + 'footer.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('footer-section').innerHTML = data;
+        });
+    })();
+
+    // Login functionality
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      // Simple credentials check
+      if (username === 'admin' && password === 'admin') {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('portalContent').style.display = 'block';
+      } else {
+        alert('Incorrect username or password. Please try again.');
+      }
+    });
+  </script>
 </body>
+
 </html>

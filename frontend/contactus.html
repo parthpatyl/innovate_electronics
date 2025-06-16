@@ -1,38 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Contact Us</title>
-  <link rel="stylesheet" href="css/menupages.css">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/footer.css">
-  <link rel="stylesheet" href="css/contactus.css">
-  <link rel="stylesheet" href="css/header.css">
-  <link rel="stylesheet" href="css/chatbot.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Innovate Electronics</title>
+    <link rel="stylesheet" href="css/contactus.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/menupages.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/chatbot.css">
 </head>
+
 <body>
     <div id="header-section"></div>
     <div id="overlay"></div>
     <script src="js/header.js"></script>
     <script src="js/chatbot.js"></script>
+
+    <header class="hero-section">
+        <div class="hero-overlay">
+            <h1 class="hero-title">We're Here to Help Reach Out to Innovate Electronics for
+                <br> Inquiries, Support, or Collaboration.
+            </h1>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="locations-section">
+            <h2 class="section-title">INNOVATE OFFICES</h2>
+
+            <div class="office-grid">
+                <!-- Bangalore Office -->
+                <div class="office-card">
+                    <img src="./assets/logo.png" alt="Innovate Logo" class="office-logo">
+                    <h3 class="office-type">CORPORATE OFFICE</h3>
+                    <div class="office-name">INNOVATE ELECTRONICS</div>
+                    <div class="office-address">
+                        3, Brundanvan Garden,<br>
+                        Guru Layout Main Road, Church Road,<br>
+                        K Channasandra, Kalkere,<br>
+                        Bengaluru, Karnataka 560043, India
+                    </div>
+                    <div class="office-contact">
+                        <div class="contact-info">
+                            <div>Mobile: <a href="tel:+918123155600">81231 55600</a> / <a href="tel:+918049721968">080
+                                    4972 1968</a></div>
+                            <div>Email: <a
+                                    href="mailto:sales@innovate-electronics.com">sales@innovate-electronics.com</a>
+                            </div>
+                        </div>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=3%2C+Brundanvan+Garden%2C+Kalkere%2C+Bangalore+560043"
+                            target="_blank" class="directions-btn">
+                            Get Directions
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hyderabad Office -->
+                <div class="office-card">
+                    <img src="./assets/logo.png" alt="Innovate Logo" class="office-logo">
+                    <h3 class="office-type">REGIONAL OFFICE</h3>
+                    <div class="office-name">INNOVATE ELECTRONICS</div>
+                    <div class="office-address">
+                        Plot No-122, P & T Colony, Medipally,<br>
+                        Medchal - Malkajgiri,<br>
+                        Telangana - 500098, India
+                    </div>
+                    <div class="office-contact">
+                        <div class="contact-info">
+                            <div>Mobile: <a href="tel:+918123155600">81231 55600</a> / <a href="tel:+918985989310">89859
+                                    89310</a></div>
+                            <div>Email: <a
+                                    href="mailto:sales@innovate-electronics.com">sales@innovate-electronics.com</a>
+                            </div>
+                        </div>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Plot+No+122%2C+P+%26+T+Colony%2C+Medipally%2C+Hyderabad+500098"
+                            target="_blank" class="directions-btn">
+                            Get Directions
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-section"></div>
+
     <script>
-      // WhatsApp Button (left corner, all pages)
-      (function() {
-        if (!document.getElementById('whatsapp-btn')) {
-          var wa = document.createElement('div');
-          wa.id = 'whatsapp-btn';
-          wa.innerHTML = '<img src="assets/whatsapp_icon.png" alt="WhatsApp">';
-          wa.title = 'Chat on WhatsApp';
-          wa.onclick = function() {
-            window.open('https://wa.me/919999999999', '_blank');
-          };
-          document.body.appendChild(wa);
-        }
-      })();
+        // WhatsApp Button
+        (function () {
+            if (!document.getElementById('whatsapp-btn')) {
+                var wa = document.createElement('div');
+                wa.id = 'whatsapp-btn';
+                wa.innerHTML = '<img src="assets/whatsapp_icon.png" alt="WhatsApp">';
+                wa.title = 'Chat on WhatsApp';
+                wa.onclick = function () {
+                    window.open('https://wa.me/918123155600', '_blank');
+                };
+                document.body.appendChild(wa);
+            }
+        })();
     </script>
+
     <script>
-        // Load the header component dynamically with correct path
-        (function() {
+        // Load header component
+        (function () {
             const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
             fetch(basePath + 'header.html')
                 .then(response => response.text())
@@ -41,145 +115,11 @@
                     if (typeof setupHeaderMenu === 'function') setupHeaderMenu();
                 });
         })();
-    </script>  
-    <main>
-    <div class="contact-container">
-      <!-- Sidebar Navigation -->
-      <aside class="contact-sidebar">
-        <ul class="sidebar-nav">
-          <li><a href="#address" class="active" onclick="showSection('address')"><i class="icon-location"></i>Address</a></li>
-          <li><a href="#directions" onclick="showSection('directions')"><i class="icon-directions"></i>Directions</a></li>
-          <li><a href="#map" onclick="showSection('map')"><i class="icon-map"></i>Map</a></li>
-        </ul>
-      </aside>
-
-      <!-- Main Content Area -->
-      <div class="contact-content">
-        <div class="contact-header">
-          <h1>INNOVATE IN INDIA</h1>
-        </div>
-
-        <!-- Address Section -->
-        <section id="address" class="section address-section active">
-          <div class="location-cards">
-            <div class="location-card">
-              <h2>BANGALORE</h2>
-              <div class="company-name">INNOVATE ELECTRONICS</div>
-              <address>
-                #43, Roche Enclave, Horamavu Agara, Horamavu (Post)<br>
-                Bangalore - 560 043, Karnataka, India
-              </address>
-              <div class="contact-details">
-                <div class="contact-item">
-                  <i class="phone-icon"></i>
-                  <a href="tel:+918123155600">+91 81231 55600</a>
-                </div>
-                <div class="contact-item">
-                  <i class="phone-icon"></i>
-                  <a href="tel:+918049721968">+91 (0)80 4972 1968</a>
-                </div>
-                <div class="contact-item">
-                  <i class="email-icon"></i>
-                  <a href="mailto:sales@innovate-electronics.com">sales@innovate-electronics.com</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="location-card">
-              <h2>HYDERABAD</h2>
-              <div class="company-name">INNOVATE ELECTRONICS</div>
-              <address>
-                Plot No- 122, P And T Colony, Medipally,<br>
-                Medchal - Malkajgiri,Telangana -500 098, India
-              </address>
-              <div class="contact-details">
-                <div class="contact-item">
-                  <i class="phone-icon"></i>
-                  <a href="tel:+918182614131">+91 81826 14131</a>
-                </div>
-                <div class="contact-item">
-                  <i class="phone-icon"></i>
-                  <a href="tel:+918123155600">+91 81231 55600</a>
-                </div>
-                <div class="contact-item">
-                  <i class="email-icon"></i>
-                  <a href="mailto:sales@innovate-electronics.com">sales@innovate-electronics.com</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Directions Section -->
-        <section id="directions" class="section directions-section">
-          <div class="location-cards">
-            <div class="location-card">
-              <h2>BANGALORE DIRECTIONS</h2>
-              <div class="transport-option">
-                <h3>By Car</h3>
-                <ul>
-                  <li>From Airport: 45 mins via Outer Ring Road</li>
-                  <li>From City Center: 30 mins via Old Madras Road</li>
-                </ul>
-              </div>
-              <div class="transport-option">
-                <h3>Public Transport</h3>
-                <ul>
-                  <li>Bus: Routes 500K, 335E stop at Horamavu Junction</li>
-                  <li>Metro: Nearest station - Baiyappanahalli (4km)</li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="location-card">
-              <h2>HYDERABAD DIRECTIONS</h2>
-              <div class="transport-option">
-                <h3>By Car</h3>
-                <ul>
-                  <li>From Airport: 40 mins via ORR</li>
-                  <li>From City Center: 25 mins via NH65</li>
-                </ul>
-              </div>
-              <div class="transport-option">
-                <h3>Public Transport</h3>
-                <ul>
-                  <li>Bus: Routes 185, 225 stop at Medipally</li>
-                  <li>Metro: Nearest station - Uppal (3km)</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Map Section -->
-        <section id="map" class="section map-section">
-          <div class="location-cards">
-            <div class="location-card">
-              <h2>BANGALORE LOCATION</h2>
-              <div class="map-container">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.8!2d77.6!3d13.0!4m12!1e1!4m5!1s0x3bae1!2sHoramavu+Agara!5e0!3m2!1sen!2sin!4v1" allowfullscreen></iframe>
-              </div>
-            </div>
-
-            <div class="location-card">
-              <h2>HYDERABAD LOCATION</h2>
-              <div class="map-container">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.8!2d78.6!3d17.4!4m12!1e1!4m5!1s0x3bcb9!2sMedipally!5e0!3m2!1sen!2sin!4v1" allowfullscreen></iframe>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
-  </main>
-
-  <div id="footer-section"></div>
-
-    <!-- Chatbot widget script included above -->
+    </script>
 
     <script>
-        // Load the footer component dynamically with correct path
-        (function() {
+        // Load footer component
+        (function () {
             const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
             fetch(basePath + 'footer.html')
                 .then(response => response.text())
@@ -188,22 +128,6 @@
                 });
         })();
     </script>
-    <script>
-    function showSection(sectionId) {
-      // Hide all sections
-      document.querySelectorAll('.section').forEach(section => {
-        section.classList.remove('active');
-      });
-      
-      // Show selected section
-      document.getElementById(sectionId).classList.add('active');
-      
-      // Update active state in sidebar
-      document.querySelectorAll('.sidebar-nav a').forEach(link => {
-        link.classList.remove('active');
-      });
-      document.querySelector(`[href="#${sectionId}"]`).classList.add('active');
-    }
-  </script>
 </body>
+
 </html>

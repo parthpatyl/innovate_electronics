@@ -1,104 +1,109 @@
 /* General Layout */
 body {
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #2d3748;
+    line-height: 1.6;
 }
 
 /* Hero Section */
 .hero-section {
-    background-color: #fff;
-    height: 700px;
-    align-items: center;    
+    background-color: #fafafa;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
 }
 
 .hero-title {
-    color: #ff1d1d;
-    font-size: 2.5rem;
-    letter-spacing: 2px;
+    color: #1a202c;
+    font-size: 2.25rem;
+    font-weight: 700;
     text-align: center;
+    letter-spacing: -0.5px;
 }
 
 /* Main Content */
 .main-content {
-    padding: 4rem 2rem;
+    padding: 5rem 2rem;
     margin: 0 auto;
-    background-image: url("/frontend/assets/PCB_SWITCH_PATTERN.png");
-    background-size:cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment:scroll;
+    background-color: #ffffff;
+    max-width: 1400px;
 }
 
 .section-title {
-    font-size: 2.2rem;
+    font-size: 1.875rem;
     text-align: center;
-    color: #d12028;
-    margin-bottom: 3rem;
-    font-weight: 700;
-    letter-spacing: 1px;
+    color: #1a202c;
+    margin-bottom: 4rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
 }
 
 .office-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .office-card {
-  position: relative;
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  transition: 0.3s ease;
+    position: relative;
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
 }
 
 .office-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border-color: #cbd5e0;
 }
 
 .office-logo {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  width: 200px;
-  height: auto;
-  z-index: 10;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 120px;
+    height: auto;
+    opacity: 0.9;
 }
 
 .office-type {
-    font-size: 1rem;
+    font-size: 0.875rem;
     text-transform: uppercase;
-    font-weight: 600;
-    color: #555;
+    font-weight: 500;
+    color: #718096;
     margin-bottom: 0.5rem;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.05em;
 }
 
 .office-name {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #222;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2d3748;
     margin-bottom: 1rem;
 }
 
 .office-address {
-    font-size: 1.2rem;
-    color: #444;
-    line-height: 1.5;
-    margin-bottom: auto;
-    min-height: 96px;
+    font-size: 1rem;
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    min-height: 80px;
 }
 
 .office-contact {
     display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    font-size: 1.2rem;
-    gap: 1rem;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
     padding: 1rem 0;
     margin-top: auto;
 }
@@ -110,61 +115,74 @@ body {
 }
 
 .office-contact a {
-    color: #d12028;
+    color: #ff2b2b;
     text-decoration: none;
     font-weight: 500;
+    transition: color 0.2s ease;
 }
 
 .office-contact a:hover {
-    text-decoration: underline;
+    color: #ff2b2b;
 }
 
 .directions-wrapper {
     text-align: center;
-    margin-top: 1rem;
+    margin-top: auto;
     padding-top: 1rem;
-    border-top: 1px solid #eee;
+    border-top: 1px solid #edf2f7;
+    margin-bottom: 0;
 }
 
 .directions-btn {
-    align-self: center;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: #d12028;
+    margin-bottom: 30px;
+    background: #dc2626;
     color: white !important;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    height: fit-content;
-    white-space: nowrap;
+    padding: 0.625rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
 .directions-btn:hover {
-    background: #b51820;
-    text-decoration: none !important;
+    background: #b91c1c;
+    transform: translateY(-1px);
 }
 
 /* Footer */
 .footer-section {
     text-align: center;
     padding: 2rem 1rem;
-    background: #111;
-    color: #fff;
-    font-size: 0.9rem;
+    background: #1a202c;
+    color: #e2e8f0;
+    font-size: 0.875rem;
 }
 
 /* Responsive */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 300px;
+    }
+
     .hero-title {
-        font-size: 2rem;
+        font-size: 1.875rem;
     }
 
     .main-content {
-        padding: 2rem 1rem;
+        padding: 3rem 1rem;
     }
 
-    .office-contact {
-        grid-template-columns: 1fr;
+    .office-grid {
+        gap: 1.5rem;
+    }
+
+    .office-card {
+        padding: 1.5rem;
+    }
+
+    .office-logo {
+        width: 100px;
     }
 }

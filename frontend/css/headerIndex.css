@@ -125,7 +125,7 @@ header:has(.logo-bottom.enlarged) {
 .side-menu-header .logo-stack {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   margin-top: -30px;
   padding-bottom: 10px;
 }

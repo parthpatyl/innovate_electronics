@@ -12,14 +12,14 @@ body {
     max-width: 1600px;
     margin: 100px auto;
     padding: 2rem;
-    min-height: 70vh;
+    min-height: 50vh;
 }
 
 /* Login Section */
 .login-container {
     background: #fff;
     max-width: 800px;
-    height: 500px;
+    height: 400px;
     margin: 3rem auto;
     padding: 2.5rem;
     border-radius: 12px;

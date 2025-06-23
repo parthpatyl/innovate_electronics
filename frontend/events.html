@@ -210,9 +210,10 @@
             <span class="close-popup">&times;</span>
             <h2>Event Registration</h2>
             <form id="event-registration-form">
+                <input type="hidden" id="event_title" name="event_title" />
                 <div class="form-group">
-                    <label for="fullName">Full Name *</label>
-                    <input type="text" id="fullName" name="fullName" required>
+                    <label for="full_name">Full Name *</label>
+                    <input type="text" id="full_name" name="full_name" required>
                 </div>
                 <div class="form-group">
                     <label for="email">Email Address *</label>
@@ -315,6 +316,7 @@
                     e.preventDefault();
                     currentEventTitle = btn.closest('.events-featured-event').querySelector('.featured-title').textContent;
                     document.querySelector('.registration-content h2').textContent = `Register for ${currentEventTitle}`;
+                    document.getElementById('event_title').value = currentEventTitle;
                     registrationPopup.style.display = 'flex';
                     document.body.style.overflow = 'hidden'; // Prevent background scrolling
                 });
@@ -336,24 +338,40 @@
             });
 
             // Form submission
-            registrationForm.addEventListener('submit', (e) => {
+            registrationForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                // Here you would typically send the data to your backend
-                // For now, we'll just show a success message
-                alert('Thank you for registering! We will send you a confirmation email shortly.');
-                closeRegistrationPopup();
-            });
-
-            // Validate checkbox group
-            registrationForm.addEventListener('submit', function(e) {
-                const checkboxes = document.querySelectorAll('input[name="interests"]');
+                // Validate checkbox group
+                const checkboxes = registrationForm.querySelectorAll('input[name="interests"]');
                 let checked = false;
-                checkboxes.forEach(box => {
-                    if (box.checked) checked = true;
-                });
+                checkboxes.forEach(box => { if (box.checked) checked = true; });
                 if (!checked) {
                     alert('Please select at least one area of interest.');
-                    e.preventDefault();
+                    return;
+                }
+                // Gather form data
+                const formData = {
+                    event_title: registrationForm.event_title.value,
+                    full_name: registrationForm.full_name.value,
+                    email: registrationForm.email.value,
+                    phone: registrationForm.phone.value,
+                    company: registrationForm.company.value,
+                    designation: registrationForm.designation.value,
+                    interests: Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value),
+                    questions: registrationForm.questions.value
+                };
+                try {
+                    const res = await fetch('/api/events/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                    const data = await res.json();
+                    alert(data.message);
+                    if (data.message === 'Registration successful!') {
+                        closeRegistrationPopup();
+                    }
+                } catch (err) {
+                    alert('There was an error submitting your registration.');
                 }
             });
         });

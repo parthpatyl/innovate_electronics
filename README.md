@@ -56,6 +56,21 @@ innovate_electronics/
 3. Configure your database in `backend/config/database.php`.
 4. Set up your web server to serve the `frontend/` and `backend/` directories as needed.
 
+## Running the Backend (Node.js)
+
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+2. Install dependencies (if not already done):
+   ```bash
+   npm install
+   ```
+3. Start the backend server:
+   ```bash
+   npm start
+   ```
+4. The backend will serve the frontend static files and provide API endpoints at http://localhost:5000
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

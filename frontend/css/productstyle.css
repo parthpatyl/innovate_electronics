@@ -33,7 +33,7 @@ a {
     display: flex;
     background: linear-gradient(to left, #bebebe, #242424f0) !important;
     color: white;
-    padding: 50px 200px;
+    padding: 150px 5% 50px 5%;
 }
 
 .hero-content {

@@ -1,7 +1,7 @@
 /* General styles */
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
-  background-image: url('/frontend/assets/PCB_SWITCH_PATTERN.png');
+  background-color: #dadada;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

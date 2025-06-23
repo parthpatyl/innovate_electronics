@@ -35,16 +35,23 @@
     const messages = chatbotWindow.querySelector('.chatbot-messages');
     const form = chatbotWindow.querySelector('.chatbot-input-area');
     const input = chatbotWindow.querySelector('#chatbot-input');
-    form.onsubmit = function(e) {
+    form.onsubmit = async function(e) {
         e.preventDefault();
         const msg = input.value.trim();
         if (!msg) return;
         messages.innerHTML += `<div class='user-msg'>${msg}</div>`;
-        // Simulate bot reply
-        setTimeout(() => {
-            messages.innerHTML += `<div class='bot-msg'>Thank you for your message! (Demo reply)</div>`;
-            messages.scrollTop = messages.scrollHeight;
-        }, 700);
+        // Send message to backend chatbot API
+        try {
+            const res = await fetch('/api/chatbot/message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: msg })
+            });
+            const data = await res.json();
+            messages.innerHTML += `<div class='bot-msg'>${data.reply}</div>`;
+        } catch (err) {
+            messages.innerHTML += `<div class='bot-msg'>Sorry, there was an error contacting the chatbot.</div>`;
+        }
         input.value = '';
         messages.scrollTop = messages.scrollHeight;
     };
@@ -82,11 +89,16 @@
         messages.scrollTop = messages.scrollHeight;
     }
 
-    // Dummy handlers for buttons
+    // Actual handlers for buttons
     window.startLiveChat = function() {
-        alert('Starting live chat...');
+        // Focus the chatbot input and show a message
+        chatbotWindow.classList.add('open');
+        input.focus();
+        messages.innerHTML += `<div class='bot-msg'>You are now connected to our live chat. Please type your message below.</div>`;
+        messages.scrollTop = messages.scrollHeight;
     };
     window.openContactForm = function() {
-        alert('Opening contact form...');
+        // Open the contact us page in a new tab
+        window.open('contactus.html', '_blank');
     };
 })();

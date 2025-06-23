@@ -128,7 +128,7 @@
                   ]
               },
               {
-                  "name": "Acoustic Insulation Foam",
+                  "name": "Acoustic Insulation",
                   "image": "assets/Specaility Materails/Acoustic_Insulation/ACOUSTIC INSULATION.png",
                   "subproducts": [
                       "Acoustic Containers",
@@ -137,7 +137,7 @@
                   ]
               },
               {
-                  "name": "Thermal Insulation Foam",
+                  "name": "Thermal Insulation",
                   "image": "assets/Specaility Materails/Thermal_Insulation/THERMAL INSULATION.png",
                   "subproducts": [
                       "Thermal Insulation (Polyimide) Foam (Solimide)"

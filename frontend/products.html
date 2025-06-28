@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/chatbot.css">
 </head>
 <body>
-        <div id="header-section"></div>
+    <div id="header-section"></div>
     <div id="overlay"></div>
     <script src="js/header.js"></script>
     <script src="js/chatbot.js"></script>
@@ -41,8 +41,8 @@
                 if (typeof setupHeaderMenu === 'function') setupHeaderMenu();
             });
     </script>
+    
     <section class="hero">
-        
         <div class="hero-content">
             <h1>RF and Microwave</h1>
             <p>Innovate Electronics delivers state-of-the-art solutions across the telecommunications landscape—from detailed indoor coverage mapping in compact wireless systems to comprehensive spectrum analysis and over-the-air testing in expansive network environments. Our end-to-end offerings are thoughtfully engineered</p>
@@ -59,145 +59,24 @@
     <section class="product-categories">
         <div class="category-header">
             <div class="category-tabs">
-                <h2 class="category-tab active">RF and Microwave</h2>
-                <h2 class="category-tab">Test</h2>
-                <h2 class="category-tab">Measurements</h2>
+                <!-- Category tabs will be dynamically populated by category-tabs.js -->
             </div>
             <div class="product-navigation">
                 <div class="search-container">
-                    <input type="text" placeholder="Search" class="search-box">
-                    <img src="assets/search_icon.png" alt="Search" class="search-icon">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search products..." id="searchInput">
+                    </div>
+                    <img src="assets/search_icon.png" alt="Search" class="search-icon" id="searchIcon">
                 </div>
             </div>
         </div>
 
         <div class="products-grid">
-            <div class="product-item">
-                <img src="/api/placeholder/200/150" alt="DRO & PLDRO" class="product-thumbnail">
-                <a href="subcategory.html" class="product-link">DRO & PLDRO</a>
-                <h3>DRO & PLDRO</h3>
-            </div>
-            
-            <div class="product-item">
-                <img src="/api/placeholder/200/150" alt="Thin Film Circuits" class="product-thumbnail">
-                <h3>Thin Film Circuits</h3>
-            </div>
-            
-            <div class="product-item">
-                <img src="/api/placeholder/200/150" alt="Inductors" class="product-thumbnail">
-                <h3>Inductors</h3>
-            </div>
-            
-            <div class="product-item">
-                <img src="/api/placeholder/200/150" alt="Capacitors" class="product-thumbnail">
-                <h3>Capacitors</h3>
-            </div>
-            
-            <div class="product-item">
-                <img src="/api/placeholder/200/150" alt="Passive components" class="product-thumbnail">
-                <h3>Passive components</h3>
-            </div>
-            
-            <div class="product-item">
-                <img src="/api/placeholder/200/150" alt="Chambers EMI & Anechoic" class="product-thumbnail">
-                <h3>Chambers<br>EMI & Anechoic</h3>
-            </div>
-            
-            <div class="product-item">
-                <img src="/api/placeholder/200/150" alt="Waveguide" class="product-thumbnail">
-                <h3>Waveguide</h3>
-            </div>
-            
-            <div class="product-item">
-                <img src="/api/placeholder/200/150" alt="Filters" class="product-thumbnail">
-                <h3>Filters</h3>
-            </div>
+            <!-- Products will be dynamically populated by category-tabs.js -->
         </div>
     </section>
+    
     <script src="js/category-tabs.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const categoryTabsContainer = document.querySelector('.category-tabs');
-            const productsGrid = document.querySelector('.products-grid');
-            const heroTitle = document.querySelector('.hero-content h1');
-            const heroImage = document.querySelector('.hero-image img');
-            const breadcrumb = document.querySelector('.breadcrumb');
-
-            let categories = [];
-
-            // Fetch categories from API
-            fetch(getApiUrl(API_CONFIG.ENDPOINTS.CATEGORIES))
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch categories data');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    categories = data.data;
-                    renderCategoryTabs();
-                    // Load first category by default
-                    if (categories.length > 0) {
-                        loadCategory(categories[0].title);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching categories:', error);
-                    // Show error message to user
-                    const productsGrid = document.querySelector('.products-grid');
-                    productsGrid.innerHTML = '<div class="error-message">Error loading categories. Please try again later.</div>';
-                });
-
-            function renderCategoryTabs() {
-                categoryTabsContainer.innerHTML = '';
-                categories.forEach((cat, idx) => {
-                    const tab = document.createElement('h2');
-                    tab.className = 'category-tab' + (idx === 0 ? ' active' : '');
-                    tab.textContent = cat.title;
-                    tab.addEventListener('click', function () {
-                        document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-                        tab.classList.add('active');
-                        loadCategory(cat.title);
-                    });
-                    categoryTabsContainer.appendChild(tab);
-                });
-            }
-
-            function loadCategory(title) {
-                const category = categories.find(c => c.title === title);
-                if (!category) return;
-                // Update hero section
-                if (heroTitle) heroTitle.textContent = category.title;
-                if (heroImage) heroImage.src = category.headerImage;
-                if (breadcrumb) breadcrumb.textContent = 'Categories > ' + category.title;
-
-                // Render products
-                productsGrid.innerHTML = '';
-                category.items.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'product-item';
-                    div.innerHTML = `
-                        <img src="${item.image}" alt="${item.name}" class="product-thumbnail">
-                        <h3>${item.name}</h3>
-                    `;
-                    // Make product clickable
-                    div.addEventListener('click', function() {
-                        // Store both category and subcategory information
-                        const productData = {
-                            category: category.title,
-                            name: item.name,
-                            image: item.image,
-                            subproducts: item.subproducts || []
-                        };
-                        sessionStorage.setItem('selectedProduct', JSON.stringify(productData));
-                        window.location.href = 'subcategory.html';
-                    });
-                    productsGrid.appendChild(div);
-                });
-            }
-        });
-    </script>
 
     <div id="footer-section"></div>
 

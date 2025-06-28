@@ -18,6 +18,7 @@
     <div id="overlay"></div>
     <script src="js/header.js"></script>
     <script src="js/chatbot.js"></script>
+    <script src="js/config.js"></script>
     <script>
       // WhatsApp Button (left corner, all pages)
       (function() {
@@ -55,37 +56,71 @@
             integrity, and craftsmanship.</p>
     </section>
 
-    <section class="product-categories"></section>
+    <section class="product-categories">
+        <div class="loading-spinner" style="text-align: center; padding: 40px; display: none;">
+            <div style="border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+            <p style="margin-top: 20px; color: #666;">Loading products...</p>
+        </div>
+        <div class="error-message" style="display: none; text-align: center; padding: 40px; color: #e74c3c;"></div>
+    </section>
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const categoriesContainer = document.querySelector('.product-categories');
+            const loadingSpinner = categoriesContainer.querySelector('.loading-spinner');
+            const errorMessage = categoriesContainer.querySelector('.error-message');
 
-            // Fetch categories from JSON file
-            fetch("data/categories.json")
+            // Show loading spinner
+            loadingSpinner.style.display = 'block';
+
+            // Fetch all categories from API
+            fetch(getApiUrl(API_CONFIG.ENDPOINTS.CATEGORIES))
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Failed to fetch categories data');
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     return response.json();
                 })
                 .then(data => {
-                    renderCategories(data.categories);
+                    // Hide loading spinner
+                    loadingSpinner.style.display = 'none';
+                    if (!data.success) {
+                        throw new Error(data.message || 'Failed to fetch categories data');
+                    }
+                    if (!data.data || Object.keys(data.data).length === 0) {
+                        categoriesContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">No categories available at the moment.</div>';
+                        return;
+                    }
+                    renderCategories(data.data);
                 })
                 .catch(error => {
                     console.error('Error fetching categories:', error);
+                    // Hide loading spinner and show error message
+                    loadingSpinner.style.display = 'none';
+                    errorMessage.style.display = 'block';
+                    errorMessage.innerHTML = `
+                        <h3>Unable to load categories</h3>
+                        <p>${error.message}</p>
+                        <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Try Again</button>
+                    `;
                 });
 
-            // Function to render categories
-            function renderCategories(categories) {
-                categories.forEach(category => {
-                    // Create category element
+            // Function to render categories and their items
+            function renderCategories(categoriesData) {
+                // categoriesData is an object: { key: { title, headerImage, items } }
+                Object.values(categoriesData).forEach(category => {
                     const categoryElement = document.createElement('div');
                     categoryElement.classList.add('category');
 
                     // Add header image and title
                     categoryElement.innerHTML = `
                         <div class="category-header-image">
-                            <img src="${category.headerImage}" alt="${category.title}">
+                            <img src="${category.headerImage || 'assets/image35.png'}" alt="${category.title}" onerror="this.src='assets/image35.png'">
                         </div>
                         <h3>${category.title}</h3>
                         <div class="slider-container">
@@ -98,30 +133,22 @@
                     const categoryImagesContainer = categoryElement.querySelector('.category-images');
 
                     // Add only first 6 items to the category
-                    category.items.slice(0, 6).forEach(item => {
+                    (category.items || []).slice(0, 6).forEach(item => {
                         const itemElement = document.createElement('a');
-                        // Mapping for subcategory to key for sessionStorage
-                        const subcategoryKeyMap = {
-                            'Switches': 'switches',
-                            'Amplifiers': 'amplifiers',
-                            'Passive Components': 'passive_components',
-                            'Waveguides': 'waveguides',
-                            // Add more subcategories as needed
-                        };
-                        itemElement.href = "subcategory.html";
+                        itemElement.href = `productpagemain.html?category=${encodeURIComponent(category.title)}&name=${encodeURIComponent(item.name)}`;
                         itemElement.classList.add('img-container');
                         itemElement.innerHTML = `
-                            <img src="${item.image}" alt="${item.name}">
+                            <img src="${item.image || 'assets/image35.png'}" alt="${item.name}" onerror="this.src='assets/image35.png'">
                             <p>${item.name}</p>
                         `;
                         itemElement.addEventListener('click', function(e) {
-                            // Save selected product info to sessionStorage for subcategory page
+                            // Save selected item info to sessionStorage for product page
                             sessionStorage.setItem('selectedProduct', JSON.stringify({
                                 category: category.title,
                                 name: item.name,
                                 image: item.image,
-                                subproducts: item.subproducts || [],
-                                key: subcategoryKeyMap[item.name] || null
+                                id: item._id,
+                                key: item.name ? item.name.toLowerCase().replace(/\s+/g, '_') : ''
                             }));
                         });
                         categoryImagesContainer.appendChild(itemElement);

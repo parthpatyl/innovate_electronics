@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter Subscription - Innovate Electronics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .preferences {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .benefits {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .benefits h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .benefits ul {
+            list-style: none;
+            text-align: left;
+        }
+
+        .benefits li {
+            padding: 8px 0;
+            color: #666;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .benefits li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .admin-link {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .admin-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .admin-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">Innovate Electronics</div>
+        <p class="tagline">Stay updated with the latest in electronics and technology</p>
+        
+        <form id="newsletterForm">
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" name="firstName" placeholder="John">
+            </div>
+            
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" name="lastName" placeholder="Doe">
+            </div>
+            
+            <div class="preferences">
+                <label>Newsletter Preferences</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="electronics" name="categories" value="electronics" checked>
+                        <label for="electronics">Electronics</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tech-news" name="categories" value="tech-news" checked>
+                        <label for="tech-news">Tech News</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="promotions" name="categories" value="promotions">
+                        <label for="promotions">Promotions</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="events" name="categories" value="events">
+                        <label for="events">Events</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="blog" name="categories" value="blog">
+                        <label for="blog">Blog Posts</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="frequency">Email Frequency</label>
+                <select id="frequency" name="frequency">
+                    <option value="monthly">Monthly</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="quarterly">Quarterly</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="submitBtn">
+                Subscribe to Newsletter
+            </button>
+        </form>
+        
+        <div id="message" class="message"></div>
+        
+        <div class="benefits">
+            <h3>What you'll receive:</h3>
+            <ul>
+                <li>Latest product launches and innovations</li>
+                <li>Exclusive deals and promotions</li>
+                <li>Industry insights and tech trends</li>
+                <li>Upcoming events and webinars</li>
+                <li>Expert tips and tutorials</li>
+            </ul>
+        </div>
+
+        <div class="admin-link">
+            <a href="/admin/">Admin Panel</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const messageDiv = document.getElementById('message');
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Subscribing...';
+            messageDiv.style.display = 'none';
+            
+            // Collect form data
+            const formData = new FormData(e.target);
+            const categories = Array.from(formData.getAll('categories'));
+            
+            const data = {
+                email: formData.get('email'),
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                preferences: {
+                    categories: categories,
+                    frequency: formData.get('frequency')
+                }
+            };
+            
+            try {
+                const response = await fetch('/api/newsletter/subscribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    messageDiv.className = 'message success';
+                    messageDiv.textContent = result.message;
+                    e.target.reset();
+                    
+                    // Reset checkboxes to default
+                    document.getElementById('electronics').checked = true;
+                    document.getElementById('tech-news').checked = true;
+                    document.getElementById('promotions').checked = false;
+                    document.getElementById('events').checked = false;
+                    document.getElementById('blog').checked = false;
+                } else {
+                    messageDiv.className = 'message error';
+                    messageDiv.textContent = result.message || 'Subscription failed. Please try again.';
+                }
+            } catch (error) {
+                console.error('Subscription error:', error);
+                messageDiv.className = 'message error';
+                messageDiv.textContent = 'An error occurred. Please try again.';
+            } finally {
+                messageDiv.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Subscribe to Newsletter';
+            }
+        });
+
+        // Client-side validation
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (email && !emailRegex.test(email)) {
+                this.style.borderColor = '#dc3545';
+                this.setCustomValidity('Please enter a valid email address');
+            } else {
+                this.style.borderColor = '#e1e5e9';
+                this.setCustomValidity('');
+            }
+        });
+
+        // Ensure at least one category is selected
+        document.querySelectorAll('input[name="categories"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const checkedCategories = document.querySelectorAll('input[name="categories"]:checked');
+                if (checkedCategories.length === 0) {
+                    this.checked = true; // Prevent unchecking the last one
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

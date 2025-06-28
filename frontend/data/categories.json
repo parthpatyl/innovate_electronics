@@ -1,153 +1,154 @@
 {
-  "categories": [
-      {
-          "title": "RF and Microwave",
-          "headerImage": "assets/image35.png",
-          "items": [
-              {
-                  "name": "Switches",
-                  "image": "assets/RF-Microwave/Switches/Primary_Switches.png",
-                  "subproducts": [
-                      "Innovate Electronics offers a wide array of high quality waveguide components for commercial, military, and government use including waveguide to coaxial adapters, low and high power waveguide terminations, waveguide attenuators, waveguide couplers and etc."]
-              },
-              {
-                  "name": "Cable Assembly",
-                  "image": "assets/RF-Microwave/Cable Assembly/Cable_assembly.png"
-              },
-              {
-                  "name": "Waveguides",
-                  "image": "assets/RF-Microwave/Waveguide/Primary-Waveguide.png",
-                  "subproducts": [
-                      "Innovate Electronics offers a wide array of high quality waveguide components for commercial, military, and government use including waveguide to coaxial adapters, low and high power waveguide terminations, waveguide attenuators, waveguide couplers and etc."
-                  ]
-              },
-              {
-                  "name": "Amplifiers",
-                  "image": "assets/RF-Microwave/Amplifiers/Amplifiers.png",
-                  "subproducts": [
-                      "DIFM 2-18 GHz (Model: IE-1.950-18.05-2.2:1-FE)",
-                      "LIMITING AMPLIFIER (Model: IE-2-18-2.0:1-FE)"
-                  ]
-              },
-              {
-                  "name": "Filters",
-                  "image": "assets/RF-Microwave/Filters/Filters.png"
-              },
-              {
-                  "name": "Passive Components",
-                  "image": "assets/RF-Microwave/Passive Components/Passive_components.png",
-                  "subproducts": [
-                      "Innovate Electronics offers a wide array of high quality waveguide components for commercial, military, and government use including waveguide to coaxial adapters, low and high power waveguide terminations, waveguide attenuators, waveguide couplers and etc."
-                  ]
-              },
-              {
-                  "name": "Antennas",
-                  "image": "assets/RF-Microwave/Attenas/Atennas.png"
-              }
+  "Products": {
+    "Rf & Microwave": {
+      "title": "RF and Microwave",
+      "headerImage": "assets/image35.png",
+      "items": [
+        {
+          "name": "Switches",
+          "image": "assets/RF-Microwave/Switches/Primary_Switches.png",
+          "subproducts": [
+            "Innovate Electronics offers a wide array of high quality waveguide components for commercial, military, and government use including waveguide to coaxial adapters, low and high power waveguide terminations, waveguide attenuators, waveguide couplers and etc."
           ]
-      },
-      {
-          "title": "Test & Measurement",
-          "headerImage": "assets/image36.png",
-          "items": [
-              {
-                  "name": "Vibration Test Machine",
-                  "image": "assets/Test Measurement/VIBRATION TEST MACHINE/Vibration Chamber.jpg",
-                  "subproducts": [
-                      "Vibration Shakers / Test Systems (Range: 50–20,000 Kgf)",
-                      "Shock Test Machine",
-                      "Bump Test Machine",
-                      "Vibration Control Systems"
-                  ]
-              },
-              {
-                  "name": "Environmental Chamber",
-                  "image": "./assets/Test Measurement/ENVIRONMENTAL CHAMBER/Nano Env Chamber.jpg",
-                  "subproducts": [
-                      "Environmental Test Chambers",
-                      "Rain Chambers",
-                      "Vibration Chambers",
-                      "Thermal Shock Chambers",
-                      "Walk-in Chambers",
-                      "Altitude Chambers",
-                      "Dust Chambers",
-                      "Salt Spray Chambers",
-                      "Battery Test Chambers"
-                  ]
-              },
-              {
-                  "name": "EMI EMC Chamber",
-                  "image": "assets/Test Measurement/EMI EMC CHAMBER/Anachoic Chamber.jpeg",
-                  "subproducts": [
-                      "Semi-Anechoic Chamber",
-                      "Automotive Chamber",
-                      "RF Shield Box",
-                      "RF Shield Room"
-                  ]
-              },
-              {
-                  "name": "Anechoic Chamber",
-                  "image": "assets/Test Measurement/Anechoic_Chamber/Anechoic_Chamber.jpg",
-                  "subproducts": [
-                      "Compact Antenna Test Range (CATR)"
-                  ]
-              },
-              {
-                  "name": "EMI EMC Scanner/Probe",
-                  "image": "assets/Test Measurement/EMI_EMC_Scanner/EMI_EMC_Scanner.png",
-                  "subproducts": [
-                      "EMScanner",
-                      "EMScannerR"
-                  ]
-              },
-              {
-                  "name": "Reverberation Chamber",
-                  "image": "assets/Test Measurement/Reverberation_Chamber/Reverberation-Chamber.jpg"
-              }
+        },
+        {
+          "name": "Cable Assembly",
+          "image": "assets/RF-Microwave/Cable Assembly/Cable_assembly.png"
+        },
+        {
+          "name": "Waveguides",
+          "image": "assets/RF-Microwave/Waveguide/Primary-Waveguide.png",
+          "subproducts": [
+            "Innovate Electronics offers a wide array of high quality waveguide components for commercial, military, and government use including waveguide to coaxial adapters, low and high power waveguide terminations, waveguide attenuators, waveguide couplers and etc."
           ]
-      },
-      {
-          "title": "Speciality Materials",
-          "headerImage": "assets/image49.png",
-          "items": [
-              {
-                  "name": "Rohacell Sheets",
-                  "image": "assets/Specaility Materails/Rohacell_Sheets/Rohacell_sheets.png"
-              },
-              {
-                  "name": "Rohacell Shapes",
-                  "image": "assets/Specaility Materails/Rochacell Shapes/Rohacell_Shapes.png"
-              },
-              {
-                  "name": "Composite Components",
-                  "image": "assets/Specaility Materails/Composite_Components/Composite_components.png",
-                  "subproducts": [
-                      "Nose Cone",
-                      "Carbon Fiber Reinforced Polymer (CFRP)",
-                      "Glass Fiber Reinforced Polymer (GFRP): Wings, tail surfaces"
-                  ]
-              },
-              {
-                  "name": "Acoustic Insulation",
-                  "image": "assets/Specaility Materails/Acoustic_Insulation/ACOUSTIC INSULATION.png",
-                  "subproducts": [
-                      "Acoustic Containers",
-                      "Acoustic Noise Test Booths",
-                      "Acoustic Doors"
-                  ]
-              },
-              {
-                  "name": "Thermal Insulation",
-                  "image": "assets/Specaility Materails/Thermal_Insulation/THERMAL INSULATION.png",
-                  "subproducts": [
-                      "Thermal Insulation (Polyimide) Foam (Solimide)"
-                  ]
-              },
-              {
-                  "name": "Turnkey Solution",
-                  "image": "assets/Specaility Materails/Turnkey_Solutions/TURNKEY_SOLUTION.png"
-              }
+        },
+        {
+          "name": "Amplifiers",
+          "image": "assets/RF-Microwave/Amplifiers/Amplifiers.png",
+          "subproducts": [
+            "DIFM 2-18 GHz (Model: IE-1.950-18.05-2.2:1-FE)",
+            "LIMITING AMPLIFIER (Model: IE-2-18-2.0:1-FE)"
           ]
-      }
-  ]
+        },
+        {
+          "name": "Filters",
+          "image": "assets/RF-Microwave/Filters/Filters.png"
+        },
+        {
+          "name": "Passive Components",
+          "image": "assets/RF-Microwave/Passive Components/Passive_components.png",
+          "subproducts": [
+            "Innovate Electronics offers a wide array of high quality waveguide components for commercial, military, and government use including waveguide to coaxial adapters, low and high power waveguide terminations, waveguide attenuators, waveguide couplers and etc."
+          ]
+        },
+        {
+          "name": "Antennas",
+          "image": "assets/RF-Microwave/Attenas/Atennas.png"
+        }
+      ]
+    },
+    "Test And Measurement": {
+      "title": "Test & Measurement",
+      "headerImage": "assets/image36.png",
+      "items": [
+        {
+          "name": "Vibration Test Machine",
+          "image": "assets/Test Measurement/VIBRATION TEST MACHINE/Vibration Chamber.jpg",
+          "subproducts": [
+            "Vibration Shakers / Test Systems (Range: 50–20,000 Kgf)",
+            "Shock Test Machine",
+            "Bump Test Machine",
+            "Vibration Control Systems"
+          ]
+        },
+        {
+          "name": "Environmental Chamber",
+          "image": "./assets/Test Measurement/ENVIRONMENTAL CHAMBER/Nano Env Chamber.jpg",
+          "subproducts": [
+            "Environmental Test Chambers",
+            "Rain Chambers",
+            "Vibration Chambers",
+            "Thermal Shock Chambers",
+            "Walk-in Chambers",
+            "Altitude Chambers",
+            "Dust Chambers",
+            "Salt Spray Chambers",
+            "Battery Test Chambers"
+          ]
+        },
+        {
+          "name": "EMI EMC Chamber",
+          "image": "assets/Test Measurement/EMI EMC CHAMBER/Anachoic Chamber.jpeg",
+          "subproducts": [
+            "Semi-Anechoic Chamber",
+            "Automotive Chamber",
+            "RF Shield Box",
+            "RF Shield Room"
+          ]
+        },
+        {
+          "name": "Anechoic Chamber",
+          "image": "assets/Test Measurement/Anechoic_Chamber/Anechoic_Chamber.jpg",
+          "subproducts": [
+            "Compact Antenna Test Range (CATR)"
+          ]
+        },
+        {
+          "name": "EMI EMC Scanner/Probe",
+          "image": "assets/Test Measurement/EMI_EMC_Scanner/EMI_EMC_Scanner.png",
+          "subproducts": [
+            "EMScanner",
+            "EMScannerR"
+          ]
+        },
+        {
+          "name": "Reverberation Chamber",
+          "image": "assets/Test Measurement/Reverberation_Chamber/Reverberation-Chamber.jpg"
+        }
+      ]
+    },
+    "Speciality Chambers": {
+      "title": "Speciality Materials",
+      "headerImage": "assets/image49.png",
+      "items": [
+        {
+          "name": "Rohacell Sheets",
+          "image": "assets/Specaility Materails/Rohacell_Sheets/Rohacell_sheets.png"
+        },
+        {
+          "name": "Rohacell Shapes",
+          "image": "assets/Specaility Materails/Rochacell Shapes/Rohacell_Shapes.png"
+        },
+        {
+          "name": "Composite Components",
+          "image": "assets/Specaility Materails/Composite_Components/Composite_components.png",
+          "subproducts": [
+            "Nose Cone",
+            "Carbon Fiber Reinforced Polymer (CFRP)",
+            "Glass Fiber Reinforced Polymer (GFRP): Wings, tail surfaces"
+          ]
+        },
+        {
+          "name": "Acoustic Insulation",
+          "image": "assets/Specaility Materails/Acoustic_Insulation/ACOUSTIC INSULATION.png",
+          "subproducts": [
+            "Acoustic Containers",
+            "Acoustic Noise Test Booths",
+            "Acoustic Doors"
+          ]
+        },
+        {
+          "name": "Thermal Insulation",
+          "image": "assets/Specaility Materails/Thermal_Insulation/THERMAL INSULATION.png",
+          "subproducts": [
+            "Thermal Insulation (Polyimide) Foam (Solimide)"
+          ]
+        },
+        {
+          "name": "Turnkey Solution",
+          "image": "assets/Specaility Materails/Turnkey_Solutions/TURNKEY_SOLUTION.png"
+        }
+      ]
+    }
+  }
 }

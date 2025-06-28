@@ -1,6 +1,6 @@
 /**
  * Category Tabs Functionality for Innovate Electronics Products Page
- * Updated to work with the new JSON structure from IE products.xlsx
+ * Updated to work with the new JSON structure from categories.json and products.json
  */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -11,32 +11,30 @@ document.addEventListener('DOMContentLoaded', function () {
     let productCategories = {};
     let tabToCategory = {};
 
-    // Fetch products data from products.json (converted from Excel)
-    fetch('products.json')
+    // Fetch products data from products.json
+    fetch('data/products.json')
         .then(response => response.json())
         .then(data => {
             // Build productCategories and tabToCategory from JSON
-            const mainCategories = Object.keys(data.Products);
+            const mainCategories = Object.keys(data.products);
 
             mainCategories.forEach((category, idx) => {
                 const key = category.toLowerCase().replace(/[^a-z0-9]/g, '');
                 productCategories[key] = [];
 
-                // Get all subcategories and their items
-                const subCategories = data.Products[category];
-                for (const subCategory in subCategories) {
-                    const items = subCategories[subCategory];
-
-                    if (Array.isArray(items)) {
-                        items.forEach(item => {
-                            if (item.name) {
-                                productCategories[key].push({
-                                    name: item.name,
-                                    model_no: item.model_no || '',
-                                    category: category,
-                                    subcategory: subCategory
-                                });
-                            }
+                // Get all products in this category
+                const categoryProducts = data.products[category];
+                for (const productId in categoryProducts) {
+                    const product = categoryProducts[productId];
+                    if (product.name) {
+                        productCategories[key].push({
+                            name: product.name,
+                            model_no: productId,
+                            category: product.category || category,
+                            subcategory: product.category || category,
+                            image: product.image,
+                            overview: product.overview,
+                            specifications: product.specifications
                         });
                     }
                 }
@@ -68,12 +66,12 @@ document.addEventListener('DOMContentLoaded', function () {
             productsGrid.innerHTML = '<div class="error">Error loading products. Please try again later.</div>';
         });
 
-    // Example: Load categories.json and log the categories array
+    // Load categories.json for additional category information
     fetch('data/categories.json')
         .then(response => response.json())
         .then(data => {
             // Access the categories array
-            console.log(data.categories);
+            console.log('Categories loaded:', data.categories);
             // You can now use data.categories in your JS code
         })
         .catch(error => {
@@ -94,19 +92,24 @@ document.addEventListener('DOMContentLoaded', function () {
             const productElement = document.createElement('div');
             productElement.className = 'product-item';
 
-            // Create product content - adjust this based on your actual HTML/CSS structure
-            let productContent = `<h3>${product.name}</h3>`;
-            if (product.model_no) {
-                productContent += `<p class="model-no">${product.model_no}</p>`;
-            }
-            productContent += `<p class="category-info">${product.subcategory}</p>`;
+            // Create product content with image and details
+            let productContent = `
+                <div class="product-image">
+                    <img src="${product.image || 'assets/placeholder.png'}" alt="${product.name}" onerror="this.src='assets/placeholder.png'">
+                </div>
+                <div class="product-info">
+                    <h3>${product.name}</h3>
+                    ${product.model_no ? `<p class="model-no">Model: ${product.model_no}</p>` : ''}
+                    <p class="category-info">${product.subcategory}</p>
+                </div>
+            `;
 
             productElement.innerHTML = productContent;
 
             productElement.addEventListener('click', function() {
-                // Pass category and subcategory information to the details page
+                // Pass complete product information to the details page
                 sessionStorage.setItem('selectedProduct', JSON.stringify(product));
-                window.location.href = 'product-details.html';
+                window.location.href = 'productpagemain.html';
             });
 
             productsGrid.appendChild(productElement);
@@ -158,17 +161,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     const productElement = document.createElement('div');
                     productElement.className = 'product-item';
 
-                    let productContent = `<h3>${product.name}</h3>`;
-                    if (product.model_no) {
-                        productContent += `<p class="model-no">${product.model_no}</p>`;
-                    }
-                    productContent += `<p class="category-info">${product.subcategory}</p>`;
+                    let productContent = `
+                        <div class="product-image">
+                            <img src="${product.image || 'assets/placeholder.png'}" alt="${product.name}" onerror="this.src='assets/placeholder.png'">
+                        </div>
+                        <div class="product-info">
+                            <h3>${product.name}</h3>
+                            ${product.model_no ? `<p class="model-no">Model: ${product.model_no}</p>` : ''}
+                            <p class="category-info">${product.subcategory}</p>
+                        </div>
+                    `;
 
                     productElement.innerHTML = productContent;
 
                     productElement.addEventListener('click', function() {
                         sessionStorage.setItem('selectedProduct', JSON.stringify(product));
-                        window.location.href = 'product-details.html';
+                        window.location.href = 'productpagemain.html';
                     });
 
                     productsGrid.appendChild(productElement);

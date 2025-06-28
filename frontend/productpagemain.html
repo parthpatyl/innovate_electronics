@@ -17,6 +17,7 @@
     <div id="overlay"></div>
     <script src="js/header.js"></script>
     <script src="js/chatbot.js"></script>
+    <script src="js/config.js"></script>
     <script>
       // WhatsApp Button (left corner, all pages)
       (function() {
@@ -164,46 +165,35 @@
 
     <!-- JavaScript for Tab Navigation -->
     <script>
-        let productData = null;
         let currentCategory = 'switches';
 
         // Function to handle category changes
-        function onCategoryChange(category) {
+        async function onCategoryChange(category) {
             currentCategory = category;
-            const categoryProducts = productData.products[category];
-            if (categoryProducts) {
-                updateProductGallery(categoryProducts);
+            try {
+                const response = await fetch(getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS_BY_CATEGORY}/${category}`));
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                updateProductGallery(data.data);
 
                 // Load default or first product from the new category
-                const defaultProductId = Object.keys(categoryProducts)[0];
-                if (defaultProductId) {
-                    loadProduct(defaultProductId);
+                if (data.data.length > 0) {
+                    loadProduct(data.data[0]._id);
                 }
-            }
-        }
-
-        // Fetch product data from JSON file
-        async function fetchProductData() {
-            try {
-                // Use relative path for fetch, works for both direct and server
-                const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-                const response = await fetch(basePath + 'data/products.json');
-                const data = await response.json();
-                return data;
             } catch (error) {
-                console.error('Error fetching product data:', error);
-                // Optionally show a user-facing error
-                document.querySelector('.main-content').innerHTML = '<p style="color:red">Error loading product data. Please try again later.</p>';
-                return null;
+                console.error('Error loading category products:', error);
+                document.querySelector('.main-content').innerHTML = '<p style="color:red">Error loading category products. Please try again later.</p>';
             }
         }
 
         // Update product gallery
         function updateProductGallery(products) {
             const gallery = document.querySelector('.product-gallery');
-            gallery.innerHTML = Object.entries(products)
-                .map(([id, product]) => `
-                    <div class="product-thumb-container" onclick="loadProduct('${id}')" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;margin-bottom:8px;">
+            gallery.innerHTML = products
+                .map(product => `
+                    <div class="product-thumb-container" onclick="loadProduct('${product._id}')" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;margin-bottom:8px;">
                         <div class="product-thumb-wrapper" style="position:relative;overflow:hidden;border-radius:4px;border:1px solid #eee;background:#fff;transition:all 0.2s ease;width:100%;">
                             <img class="product-thumb" 
                                  src="${product.image}" 
@@ -230,19 +220,33 @@
 
             // Add active state to current product
             const urlParams = new URLSearchParams(window.location.search);
-            const currentProductId = urlParams.get('id') || 'IE-SP4T-1025-1095-1.5-Ni-RI';
-            const currentThumb = gallery.querySelector(`[onclick="loadProduct('${currentProductId}')"]`);
-            if (currentThumb) {
-                const thumbWrapper = currentThumb.querySelector('.product-thumb-wrapper');
-                thumbWrapper.style.border = '1px solid #ddd';
-                thumbWrapper.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+            const currentProductId = urlParams.get('id');
+            if (currentProductId) {
+                const currentThumb = gallery.querySelector(`[onclick="loadProduct('${currentProductId}')"]`);
+                if (currentThumb) {
+                    const thumbWrapper = currentThumb.querySelector('.product-thumb-wrapper');
+                    thumbWrapper.style.border = '1px solid #ddd';
+                    thumbWrapper.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+                }
             }
         }
 
         // Load specific product
-        function loadProduct(productName) {
-            const product = productData.products[currentCategory][productName];
-            if (product) {
+        async function loadProduct(productId) {
+            try {
+                // Fetch individual product by ID from API
+                const response = await fetch(getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS}/${productId}`));
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                const product = data.data;
+                
+                if (!product) {
+                    console.error('Product not found');
+                    return;
+                }
+
                 // Update active state in gallery
                 const gallery = document.querySelector('.product-gallery');
                 const allThumbWrappers = gallery.querySelectorAll('.product-thumb-wrapper');
@@ -250,7 +254,7 @@
                     wrapper.style.border = '1px solid #eee';
                     wrapper.style.boxShadow = 'none';
                 });
-                const selectedThumb = gallery.querySelector(`[onclick="loadProduct('${productName}')"] .product-thumb-wrapper`);
+                const selectedThumb = gallery.querySelector(`[onclick="loadProduct('${productId}')"] .product-thumb-wrapper`);
                 if (selectedThumb) {
                     selectedThumb.style.border = '1px solid #ddd';
                     selectedThumb.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
@@ -263,9 +267,13 @@
                 
                 // Update URL without page reload
                 const url = new URL(window.location);
-                url.searchParams.set('id', productName);
-                url.searchParams.set('category', currentCategory);
+                url.searchParams.set('id', productId);
+                url.searchParams.set('category', product.category);
                 window.history.pushState({}, '', url);
+            } catch (error) {
+                console.error('Error loading product:', error);
+                // Show error message to user
+                document.querySelector('.main-content').innerHTML = '<p style="color:red">Error loading product. Please try again later.</p>';
             }
         }
 
@@ -390,30 +398,66 @@
 
         // Initialize page with product data
         async function initializePage() {
-            const data = await fetchProductData();
-            if (data) {
-                productData = data;
-                
-                // Get category and product ID from URL or use defaults
+            try {
+                // Check if we have sessionStorage data from landing page
+                const selectedProduct = sessionStorage.getItem('selectedProduct');
+                let productId = null;
+                let category = 'switches';
+
+                if (selectedProduct) {
+                    try {
+                        const productData = JSON.parse(selectedProduct);
+                        productId = productData.id;
+                        category = productData.category || productData.key || 'switches';
+                        currentCategory = category;
+                        
+                        // Clear sessionStorage after reading
+                        sessionStorage.removeItem('selectedProduct');
+                        
+                        // Load the specific product directly
+                        await loadProduct(productId);
+                        
+                        // Fetch products for the category to populate gallery
+                        const response = await fetch(getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS_BY_CATEGORY}/${category}`));
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.data.length > 0) {
+                                updateProductGallery(data.data);
+                            }
+                        }
+                        return;
+                    } catch (error) {
+                        console.error('Error parsing sessionStorage data:', error);
+                        // Fall back to URL-based logic
+                    }
+                }
+
+                // Fall back to URL-based logic
                 const urlParams = new URLSearchParams(window.location.search);
-                const productId = urlParams.get('id') || 'IE-SP4T-1025-1095-1.5-Ni-RI';
-                const category = urlParams.get('category') || 'switches';
+                productId = urlParams.get('id');
+                category = urlParams.get('category') || 'switches';
                 currentCategory = category;
 
-                const categoryProducts = data.products[category];
-                if (categoryProducts) {
-                    updateProductGallery(categoryProducts);
-                    const product = categoryProducts[productId] || Object.values(categoryProducts)[0];
-                    if (product) {
-                        updateHeroSection(product);
-                        updateOverviewTab(product);
-                        updateSpecificationsTab(product);
-                        updateLibraryTab(product);
-                    }
-                } else {
-                    // Show a message if category not found
-                    document.querySelector('.main-content').innerHTML = '<p style="color:red">Category not found.</p>';
+                // Fetch products for the category
+                const response = await fetch(getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS_BY_CATEGORY}/${category}`));
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                const data = await response.json();
+                
+                if (data.data.length > 0) {
+                    updateProductGallery(data.data);
+                    
+                    // Load the specified product or the first one
+                    const productToLoad = productId || data.data[0]._id;
+                    await loadProduct(productToLoad);
+                } else {
+                    // Show a message if no products found
+                    document.querySelector('.main-content').innerHTML = '<p style="color:red">No products found for this category.</p>';
+                }
+            } catch (error) {
+                console.error('Error initializing page:', error);
+                document.querySelector('.main-content').innerHTML = '<p style="color:red">Error loading page data. Please try again later.</p>';
             }
         }
 

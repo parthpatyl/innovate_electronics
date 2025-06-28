@@ -16,6 +16,7 @@
     <div id="overlay"></div>
     <script src="js/header.js"></script>
     <script src="js/chatbot.js"></script>
+    <script src="js/config.js"></script>
     <script>
       // WhatsApp Button (left corner, all pages)
       (function() {
@@ -99,15 +100,37 @@
         // Fetch and populate products data
         async function loadProducts() {
             try {
-                const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-                
                 // Get the selected product data from sessionStorage
                 const selectedProduct = JSON.parse(sessionStorage.getItem('selectedProduct') || '{}');
                 const category = selectedProduct.category;
                 const subcategory = selectedProduct.name;
                 
-                // Fetch the products data
-                const response = await fetch(basePath + 'data/products.json');
+                // Map subcategory names to API category keys
+                const subcategoryKeyMap = {
+                    'Switches': 'switches',
+                    'Amplifiers': 'amplifiers',
+                    'Passive Components': 'passive_components',
+                    'Waveguides': 'waveguides',
+                    'Cable Assembly': 'cable_assembly',
+                    'Filters': 'filters',
+                    'DRO & PLDRO': 'dro_pldro',
+                    'Thin Film Circuits': 'thin_film_circuits',
+                    'Inductors': 'inductors',
+                    'Capacitors': 'capacitors',
+                    'Chambers EMI & Anechoic': 'chambers_emi_anechoic',
+                    'EMI EMC Chamber': 'emi_emc_chamber',
+                    'Anechoic Chamber': 'anechoic_chamber',
+                    'EMI EMC Scanner/Probe': 'emi_emc_scanner_probe',
+                    'Reverberation Chamber': 'reverberation_chamber'
+                };
+                
+                const categoryKey = subcategoryKeyMap[subcategory];
+                if (!categoryKey) {
+                    throw new Error(`Unknown subcategory: ${subcategory}`);
+                }
+                
+                // Fetch products by category from API
+                const response = await fetch(getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS_BY_CATEGORY}/${categoryKey}`));
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -118,23 +141,7 @@
                 // Clear existing rows
                 tbody.innerHTML = '';
                 
-                // Get products based on category and subcategory
-                let products = [];
-                if (category === 'RF and Microwave') {
-                    const subcategoryKeyMap = {
-                        'Switches': 'switches',
-                        'Amplifiers': 'amplifiers',
-                        'Passive Components': 'passive_components',
-                        'Waveguides': 'waveguides',
-                        // Add more subcategories here as needed
-                    };
-                    const key = subcategoryKeyMap[subcategory];
-                    if (key && data.products[key]) {
-                        products = Object.values(data.products[key]);
-                    }
-                }
-
-                if (products.length === 0) {
+                if (data.data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="no-products">No products found for this category.</td></tr>';
                     return;
                 }
@@ -150,45 +157,23 @@
                 }
                 
                 // Populate products
-                // Determine the key for the category in products.json
-                let categoryKey = null;
-                if (category === 'RF and Microwave') {
-                    const subcategoryKeyMap = {
-                        'Switches': 'switches',
-                        'Amplifiers': 'amplifiers',
-                        'Passive Components': 'passive_components',
-                        'Waveguides': 'waveguides',
-                        // Add more subcategories here as needed
-                    };
-                    categoryKey = subcategoryKeyMap[subcategory];
-                }
-                products.forEach(product => {
+                data.data.forEach(product => {
                     const row = document.createElement('tr');
                     // Create image cell
                     const imageCell = document.createElement('td');
                     const productImage = document.createElement('img');
-                    productImage.src = basePath + product.image;
+                    productImage.src = product.image;
                     productImage.alt = product.name;
                     productImage.className = 'product-thumbnail';
                     productImage.onerror = function() {
-                        this.src = basePath + 'assets/placeholder.png';
+                        this.src = 'assets/placeholder.png';
                     };
                     imageCell.appendChild(productImage);
 
                     // Create model number cell with link
                     const modelCell = document.createElement('td');
                     const modelLink = document.createElement('a');
-                    // Find the product key (ID) for this product
-                    let productId = product.name;
-                    if (categoryKey && data.products[categoryKey]) {
-                        for (const [key, value] of Object.entries(data.products[categoryKey])) {
-                            if (value.name === product.name) {
-                                productId = key;
-                                break;
-                            }
-                        }
-                    }
-                    modelLink.href = `productpagemain.html?category=${encodeURIComponent(categoryKey)}&id=${encodeURIComponent(productId)}`;
+                    modelLink.href = `productpagemain.html?category=${encodeURIComponent(categoryKey)}&id=${encodeURIComponent(product._id)}`;
                     modelLink.textContent = product.name;
                     modelLink.className = 'product-name';
                     modelCell.appendChild(modelLink);

@@ -15,6 +15,7 @@
     <div id="overlay"></div>
     <script src="js/header.js"></script>
     <script src="js/chatbot.js"></script>
+    <script src="js/config.js"></script>
     <script>
       // WhatsApp Button (left corner, all pages)
       (function() {
@@ -125,15 +126,27 @@
 
             let categories = [];
 
-            fetch('data/categories.json')
-                .then(response => response.json())
+            // Fetch categories from API
+            fetch(getApiUrl(API_CONFIG.ENDPOINTS.CATEGORIES))
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch categories data');
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    categories = data.categories;
+                    categories = data.data;
                     renderCategoryTabs();
                     // Load first category by default
                     if (categories.length > 0) {
                         loadCategory(categories[0].title);
                     }
+                })
+                .catch(error => {
+                    console.error('Error fetching categories:', error);
+                    // Show error message to user
+                    const productsGrid = document.querySelector('.products-grid');
+                    productsGrid.innerHTML = '<div class="error-message">Error loading categories. Please try again later.</div>';
                 });
 
             function renderCategoryTabs() {

@@ -9,28 +9,15 @@
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/chatbot.css">
   <link rel="stylesheet" href="css/employee.css">
+  <!-- CMS Styles -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="cms/styles.css">
 </head>
 
 <body>
   <div id="header-section"></div>
   <div id="overlay"></div>
   <script src="js/header.js"></script>
-  <script src="js/chatbot.js"></script>
-  <script>
-    // WhatsApp Button (left corner, all pages)
-    (function () {
-      if (!document.getElementById('whatsapp-btn')) {
-        var wa = document.createElement('div');
-        wa.id = 'whatsapp-btn';
-        wa.innerHTML = '<img src="assets/whatsapp_icon.png" alt="WhatsApp">';
-        wa.title = 'Chat on WhatsApp';
-        wa.onclick = function () {
-          window.open('https://wa.me/919999999999', '_blank');
-        };
-        document.body.appendChild(wa);
-      }
-    })();
-  </script>
   <script>
     // Load the header component dynamically with correct path
     (function () {
@@ -44,149 +31,223 @@
     })();
   </script>
 
-  <main class="employee-portal">
-    <div class="login-container" id="loginContainer">
-      <h2>Employee Login</h2>
-      <form id="loginForm">
-        <div class="input-group">
-          <input type="text" id="username" placeholder="Enter Username" required>
+  <main>
+    <div class="cms-container cms-loaded">
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h2><i class="fas fa-leaf"></i> Digital Garden</h2>
+          <p>Content Management</p>
         </div>
-        <div class="input-group">
-          <input type="password" id="password" placeholder="Enter Password" required>
-        </div>
-        <button type="submit" class="login-btn">Login</button>
-      </form>
+        
+        <nav class="sidebar-nav">
+          <ul>
+            <li>
+              <a href="#" class="nav-link active" data-section="dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="products">
+                <i class="fas fa-box"></i>
+                <span>Products</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="events">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Events</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="blogs">
+                <i class="fas fa-blog"></i>
+                <span>Blogs</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-section="newsletters">
+                <i class="fas fa-envelope"></i>
+                <span>Newsletters</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <div class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-box"></i>
+              </div>
+              <div class="stat-number" id="products-count">0</div>
+              <div class="stat-label">Products</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-calendar-alt"></i>
+              </div>
+              <div class="stat-number" id="events-count">0</div>
+              <div class="stat-label">Events</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-blog"></i>
+              </div>
+              <div class="stat-number" id="blogs-count">0</div>
+              <div class="stat-label">Blogs</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="stat-number" id="newsletters-count">0</div>
+              <div class="stat-label">Newsletters</div>
+            </div>
+          </div>
+
+          <div class="recent-content">
+            <h3>Recent Content</h3>
+            <div class="content-list" id="recent-content-list">
+              <div class="empty-state">
+                <i class="fas fa-seedling"></i>
+                <p>No content yet. Start by creating your first piece of content!</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="content-section">
+          <div class="content-actions">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="Search products..." id="products-search">
+            </div>
+            <div class="filter-dropdown">
+              <select id="products-status-filter">
+                <option value="">All Status</option>
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="content-list" id="products-list">
+            <div class="loading">Loading products...</div>
+          </div>
+        </section>
+
+        <!-- Events Section -->
+        <section id="events" class="content-section">
+          <div class="content-actions">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="Search events..." id="events-search">
+            </div>
+            <div class="filter-dropdown">
+              <select id="events-status-filter">
+                <option value="">All Status</option>
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="content-list" id="events-list">
+            <div class="loading">Loading events...</div>
+          </div>
+        </section>
+
+        <!-- Blogs Section -->
+        <section id="blogs" class="content-section">
+          <div class="content-actions">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="Search blogs..." id="blogs-search">
+            </div>
+            <div class="filter-dropdown">
+              <select id="blogs-status-filter">
+                <option value="">All Status</option>
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="content-list" id="blogs-list">
+            <div class="loading">Loading blogs...</div>
+          </div>
+        </section>
+
+        <!-- Newsletters Section -->
+        <section id="newsletters" class="content-section">
+          <div class="content-actions">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="Search newsletters..." id="newsletters-search">
+            </div>
+            <div class="filter-dropdown">
+              <select id="newsletters-status-filter">
+                <option value="">All Status</option>
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="content-list" id="newsletters-list">
+            <div class="loading">Loading newsletters...</div>
+          </div>
+        </section>
+      </div>
     </div>
 
-    <div class="portal-content" id="portalContent" style="display:none;">
-      <h1>Employee Resources Portal</h1>
-
-      <div class="resources-grid">
-        <!-- HR & Admin Resources -->
-        <div class="resource-card">
-          <h2><i class="icon-hr"></i> HR & Admin Resources</h2>
-          <ul>
-            <li><a href="#" class="download-link">Downloadable HR policies</a>
-              <ul class="sub-list">
-                <li>Annexure I Joining</li>
-                <li>Annexure II Induction</li>
-                <li>Annexure III Confidential and Non Competition</li>
-                <li>Annexure IV HR</li>
-                <li>Annexure IX Incentive & Bonus</li>
-                <li>Annexure V Information Technology</li>
-                <li>Annexure VI Holiday Entitlement & Leave Policy</li>
-                <li>Annexure VII Travel & Claim</li>
-                <li>Annexure VIII Relieving</li>
-                <li>Code of Conduct</li>
-                <li>Mandatory Training Agreement on Letterhead</li>
-                <li>Standard Operating Procedures SOP R1</li>
-              </ul>
-            </li>
-            <li><a href="#" class="download-link">Leave request form</a></li>
-            <li><a href="#" class="download-link">Form 16 (downloadable yearly)</a></li>
-            <li><a href="#" class="download-link">Onboarding documents for new employees</a></li>
-          </ul>
+    <!-- Modal Overlay -->
+    <div id="modal-overlay" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="modal-title">Create New Content</h3>
+          <button class="modal-close" id="modal-close">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
-
-        <!-- Training & Development -->
-        <div class="resource-card">
-          <h2><i class="icon-training"></i> Training & Development</h2>
-          <ul>
-            <li><a href="#" class="download-link">Internal training videos or links</a></li>
-            <li><a href="#" class="download-link">Product catalog & technical documentation</a></li>
-            <li><a href="#" class="download-link">Recording of webinars / internal meetings</a></li>
-            <li>Presentation of Products
-              <ul class="sub-list">
-                <li>YIC EM Scanner</li>
-                <li>YIC RF Scanner</li>
-                <li>YIC NFP Kit</li>
-                <li>Aercion EMI EMC Chamber</li>
-                <li>Aracion Anechoic Chamber</li>
-                <li>Aracion Shielded Box</li>
-                <li>DESPL Vibration Chamber</li>
-                <li>DESPL Product Presentation</li>
-                <li>CME Environmental chamber</li>
-                <li>CME Rain Chamber</li>
-              </ul>
-            </li>
-          </ul>
+        <div class="modal-body">
+          <form id="content-form">
+            <!-- Form fields will be dynamically generated -->
+          </form>
         </div>
-
-        <!-- Downloads Section -->
-        <div class="resource-card">
-          <h2><i class="icon-download"></i> Downloads Section</h2>
-          <ul>
-            <li><a href="#" class="download-link">Company letterhead templates</a></li>
-            <li><a href="#" class="download-link">Email drafts templates</a></li>
-            <li><a href="#" class="download-link">Company Profile</a></li>
-            <li><a href="#" class="download-link">SOP</a></li>
-            <li><a href="#" class="download-link">Monthly sales review formats</a></li>
-          </ul>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="modal-save">Save</button>
         </div>
+      </div>
+    </div>
 
-        <!-- Travel & Field Visit Tools -->
-        <div class="resource-card">
-          <h2><i class="icon-travel"></i> Travel & Field Visit Tools</h2>
-          <ul>
-            <li><a href="#" class="download-link">Weekly planner sheet</a></li>
-            <li><a href="#" class="download-link">Travel reimbursement claim</a>
-              <ul class="sub-list">
-                <li>Outstation plan</li>
-                <li>Local travel Plan</li>
-              </ul>
-            </li>
-            <li><a href="#" class="download-link">Travel Claim policy document</a></li>
-          </ul>
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal-overlay">
+      <div class="modal delete-modal">
+        <div class="modal-header">
+          <h3>Confirm Delete</h3>
+          <button class="modal-close" id="delete-modal-close">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
-
-        <!-- Sales & Marketing Tools -->
-        <div class="resource-card">
-          <h2><i class="icon-sales"></i> Sales & Marketing Tools</h2>
-          <ul>
-            <li><a href="#" class="download-link">Customer List (view/download)</a></li>
-            <li>Logos and images
-              <ul class="sub-list">
-                <li>IE Logo for circular fitment</li>
-                <li>IE Logo with white background</li>
-                <li>Background_IE-SVM</li>
-                <li>Logo High Resolution</li>
-                <li>Logo Very High Resolution</li>
-                <li>Logo Transparent</li>
-                <li>Innovate Building R2</li>
-                <li>IE NEW LOGO - .CDR</li>
-              </ul>
-            </li>
-            <li>Pre-filled quotation & PO templates
-              <ul class="sub-list">
-                <li>INR</li>
-                <li>USD</li>
-                <li>INR Local (within_India _Purchase)Quotation - Govt</li>
-                <li>INR Local (within_India _Purchase)Quotation – Private</li>
-                <li>INR Local (within_india_PO) Format</li>
-                <li>INR Local (within_india_Purchase)Quotation – PSU</li>
-                <li>INR Quotation-Defence</li>
-                <li>INR Quotation-GeM</li>
-                <li>INR Quotation-PSU</li>
-                <li>INR Quotation-Private</li>
-                <li>INR Quotation-Space</li>
-                <li>INR PO on Principal</li>
-                <li>USD PO On Principal</li>
-                <li>USD Quotation-Defence & Space</li>
-                <li>NRE & PRODUCT COSTING format</li>
-              </ul>
-            </li>
-            <li><a href="#" class="download-link">Eliminating terms & conditions</a></li>
-          </ul>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this content? This action cannot be undone.</p>
         </div>
-
-        <!-- Suggestions & Feedback -->
-        <div class="resource-card">
-          <h2><i class="icon-feedback"></i> Suggestions & Feedback</h2>
-          <ul>
-            <li><a href="#" class="download-link">Anonymous feedback form</a></li>
-            <li><a href="#" class="download-link">Innovation ideas submission box</a></li>
-            <li><a href="#" class="download-link">Employee grievances box</a></li>
-          </ul>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="delete-cancel">Cancel</button>
+          <button type="button" class="btn btn-danger" id="delete-confirm">Delete</button>
         </div>
       </div>
     </div>
@@ -219,6 +280,16 @@
         alert('Incorrect username or password. Please try again.');
       }
     });
+  </script>
+
+  <!-- CMS Scripts -->
+  <script src="cms/script.js"></script>
+  <script>
+    // Verification that CMS JavaScript is loaded
+    console.log('🎉 CMS Frontend loaded successfully!');
+    console.log('📁 CSS: cms/styles.css loaded');
+    console.log('⚡ JavaScript: cms/script.js loaded');
+    console.log('🌱 Ready to manage your digital garden!');
   </script>
 </body>
 

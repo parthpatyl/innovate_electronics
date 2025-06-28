@@ -4,11 +4,21 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const path = require('path');
+const connectDB = require('./config/database');
 const chatbotController = require('./controllers/chatbotController');
 const eventRegistrationController = require('./controllers/eventRegistrationController');
 
+// Import CMS routes
+const cmsRoutes = require('./routes/cmsRoutes');
+const cmsSimpleRoutes = require('./routes/cmsSimpleRoutes');
+const productRoutes = require('./routes/productRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Connect to MongoDB
+connectDB();
 
 // Middleware
 app.use(cors());
@@ -57,6 +67,16 @@ app.get('/api/get-cookie', (req, res) => {
 // Event registration
 app.post('/api/events/register', eventRegistrationController.register);
 
+// CMS Routes - Full MongoDB version
+app.use('/api/cms', cmsRoutes);
+
+// CMS Routes - Simple In-Memory version (for educational purposes)
+app.use('/api/cms-simple', cmsSimpleRoutes);
+
+// Product and Category Routes
+app.use('/api/categories', categoryRoutes);
+app.use('/api', productRoutes);
+
 // Fallback: serve index.html for any other route (for SPA or direct HTML navigation)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/landingpage.html'));
@@ -64,4 +84,7 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Full CMS API: http://localhost:${PORT}/api/cms`);
+  console.log(`Simple CMS API: http://localhost:${PORT}/api/cms-simple`);
+  console.log(`Products API: http://localhost:${PORT}/api/categories`);
 }); 

@@ -1,11 +1,18 @@
 {
   "name": "innovate_electronics",
   "version": "1.0.0",
-  "description": "",
+  "description": "Innovate Electronics - Full Stack E-commerce Platform",
   "main": "index.js",
   "scripts": {
+    "setup-db": "node database/run-setup.js",
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev",
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": ["ecommerce", "electronics", "mongodb", "express", "react"],
+  "author": "Innovate Electronics Team",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "body-parser": "^2.2.0",

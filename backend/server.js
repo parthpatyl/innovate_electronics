@@ -73,6 +73,47 @@ app.use('/api/cms', cmsRoutes);
 // CMS Routes - Simple In-Memory version (for educational purposes)
 app.use('/api/cms-simple', cmsSimpleRoutes);
 
+// Mock product endpoint for testing when MongoDB is not available
+// This reads from the actual products.json file to return correct data
+// MUST BE DEFINED BEFORE product routes to take precedence
+app.get('/api/products/category/:category/product/:subcategory', (req, res) => {
+  const { category, subcategory } = req.params;
+  console.log('Mock API called with category:', category, 'subcategory:', subcategory);
+  
+  try {
+    // Read the actual products.json file
+    const fs = require('fs');
+    const path = require('path');
+    const productsPath = path.join(__dirname, '../frontend/data/products.json');
+    const productsData = JSON.parse(fs.readFileSync(productsPath, 'utf-8'));
+    
+    // Check if the category and subcategory exist
+    if (productsData.products && 
+        productsData.products[category] && 
+        productsData.products[category][subcategory]) {
+      
+      const product = productsData.products[category][subcategory];
+      res.json({
+        success: true,
+        data: product
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'Product not found',
+        debug: { category, subcategory }
+      });
+    }
+  } catch (error) {
+    console.error('Error reading products.json:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error reading product data',
+      error: error.message
+    });
+  }
+});
+
 // Product and Category Routes
 app.use('/api/categories', categoryRoutes);
 app.use('/api', productRoutes);

@@ -59,12 +59,16 @@ router.get('/products/category/:category/subcategories', async (req, res) => {
 router.get('/products/category/:category/product/:subcategory', async (req, res) => {
   try {
     const { category, subcategory } = req.params;
+    console.log('Fetching product with category:', category, 'subcategory:', subcategory);
+    
     const product = await Product.getProduct(category, subcategory);
+    console.log('Product found:', product ? 'Yes' : 'No');
     
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found'
+        message: 'Product not found',
+        debug: { category, subcategory }
       });
     }
     
@@ -73,10 +77,12 @@ router.get('/products/category/:category/product/:subcategory', async (req, res)
       data: product
     });
   } catch (error) {
+    console.error('Error in getProduct route:', error);
     res.status(500).json({
       success: false,
       message: 'Error fetching product',
-      error: error.message
+      error: error.message,
+      debug: { category: req.params.category, subcategory: req.params.subcategory }
     });
   }
 });

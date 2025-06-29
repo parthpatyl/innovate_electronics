@@ -12,7 +12,7 @@ const API_CONFIG = {
         SEARCH: '/api/search',
         STATS: '/api/stats',
         
-        // New dynamic product endpoints
+        // New dynamic product endpoints from category-demo.html
         ALL_CATEGORIES: '/api/products/categories',
         ALL_PRODUCTS: '/api/products/all',
         PRODUCTS_BY_CATEGORY_DYNAMIC: '/api/products/category',
@@ -23,7 +23,10 @@ const API_CONFIG = {
 
 // Helper function to get full API URL
 function getApiUrl(endpoint) {
-    return API_CONFIG.BASE_URL + endpoint;
+    if (typeof API_CONFIG === 'undefined' || !API_CONFIG.BASE_URL) {
+        throw new Error('API_CONFIG is not defined or missing BASE_URL');
+    }
+    return (API_CONFIG.BASE_URL + '/' + endpoint).replace(/([^:]\/)\/+/, '$1');
 }
 
 // Export for use in other files

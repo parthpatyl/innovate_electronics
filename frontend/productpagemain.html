@@ -1,133 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Main Page</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/chatbot.css">
     <link rel="stylesheet" href="css/footer.css">
     <link rel="stylesheet" href="css/productpagestyle.css">
     <link rel="stylesheet" href="css/header.css">
-    <title>Product Main Page</title>
 </head>
-
 <body>
-        <div id="header-section"></div>
+    <div id="header-section"></div>
     <div id="overlay"></div>
-    <script src="js/header.js"></script>
+
+    <!-- WhatsApp Button -->
     <script src="js/chatbot.js"></script>
     <script src="js/config.js"></script>
+    <script src="js/header.js"></script>
     <script>
-      // WhatsApp Button (left corner, all pages)
-      (function() {
-        if (!document.getElementById('whatsapp-btn')) {
-          var wa = document.createElement('div');
-          wa.id = 'whatsapp-btn';
-          wa.innerHTML = '<img src="assets/whatsapp_icon.png" alt="WhatsApp">';
-          wa.title = 'Chat on WhatsApp';
-          wa.onclick = function() {
-            window.open('https://wa.me/919999999999', '_blank');
-          };
-          document.body.appendChild(wa);
-        }
-      })();
-    </script>
-    <script>
-        // Load the header component dynamically with correct path
-        (function() {
+        (function loadHeader() {
             const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
             fetch(basePath + 'header.html')
-                .then(response => response.text())
+                .then(res => res.text())
                 .then(data => {
                     document.getElementById('header-section').innerHTML = data;
                     if (typeof setupHeaderMenu === 'function') setupHeaderMenu();
                 });
         })();
+
+        (function setupWhatsApp() {
+            if (!document.getElementById('whatsapp-btn')) {
+                const wa = document.createElement('div');
+                wa.id = 'whatsapp-btn';
+                wa.innerHTML = '<img src="assets/whatsapp_icon.png" alt="WhatsApp">';
+                wa.title = 'Chat on WhatsApp';
+                wa.onclick = () => window.open('https://wa.me/919999999999', '_blank');
+                document.body.appendChild(wa);
+            }
+        })();
     </script>
 
-    <!-- Hero Section -->
+    <!-- Product Details Hero -->
     <section class="hero">
         <div class="hero-content">
             <div class="hero-text">
-                <div class="hero-heading-group">
-                    <h1 id="product-title">IE-SP4T-1025-1095-1.5-Ni-RI</h1>
-                    <h2 id="product-category">Switches</h2>
-                </div>
+                <h1 id="product-title"></h1>
+                <h2 id="product-category"></h2>
             </div>
             <div class="hero-image-container">
-                <img id="main-product-image" src="assets/RF-Microwave/Switches/IE-SP4T-1025-1095-1.5-Ni-RI.png" alt="Product Image">
+                <img id="main-product-image" alt="Product Image">
             </div>
         </div>
     </section>
 
-    <!-- Main Container with Gallery and Content -->
-    <div class="main-container" style="max-width: 1200px; margin: 32px auto; padding: 0 16px;">
-        <div class="content-wrapper" style="display: flex; gap: 32px;">
-            <!-- Product Gallery Thumbnails -->
-            <div class="product-gallery" style="display: flex; flex-direction: column; gap: 16px; width: 200px; flex-shrink: 0;">
-                <!-- Thumbnails will be dynamically populated -->
-            </div>
-
-            <!-- Main Content Area -->
-            <div class="main-content" style="flex: 1;">
+    <!-- Product Layout -->
+    <div class="main-container">
+        <div class="content-wrapper">
+            <div class="product-gallery"></div>
+            <div class="main-content">
                 <div class="tab-nav">
                     <button class="tab-button active" onclick="openTab(event, 'overview')">OVERVIEW</button>
                     <button class="tab-button" onclick="openTab(event, 'specifications')">SPECIFICATIONS</button>
                     <button class="tab-button" onclick="openTab(event, 'library')">LIBRARY</button>
                 </div>
 
-                <!-- Overview Tab -->
-                <div id="overview" class="tab-content active clearfix">
+                <div id="overview" class="tab-content active">
                     <div class="side-nav">
                         <div class="side-nav-item active" onclick="openSideContent(event, 'description')">Description</div>
                         <div class="side-nav-item" onclick="openSideContent(event, 'features')">Features</div>
                         <div class="side-nav-item" onclick="openSideContent(event, 'applications')">Applications</div>
                     </div>
-
                     <div class="content-area">
-                        <div id="description" class="side-content active">
-                            <div class="description-box">
-                                <!-- Description items will be dynamically populated -->
-                            </div>
-                        </div>
-
-                        <div id="features" class="side-content" style="display: none;">
-                            <ul class="features-list">
-                                <!-- Features will be dynamically populated -->
-                            </ul>
-                        </div>
-
-                        <div id="applications" class="side-content" style="display: none;">
-                            <ul class="features-list">
-                                <!-- Applications will be dynamically populated -->
-                            </ul>
-                        </div>
+                        <div id="description" class="side-content active"><div class="description-box"></div></div>
+                        <div id="features" class="side-content" style="display: none;"><ul class="features-list"></ul></div>
+                        <div id="applications" class="side-content" style="display: none;"><ul class="features-list"></ul></div>
                     </div>
                 </div>
 
-                <!-- Specifications Tab -->
-                <div id="specifications" class="tab-content">
-                    <div class="table-heading">Electrical Information</div>
-                    <table>
-                        <tr>
-                            <th>PARAMETER</th>
-                            <th>SPECIFICATION</th>
-                        </tr>
-                        <!-- Electrical specifications will be dynamically populated -->
-                    </table>
-
-                    <div class="table-heading">Mechanical Information</div>
-                    <table>
-                        <tr>
-                            <th>ITEM</th>
-                            <th>DESCRIPTION</th>
-                        </tr>
-                        <!-- Mechanical specifications will be dynamically populated -->
-                    </table>
-                </div>
-
-                <!-- Library Tab -->
+                <div id="specifications" class="tab-content"></div>
 
                 <div id="library" class="tab-content">
                     <div class="side-nav">
@@ -137,406 +88,325 @@
                         <div class="side-nav-item" onclick="openSideContent(event, 'executionFiles')">Execution Files</div>
                     </div>
                     <div class="content-area">
-                        <div id="catalouge" class="side-content active">
-                            <ul class="catalouge-list">
-                                <!-- Dynamic content for catalogue will be inserted here -->
-                            </ul>
-                        </div>
-                        <div id="drawings" class="side-content" style="display: none;">
-                            <ul class="library-list">
-                                <!-- Dynamic content for drawings will be inserted here -->
-                            </ul>
-                        </div>
-                        <div id="testReports" class="side-content" style="display: none;">
-                            <ul class="library-list">
-                                <!-- Dynamic content for test reports will be inserted here -->
-                            </ul>
-                        </div>
-                        <div id="executionFiles" class="side-content" style="display: none;">
-                            <ul class="library-list">
-                                <!-- Dynamic content for execution files will be inserted here -->
-                            </ul>
-                        </div>
+                        <div id="catalouge" class="side-content active"><ul class="catalouge-list"></ul></div>
+                        <div id="drawings" class="side-content" style="display: none;"><ul class="library-list"></ul></div>
+                        <div id="testReports" class="side-content" style="display: none;"><ul class="library-list"></ul></div>
+                        <div id="executionFiles" class="side-content" style="display: none;"><ul class="library-list"></ul></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript for Tab Navigation -->
-    <script>
-        let currentCategory = 'switches';
-
-        // Function to handle category changes
-        async function onCategoryChange(category) {
-            currentCategory = category;
-            try {
-                const response = await fetch(getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS_BY_CATEGORY_DYNAMIC}/${category}`));
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                
-                if (data.success && data.data) {
-                    // Convert the object structure to array format for gallery
-                    const productsArray = Object.entries(data.data).map(([key, product]) => ({
-                        ...product,
-                        _id: key, // Use the key as ID for navigation
-                        subcategoryKey: key
-                    }));
-                    updateProductGallery(productsArray);
-
-                    // Load default or first product from the new category
-                    if (productsArray.length > 0) {
-                        loadProduct(category, productsArray[0].subcategoryKey);
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading category products:', error);
-                document.querySelector('.main-content').innerHTML = '<p style="color:red">Error loading category products. Please try again later.</p>';
-            }
-        }
-
-        // Update product gallery
-        function updateProductGallery(products) {
-            const gallery = document.querySelector('.product-gallery');
-            gallery.innerHTML = products
-                .map(product => `
-                    <div class="product-thumb-container" onclick="loadProduct('${currentCategory}', '${product.subcategoryKey}')" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;margin-bottom:8px;">
-                        <div class="product-thumb-wrapper" style="position:relative;overflow:hidden;border-radius:4px;border:1px solid #eee;background:#fff;transition:all 0.2s ease;width:100%;">
-                            <img class="product-thumb" 
-                                 src="${product.image || 'assets/placeholder-product.png'}" 
-                                 alt="${product.name || product.subcategoryKey}" 
-                                 style="height:150px;width:100%;object-fit:contain;cursor:pointer;padding:12px;transition:transform 0.3s ease;">
-                        </div>
-                        <div class="product-thumb-name" style="text-align:center;margin-top:8px;font-size:13px;font-weight:500;color:#666;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${product.name || product.subcategoryKey}</div>
-                    </div>
-                `)
-                .join('');
-
-            // Add hover effect for zoom
-            const thumbWrappers = document.querySelectorAll('.product-thumb-wrapper');
-            thumbWrappers.forEach(wrapper => {
-                wrapper.addEventListener('mouseenter', function() {
-                    const img = this.querySelector('.product-thumb');
-                    img.style.transform = 'scale(1.1)';
-                });
-                wrapper.addEventListener('mouseleave', function() {
-                    const img = this.querySelector('.product-thumb');
-                    img.style.transform = 'scale(1)';
-                });
-            });
-
-            // Add active state to current product
-            const urlParams = new URLSearchParams(window.location.search);
-            const currentSubcategory = urlParams.get('subcategory');
-            if (currentSubcategory) {
-                const currentThumb = gallery.querySelector(`[onclick="loadProduct('${currentCategory}', '${currentSubcategory}')"]`);
-                if (currentThumb) {
-                    const thumbWrapper = currentThumb.querySelector('.product-thumb-wrapper');
-                    thumbWrapper.style.border = '1px solid #ddd';
-                    thumbWrapper.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
-                }
-            }
-        }
-
-        // Load specific product by category and subcategory
-        async function loadProduct(category, subcategory) {
-            try {
-                // Fetch specific product using the new API endpoint
-                const response = await fetch(getApiUrl(`${API_CONFIG.ENDPOINTS.SPECIFIC_PRODUCT}/${encodeURIComponent(category)}/product/${encodeURIComponent(subcategory)}`));
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                const product = data.data;
-                
-                if (!product) {
-                    console.error('Product not found');
-                    document.querySelector('.main-content').innerHTML = '<p style="color:red">Product not found. Please try again later.</p>';
-                    return;
-                }
-
-                // Update active state in gallery
-                const gallery = document.querySelector('.product-gallery');
-                if (gallery) {
-                    const allThumbWrappers = gallery.querySelectorAll('.product-thumb-wrapper');
-                    allThumbWrappers.forEach(wrapper => {
-                        wrapper.style.border = '1px solid #eee';
-                        wrapper.style.boxShadow = 'none';
-                    });
-                    const selectedThumb = gallery.querySelector(`[onclick="loadProduct('${category}', '${subcategory}')"] .product-thumb-wrapper`);
-                    if (selectedThumb) {
-                        selectedThumb.style.border = '1px solid #ddd';
-                        selectedThumb.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
-                    }
-                }
-
-                updateHeroSection(product);
-                updateOverviewTab(product);
-                updateSpecificationsTab(product);
-                updateLibraryTab(product);
-                
-                // Update URL without page reload
-                const url = new URL(window.location);
-                url.searchParams.set('category', category);
-                url.searchParams.set('subcategory', subcategory);
-                window.history.pushState({}, '', url);
-            } catch (error) {
-                console.error('Error loading product:', error);
-                // Show error message to user
-                document.querySelector('.main-content').innerHTML = '<p style="color:red">Error loading product. Please try again later.</p>';
-            }
-        }
-
-        // Update hero section with product data
-        function updateHeroSection(product) {
-            const mainImg = document.getElementById('main-product-image');
-            const title = document.getElementById('product-title');
-            const category = document.getElementById('product-category');
-
-            mainImg.src = product.image || 'assets/placeholder-product.png';
-            mainImg.alt = product.name || 'Product Image';
-            title.textContent = product.name || 'Product';
-            category.textContent = product.category || currentCategory;
-        }
-
-        // Update overview tab content
-        function updateOverviewTab(product) {
-            // Update description
-            const descriptionBox = document.querySelector('#description .description-box');
-            if (descriptionBox && product.overview && product.overview.description) {
-                descriptionBox.innerHTML = product.overview.description
-                    .map(item => `<div class="description-item">${item}</div>`)
-                    .join('');
-            }
-
-            // Update features
-            const featuresList = document.querySelector('#features .features-list');
-            if (featuresList && product.overview && product.overview.features) {
-                featuresList.innerHTML = product.overview.features
-                    .map(feature => `<li>${feature}</li>`)
-                    .join('');
-            }
-
-            // Update applications
-            const applicationsList = document.querySelector('#applications .features-list');
-            if (applicationsList && product.overview && product.overview.applications) {
-                applicationsList.innerHTML = product.overview.applications
-                    .map(app => `<li>${app}</li>`)
-                    .join('');
-            }
-        }
-
-        // Update specifications tab content
-        function updateSpecificationsTab(product) {
-            const specsContent = document.getElementById('specifications');
-            if (!specsContent) return;
-            
-            let electricalTable = '';
-            let mechanicalTable = '';
-            
-            // Create electrical specifications table
-            if (product.specifications && product.specifications.electrical && product.specifications.electrical.length > 0) {
-                electricalTable = `
-                    <div class="table-heading">Electrical Information</div>
-                    <table>
-                        <tr>
-                            <th>PARAMETER</th>
-                            <th>SPECIFICATION</th>
-                        </tr>
-                        ${product.specifications.electrical
-                            .map(spec => `
-                                <tr>
-                                    <td>${spec.parameter}</td>
-                                    <td>${spec.specification}</td>
-                                </tr>
-                            `).join('')}
-                    </table>
-                `;
-            }
-
-            // Create mechanical specifications table
-            if (product.specifications && product.specifications.mechanical && product.specifications.mechanical.length > 0) {
-                mechanicalTable = `
-                    <div class="table-heading">Mechanical Information</div>
-                    <table>
-                        <tr>
-                            <th>ITEM</th>
-                            <th>DESCRIPTION</th>
-                        </tr>
-                        ${product.specifications.mechanical
-                            .map(spec => `
-                                <tr>
-                                    <td>${spec.item}</td>
-                                    <td>${spec.description}</td>
-                                </tr>
-                            `).join('')}
-                    </table>
-                `;
-            }
-
-            specsContent.innerHTML = electricalTable + mechanicalTable;
-        }
-
-        // Update library tab content
-        function updateLibraryTab(product) {
-            // Update catalogue
-            const catalogueList = document.querySelector("#catalouge .catalouge-list");
-            if (catalogueList && product.library && product.library.catalogue) {
-                catalogueList.innerHTML = product.library.catalogue
-                    .map(item => {
-                        const isPDF = item.link.match(/\.pdf$/i);
-                        return `<li><a href="${item.link}" target="_blank">${item.name}${isPDF ? ' (PDF)' : ''}</a></li>`;
-                    })
-                    .join("");
-            }
-
-            // Update drawings
-            const drawingsList = document.querySelector("#drawings .library-list");
-            if (drawingsList && product.library && product.library.drawings) {
-                drawingsList.innerHTML = product.library.drawings
-                    .map(drawing => {
-                        const isImage = drawing.link.match(/\.(jpg|jpeg|png|gif)$/i);
-                        if (isImage) {
-                            return `<li><img src="${drawing.link}" alt="${drawing.name}" class="drawing-image"></li>`;
-                        } else {
-                            return `<li><a href="${drawing.link}" target="_blank">${drawing.name}</a></li>`;
-                        }
-                    })
-                    .join("");
-            }
-
-            // Update test reports
-            const testReportsList = document.querySelector("#testReports .library-list");
-            if (testReportsList && product.library && product.library.testReports) {
-                testReportsList.innerHTML = product.library.testReports
-                    .map(report => {
-                        const isPDF = report.link.match(/\.pdf$/i);
-                        return `<li><a href="${report.link}" target="_blank">${report.name}${isPDF ? ' (PDF)' : ''}</a></li>`;
-                    })
-                    .join("");
-            }
-
-            // Update execution files
-            const executionFilesList = document.querySelector("#executionFiles .library-list");
-            if (executionFilesList && product.library && product.library.executionFiles) {
-                executionFilesList.innerHTML = product.library.executionFiles
-                    .map(file => {
-                        const isPDF = file.link.match(/\.pdf$/i);
-                        return `<li><a href="${file.link}" target="_blank">${file.name}${isPDF ? ' (PDF)' : ''}</a></li>`;
-                    })
-                    .join("");
-            }
-        }
-
-        // Initialize page with product data
-        async function initializePage() {
-            try {
-                // Get URL parameters
-                const urlParams = new URLSearchParams(window.location.search);
-                const category = urlParams.get('category') || 'switches';
-                const subcategory = urlParams.get('subcategory');
-                currentCategory = category;
-
-                if (!subcategory) {
-                    document.querySelector('.main-content').innerHTML = '<p style="color:red">No subcategory specified. Please select a product.</p>';
-                    return;
-                }
-
-                // Fetch products for the category
-                const response = await fetch(getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS_BY_CATEGORY_DYNAMIC}/${category}`));
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                
-                if (data.success && data.data) {
-                    // Convert the object structure to array format for gallery
-                    const productsArray = Object.entries(data.data).map(([key, product]) => ({
-                        ...product,
-                        _id: key,
-                        subcategoryKey: key
-                    }));
-                    
-                    if (productsArray.length > 0) {
-                        updateProductGallery(productsArray);
-                        
-                        // Load the specified product
-                        await loadProduct(category, subcategory);
-                    } else {
-                        // Show a message if no products found
-                        document.querySelector('.main-content').innerHTML = '<p style="color:red">No products found for this category.</p>';
-                    }
-                } else {
-                    // Show a message if no products found
-                    document.querySelector('.main-content').innerHTML = '<p style="color:red">No products found for this category.</p>';
-                }
-            } catch (error) {
-                console.error('Error initializing page:', error);
-                document.querySelector('.main-content').innerHTML = '<p style="color:red">Error loading page data. Please try again later.</p>';
-            }
-        }
-
-        // Initialize page when DOM is loaded
-        document.addEventListener("DOMContentLoaded", initializePage);
-
-        // Tab navigation
-        function openTab(evt, tabName) {
-            var i, tabContent, tabButtons;
-
-            // Hide all tab content
-            tabContent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabContent.length; i++) {
-                tabContent[i].className = tabContent[i].className.replace(" active", "");
-            }
-
-            // Remove active class from all tab buttons
-            tabButtons = document.getElementsByClassName("tab-button");
-            for (i = 0; i < tabButtons.length; i++) {
-                tabButtons[i].className = tabButtons[i].className.replace(" active", "");
-            }
-
-            // Show the selected tab and add active class to the button
-            document.getElementById(tabName).className += " active";
-            evt.currentTarget.className += " active";
-        }
-
-        // Side nav functionality
-        function openSideContent(evt, contentName) {
-            var i, sideContent, sideNavItems;
-
-            // Hide all side content
-            sideContent = document.getElementsByClassName("side-content");
-            for (i = 0; i < sideContent.length; i++) {
-                sideContent[i].style.display = "none";
-            }
-
-            // Remove active class from all side nav items
-            sideNavItems = document.getElementsByClassName("side-nav-item");
-            for (i = 0; i < sideNavItems.length; i++) {
-                sideNavItems[i].className = sideNavItems[i].className.replace(" active", "");
-            }
-
-            // Show the selected content and add active class to the nav item
-            document.getElementById(contentName).style.display = "block";
-            evt.currentTarget.className += " active";
-        }
-    </script>
-
+    <!-- Footer -->
     <div id="footer-section"></div>
-
     <script>
-        // Load the footer component dynamically with correct path
-        (function() {
+        (function loadFooter() {
             const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
             fetch(basePath + 'footer.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('footer-section').innerHTML = data;
-                });
+                .then(res => res.text())
+                .then(data => document.getElementById('footer-section').innerHTML = data);
+        })();
+
+        // Product page functionality
+        (function() {
+            // Category mapping function to convert UI category names to database category names
+            function mapCategoryName(uiCategory) {
+                const categoryMap = {
+                    'RFandMicrowave': 'switches',
+                    'Rf & Microwave': 'switches',
+                    'RF and Microwave': 'switches',
+                    'TestAndMeasurement': 'test_and_measurement',
+                    'Test & Measurement': 'test_and_measurement',
+                    'SpecialityChambers': 'speciality_chambers',
+                    'Speciality Chambers': 'speciality_chambers'
+                };
+                
+                // Try exact match first
+                if (categoryMap[uiCategory]) {
+                    return categoryMap[uiCategory];
+                }
+                
+                // Try case-insensitive match
+                const lowerCategory = uiCategory.toLowerCase();
+                for (const [key, value] of Object.entries(categoryMap)) {
+                    if (key.toLowerCase() === lowerCategory) {
+                        return value;
+                    }
+                }
+                
+                // If no mapping found, return the original category name
+                console.warn('No category mapping found for:', uiCategory);
+                return uiCategory.toLowerCase().replace(/\s+/g, '_');
+            }
+
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+            const subcategory = urlParams.get('subcategory');
+            const productName = urlParams.get('name');
+            const productId = urlParams.get('id');
+
+            // Determine which parameter to use for the product ID
+            const finalProductId = productId || subcategory || productName;
+
+            if (!finalProductId) {
+                console.error('No product ID found in URL parameters');
+                document.getElementById('product-title').textContent = 'Product Not Found';
+                return;
+            }
+
+            // Map the category name to the database category name
+            const mappedCategory = category ? mapCategoryName(category) : null;
+            console.log('Original category:', category);
+            console.log('Mapped category:', mappedCategory);
+
+            // Fetch product data from API
+            async function fetchProductData() {
+                try {
+                    // Show loading state
+                    document.getElementById('product-title').textContent = 'Loading...';
+                    
+                    // Use the correct API endpoint for category/subcategory structure
+                    // The endpoint is: /api/products/category/:category/product/:subcategory
+                    if (!mappedCategory) {
+                        throw new Error('Category parameter is required');
+                    }
+                    
+                    // Decode URL parameters to get the original values
+                    const decodedCategory = decodeURIComponent(mappedCategory);
+                    let decodedProductId = decodeURIComponent(finalProductId);
+                    
+                    // Use the original product ID format as expected by the API
+                    // No need to convert to lowercase or replace spaces with underscores
+                    
+                    console.log('Category:', decodedCategory);
+                    console.log('Original Product ID:', finalProductId);
+                    console.log('Processed Product ID:', decodedProductId);
+                    
+                    const apiUrl = getApiUrl(`${API_CONFIG.ENDPOINTS.SPECIFIC_PRODUCT}/${encodeURIComponent(decodedCategory)}/product/${encodeURIComponent(decodedProductId)}`);
+                    console.log('Fetching product from:', apiUrl);
+                    
+                    const response = await fetch(apiUrl);
+                    console.log('Response status:', response.status);
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Response error:', errorText);
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('API response:', data);
+                    
+                    if (data.success && data.data) {
+                        displayProduct(data.data);
+                    } else {
+                        throw new Error('Product not found or invalid response');
+                    }
+                } catch (error) {
+                    console.error('Error fetching product:', error);
+                    document.getElementById('product-title').textContent = 'Product Not Found';
+                    document.getElementById('product-category').textContent = 'Error loading product details';
+                    
+                    // Show more detailed error information
+                    const errorDiv = document.createElement('div');
+                    errorDiv.style.cssText = 'color: red; padding: 20px; text-align: center;';
+                    errorDiv.innerHTML = `
+                        <h3>Error Loading Product</h3>
+                        <p>${error.message}</p>
+                        <p>Original Category: ${category || 'Not provided'}</p>
+                        <p>Mapped Category: ${mappedCategory || 'Not provided'}</p>
+                        <p>Original Product ID: ${finalProductId || 'Not provided'}</p>
+                        <p>Processed Product ID: ${decodedProductId || 'Not provided'}</p>
+                        <p>API URL: ${apiUrl || 'Not generated'}</p>
+                    `;
+                    document.querySelector('.main-container').prepend(errorDiv);
+                }
+            }
+
+            // Display product data
+            function displayProduct(product) {
+                // Update page title
+                document.title = `${product.name} - Product Details`;
+                
+                // Update hero section
+                document.getElementById('product-title').textContent = product.name || 'Product Name';
+                document.getElementById('product-category').textContent = product.category || 'Product Category';
+                
+                // Update main product image
+                const mainImage = document.getElementById('main-product-image');
+                if (product.image) {
+                    mainImage.src = product.image;
+                    mainImage.alt = product.name;
+                } else {
+                    mainImage.src = 'assets/placeholder-product.png';
+                    mainImage.alt = 'Product Image';
+                }
+
+                // Update overview tab content
+                if (product.overview) {
+                    // Description
+                    const descriptionBox = document.querySelector('.description-box');
+                    if (product.overview.description && product.overview.description.length > 0) {
+                        descriptionBox.innerHTML = product.overview.description.map(desc => `<p>${desc}</p>`).join('');
+                    } else {
+                        descriptionBox.innerHTML = '<p>No description available.</p>';
+                    }
+
+                    // Features
+                    const featuresList = document.querySelector('#features .features-list');
+                    if (product.overview.features && product.overview.features.length > 0) {
+                        featuresList.innerHTML = product.overview.features.map(feature => `<li>${feature}</li>`).join('');
+                    } else {
+                        featuresList.innerHTML = '<li>No features available.</li>';
+                    }
+
+                    // Applications
+                    const applicationsList = document.querySelector('#applications .features-list');
+                    if (product.overview.applications && product.overview.applications.length > 0) {
+                        applicationsList.innerHTML = product.overview.applications.map(app => `<li>${app}</li>`).join('');
+                    } else {
+                        applicationsList.innerHTML = '<li>No applications available.</li>';
+                    }
+                }
+
+                // Update specifications tab
+                if (product.specifications) {
+                    const specsContent = document.getElementById('specifications');
+                    let specsHTML = '<div class="specifications-content">';
+                    
+                    // Electrical specifications
+                    if (product.specifications.electrical && product.specifications.electrical.length > 0) {
+                        specsHTML += '<div class="spec-section"><h3>Electrical Specifications</h3><table class="specs-table">';
+                        specsHTML += '<tr><th>Parameter</th><th>Specification</th></tr>';
+                        product.specifications.electrical.forEach(spec => {
+                            specsHTML += `<tr><td>${spec.parameter}</td><td>${spec.specification}</td></tr>`;
+                        });
+                        specsHTML += '</table></div>';
+                    }
+
+                    // Mechanical specifications
+                    if (product.specifications.mechanical && product.specifications.mechanical.length > 0) {
+                        specsHTML += '<div class="spec-section"><h3>Mechanical Specifications</h3><table class="specs-table">';
+                        specsHTML += '<tr><th>Item</th><th>Description</th></tr>';
+                        product.specifications.mechanical.forEach(spec => {
+                            specsHTML += `<tr><td>${spec.item}</td><td>${spec.description}</td></tr>`;
+                        });
+                        specsHTML += '</table></div>';
+                    }
+
+                    // Table specifications
+                    if (product.tableSpecs) {
+                        specsHTML += '<div class="spec-section"><h3>Product Specifications</h3><table class="specs-table">';
+                        if (product.tableSpecs.specifications) {
+                            specsHTML += `<tr><td><strong>Specifications</strong></td><td>${product.tableSpecs.specifications}</td></tr>`;
+                        }
+                        if (product.tableSpecs.performance) {
+                            specsHTML += `<tr><td><strong>Performance</strong></td><td>${product.tableSpecs.performance}</td></tr>`;
+                        }
+                        if (product.tableSpecs.outputLevel) {
+                            specsHTML += `<tr><td><strong>Output Level</strong></td><td>${product.tableSpecs.outputLevel}</td></tr>`;
+                        }
+                        if (product.tableSpecs.additionalFeatures) {
+                            specsHTML += `<tr><td><strong>Additional Features</strong></td><td>${product.tableSpecs.additionalFeatures}</td></tr>`;
+                        }
+                        specsHTML += '</table></div>';
+                    }
+
+                    specsHTML += '</div>';
+                    specsContent.innerHTML = specsHTML;
+                }
+
+                // Update library tab
+                if (product.library) {
+                    // Catalogue
+                    const catalogueList = document.querySelector('#catalouge .catalouge-list');
+                    if (product.library.catalogue && product.library.catalogue.length > 0) {
+                        catalogueList.innerHTML = product.library.catalogue.map(item => 
+                            `<li><a href="${item.link}" target="_blank">${item.name}</a></li>`
+                        ).join('');
+                    } else {
+                        catalogueList.innerHTML = '<li>No catalogue files available.</li>';
+                    }
+
+                    // Drawings
+                    const drawingsList = document.querySelector('#drawings .library-list');
+                    if (product.library.drawings && product.library.drawings.length > 0) {
+                        drawingsList.innerHTML = product.library.drawings.map(item => 
+                            `<li><a href="${item.link}" target="_blank">${item.name}</a></li>`
+                        ).join('');
+                    } else {
+                        drawingsList.innerHTML = '<li>No drawing files available.</li>';
+                    }
+
+                    // Test Reports
+                    const testReportsList = document.querySelector('#testReports .library-list');
+                    if (product.library.testReports && product.library.testReports.length > 0) {
+                        testReportsList.innerHTML = product.library.testReports.map(item => 
+                            `<li><a href="${item.link}" target="_blank">${item.name}</a></li>`
+                        ).join('');
+                    } else {
+                        testReportsList.innerHTML = '<li>No test report files available.</li>';
+                    }
+
+                    // Execution Files
+                    const executionFilesList = document.querySelector('#executionFiles .library-list');
+                    if (product.library.executionFiles && product.library.executionFiles.length > 0) {
+                        executionFilesList.innerHTML = product.library.executionFiles.map(item => 
+                            `<li><a href="${item.link}" target="_blank">${item.name}</a></li>`
+                        ).join('');
+                    } else {
+                        executionFilesList.innerHTML = '<li>No execution files available.</li>';
+                    }
+                }
+            }
+
+            // Tab functionality
+            window.openTab = function(evt, tabName) {
+                var i, tabcontent, tablinks;
+                
+                // Hide all tab content
+                tabcontent = document.getElementsByClassName("tab-content");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                
+                // Remove active class from all tab buttons
+                tablinks = document.getElementsByClassName("tab-button");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                
+                // Show the selected tab content and add active class to the button
+                document.getElementById(tabName).style.display = "block";
+                evt.currentTarget.className += " active";
+            }
+
+            // Side content functionality
+            window.openSideContent = function(evt, contentName) {
+                var i, sidecontent, sidenavitems;
+                
+                // Hide all side content
+                sidecontent = document.getElementsByClassName("side-content");
+                for (i = 0; i < sidecontent.length; i++) {
+                    sidecontent[i].style.display = "none";
+                }
+                
+                // Remove active class from all side nav items
+                sidenavitems = document.getElementsByClassName("side-nav-item");
+                for (i = 0; i < sidenavitems.length; i++) {
+                    sidenavitems[i].className = sidenavitems[i].className.replace(" active", "");
+                }
+                
+                // Show the selected side content and add active class to the nav item
+                document.getElementById(contentName).style.display = "block";
+                evt.currentTarget.className += " active";
+            }
+
+            // Initialize the page
+            fetchProductData();
         })();
     </script>
 </body>
-
 </html>

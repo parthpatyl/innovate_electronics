@@ -238,7 +238,7 @@
                             <p><strong>Category:</strong> ${product.category}</p>
                             <p><strong>Specifications:</strong> ${product.tableSpecs?.specifications || 'N/A'}</p>
                             <p><strong>Performance:</strong> ${product.tableSpecs?.performance || 'N/A'}</p>
-                            <a href="subcategory.html?category=${category}&product=${encodeURIComponent(product.name)}" 
+                            <a href="subcategory.html?category=${category}&product=${product.name}" 
                                class="btn btn-secondary">View Details</a>
                         </div>
                     `).join('')}

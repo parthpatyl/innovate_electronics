@@ -135,7 +135,7 @@
                     // Add only first 6 items to the category
                     (category.items || []).slice(0, 6).forEach(item => {
                         const itemElement = document.createElement('a');
-                        itemElement.href = `productpagemain.html?category=${encodeURIComponent(category.title)}&name=${encodeURIComponent(item.name)}`;
+                        itemElement.href = `productpagemain.html?category=${encodeURIComponent(category.title)}&name=${item.name}`;
                         itemElement.classList.add('img-container');
                         itemElement.innerHTML = `
                             <img src="${item.image || 'assets/image35.png'}" alt="${item.name}" onerror="this.src='assets/image35.png'">

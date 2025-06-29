@@ -4,13 +4,7 @@
   "description": "Backend for Innovate Electronics",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "import-data": "node scripts/importData.js",
-    "import-products": "node scripts/importProducts.js",
-    "import-products-advanced": "node scripts/importProductsAdvanced.js",
-    "test-import": "node scripts/testImport.js",
-    "seed-categories": "node scripts/seedCategories.js",
-    "seed-products": "node scripts/seedProducts.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",

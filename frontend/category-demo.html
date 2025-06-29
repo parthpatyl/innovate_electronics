@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Demo - Innovate Electronics</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .api-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .api-endpoint {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .category-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .category-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .product-list {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .product-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        .product-item:hover {
+            background: #e9ecef;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .response-area {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>Category API Demo</h1>
+        <p>This page demonstrates the new dynamic API endpoints for accessing products by category.</p>
+
+        <!-- API Endpoints Section -->
+        <div class="api-section">
+            <h2>Available API Endpoints</h2>
+            <div class="api-endpoint">GET /api/products/categories</div>
+            <div class="api-endpoint">GET /api/products/all</div>
+            <div class="api-endpoint">GET /api/products/category/:category</div>
+            <div class="api-endpoint">GET /api/products/category/:category/subcategories</div>
+            <div class="api-endpoint">GET /api/products/category/:category/product/:subcategory</div>
+        </div>
+
+        <!-- Categories Section -->
+        <div class="api-section">
+            <h2>Available Categories</h2>
+            <div id="categories-container">
+                <div class="loading">Loading categories...</div>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div class="api-section">
+            <h2>Products by Category</h2>
+            <div id="products-container">
+                <p>Select a category above to view its products.</p>
+            </div>
+        </div>
+
+        <!-- API Response Section -->
+        <div class="api-section">
+            <h2>API Response</h2>
+            <div id="api-response" class="response-area">
+                <p>API responses will appear here...</p>
+            </div>
+        </div>
+
+        <!-- Navigation Section -->
+        <div class="api-section">
+            <h2>Navigation</h2>
+            <a href="subcategory.html?category=switches" class="btn">View Switches</a>
+            <a href="subcategory.html?category=amplifiers" class="btn">View Amplifiers</a>
+            <a href="subcategory.html?category=waveguides" class="btn">View Waveguides</a>
+            <a href="subcategory.html?category=passive_components" class="btn">View Passive Components</a>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Helper function to get API URL
+        function getApiUrl(endpoint) {
+            if (typeof API_CONFIG === 'undefined' || !API_CONFIG.BASE_URL) {
+                throw new Error('API_CONFIG is not defined or missing BASE_URL');
+            }
+            return (API_CONFIG.BASE_URL + '/' + endpoint).replace(/([^:]\/)\/+/, '$1');
+        }
+
+        // Function to display API response
+        function displayResponse(title, data) {
+            const responseArea = document.getElementById('api-response');
+            responseArea.innerHTML = `
+                <h4>${title}</h4>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+        }
+
+        // Fetch all categories
+        async function fetchCategories() {
+            try {
+                const url = getApiUrl(API_CONFIG.ENDPOINTS.ALL_CATEGORIES);
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayCategories(data.data);
+                    displayResponse('Categories Response', data);
+                } else {
+                    throw new Error('Failed to fetch categories');
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                document.getElementById('categories-container').innerHTML = 
+                    `<p style="color: red;">Error loading categories: ${error.message}</p>`;
+            }
+        }
+
+        // Display categories
+        function displayCategories(categories) {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = `
+                <div class="category-grid">
+                    ${categories.map(category => `
+                        <div class="category-card" onclick="fetchProductsByCategory('${category}')">
+                            <h3>${category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+                            <p>Click to view products</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Fetch products by category
+        async function fetchProductsByCategory(category) {
+            try {
+                const productsContainer = document.getElementById('products-container');
+                productsContainer.innerHTML = '<div class="loading">Loading products...</div>';
+
+                const url = getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS_BY_CATEGORY_DYNAMIC}/${category}`);
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayProducts(category, data.data);
+                    displayResponse(`Products for ${category}`, data);
+                } else {
+                    throw new Error('Failed to fetch products');
+                }
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                document.getElementById('products-container').innerHTML = 
+                    `<p style="color: red;">Error loading products: ${error.message}</p>`;
+            }
+        }
+
+        // Display products
+        function displayProducts(category, products) {
+            const container = document.getElementById('products-container');
+            const productEntries = Object.entries(products);
+            
+            container.innerHTML = `
+                <h3>Products in ${category.charAt(0).toUpperCase() + category.slice(1)} (${productEntries.length})</h3>
+                <div class="product-list">
+                    ${productEntries.map(([key, product]) => `
+                        <div class="product-item" onclick="viewProduct('${category}', '${key}')">
+                            <h4>${product.name}</h4>
+                            <p><strong>Category:</strong> ${product.category}</p>
+                            <p><strong>Specifications:</strong> ${product.tableSpecs?.specifications || 'N/A'}</p>
+                            <p><strong>Performance:</strong> ${product.tableSpecs?.performance || 'N/A'}</p>
+                            <a href="subcategory.html?category=${category}&product=${encodeURIComponent(product.name)}" 
+                               class="btn btn-secondary">View Details</a>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // View specific product
+        async function viewProduct(category, subcategory) {
+            try {
+                const url = getApiUrl(`${API_CONFIG.ENDPOINTS.SPECIFIC_PRODUCT}/${category}/product/${subcategory}`);
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayResponse(`Product: ${subcategory}`, data);
+                } else {
+                    throw new Error('Failed to fetch product');
+                }
+            } catch (error) {
+                console.error('Error fetching product:', error);
+                displayResponse('Error', { error: error.message });
+            }
+        }
+
+        // Initialize the demo
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchCategories();
+        });
+    </script>
+</body>
+</html> 

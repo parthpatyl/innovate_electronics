@@ -48,11 +48,11 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1>Switches</h1>
-            <p></p>
+            <h1 id="category-title"></h1>
+            <p id="category-description"></p>
         </div>
         <div class="hero-image">
-            <img src="assets/RF-Microwave/Switches/Primary_Switches.png" alt="Test Equipment" class="product-image">
+            <img id="category-image" src="" alt="">
         </div>
     </section>
     
@@ -60,7 +60,7 @@
     <!-- Main Content -->
     <div class="main-content">
         <div class="intro-text">
-            <p>Explore our precision-engineered RF and microwave switches designed specifically for aerospace applications. Our high-reliability switching solutions meet rigorous aerospace standards with exceptional performance in extreme environments.</p>
+            <p id="intro-text">Explore our precision-engineered RF and microwave solutions designed specifically for aerospace applications. Our high-reliability solutions meet rigorous aerospace standards with exceptional performance in extreme environments.</p>
         </div>
         
         <!-- Products Table -->
@@ -75,7 +75,7 @@
                     <th>ADDITIONAL FEATURES</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="products-tbody">
                 <!-- Products will be dynamically populated -->
             </tbody>
         </table>
@@ -96,123 +96,137 @@
         })();
     </script>
 
-    <script>
-        // Fetch and populate products data
-        async function loadProducts() {
-            try {
-                // Get the selected product data from sessionStorage
-                const selectedProduct = JSON.parse(sessionStorage.getItem('selectedProduct') || '{}');
-                const category = selectedProduct.category;
-                const subcategory = selectedProduct.name;
-                
-                // Map subcategory names to API category keys
-                const subcategoryKeyMap = {
-                    'Switches': 'switches',
-                    'Amplifiers': 'amplifiers',
-                    'Passive Components': 'passive_components',
-                    'Waveguides': 'waveguides',
-                    'Cable Assembly': 'cable_assembly',
-                    'Filters': 'filters',
-                    'DRO & PLDRO': 'dro_pldro',
-                    'Thin Film Circuits': 'thin_film_circuits',
-                    'Inductors': 'inductors',
-                    'Capacitors': 'capacitors',
-                    'Chambers EMI & Anechoic': 'chambers_emi_anechoic',
-                    'EMI EMC Chamber': 'emi_emc_chamber',
-                    'Anechoic Chamber': 'anechoic_chamber',
-                    'EMI EMC Scanner/Probe': 'emi_emc_scanner_probe',
-                    'Reverberation Chamber': 'reverberation_chamber'
-                };
-                
-                const categoryKey = subcategoryKeyMap[subcategory];
-                if (!categoryKey) {
-                    throw new Error(`Unknown subcategory: ${subcategory}`);
-                }
-                
-                // Fetch products by category from API
-                const response = await fetch(getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS_BY_CATEGORY}/${categoryKey}`));
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                
-                const tbody = document.querySelector('.products-table tbody');
-                
-                // Clear existing rows
-                tbody.innerHTML = '';
-                
-                if (data.data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="no-products">No products found for this category.</td></tr>';
-                    return;
-                }
-                
-                // Update hero section
-                document.querySelector('.hero-content h1').textContent = subcategory;
-                document.querySelector('.hero-content p').textContent = selectedProduct.subproducts ? 
-                    selectedProduct.subproducts.join('. ') : 
-                    'Explore our precision-engineered products designed specifically for your needs.';
-                
-                if (selectedProduct.image) {
-                    document.querySelector('.hero-image img').src = selectedProduct.image;
-                }
-                
-                // Populate products
-                data.data.forEach(product => {
-                    const row = document.createElement('tr');
-                    // Create image cell
-                    const imageCell = document.createElement('td');
-                    const productImage = document.createElement('img');
-                    productImage.src = product.image;
-                    productImage.alt = product.name;
-                    productImage.className = 'product-thumbnail';
-                    productImage.onerror = function() {
-                        this.src = 'assets/placeholder.png';
-                    };
-                    imageCell.appendChild(productImage);
+<script>
+    async function populatePage() {
+        const params = new URLSearchParams(window.location.search);
+        const category = params.get('category');
+        const productName = params.get('productName'); // treated as subcategory
+        const productIndex = parseInt(params.get('productIndex'));
 
-                    // Create model number cell with link
-                    const modelCell = document.createElement('td');
-                    const modelLink = document.createElement('a');
-                    modelLink.href = `productpagemain.html?category=${encodeURIComponent(categoryKey)}&id=${encodeURIComponent(product._id)}`;
-                    modelLink.textContent = product.name;
-                    modelLink.className = 'product-name';
-                    modelCell.appendChild(modelLink);
-
-                    // Create other cells
-                    const specsCell = document.createElement('td');
-                    specsCell.innerHTML = product.tableSpecs?.specifications || 'N/A';
-                    const perfCell = document.createElement('td');
-                    perfCell.innerHTML = product.tableSpecs?.performance || 'N/A';
-                    const outputCell = document.createElement('td');
-                    outputCell.innerHTML = product.tableSpecs?.outputLevel || 'N/A';
-                    const featuresCell = document.createElement('td');
-                    featuresCell.innerHTML = product.tableSpecs?.additionalFeatures || 'N/A';
-
-                    // Append all cells to row
-                    row.appendChild(imageCell);
-                    row.appendChild(modelCell);
-                    row.appendChild(specsCell);
-                    row.appendChild(perfCell);
-                    row.appendChild(outputCell);
-                    row.appendChild(featuresCell);
-                    tbody.appendChild(row);
-                });
+        // Update page title and description based on category
+        if (category) {
+            const categoryTitleElement = document.getElementById('category-title');
+            const categoryDescriptionElement = document.getElementById('category-description');
+            const introTextElement = document.getElementById('intro-text');
+            const categoryImageElement = document.getElementById('category-image');
+            
+            if (categoryTitleElement) {
+                // Use productName for the title, format it properly
+                const formattedTitle = productName ? productName.charAt(0).toUpperCase() + productName.slice(1) : category;
+                categoryTitleElement.textContent = formattedTitle;
+            }
+            
+            // Set a default description for the category
+            const defaultDescription = `Explore our precision-engineered ${productName.toLowerCase()} solutions designed specifically for aerospace applications. Our high-reliability solutions meet rigorous aerospace standards with exceptional performance in extreme environments.`;
+            
+            if (categoryDescriptionElement) {
+                categoryDescriptionElement.textContent = defaultDescription;
+            }
+            
+            if (introTextElement) {
+                introTextElement.textContent = defaultDescription;
+            }
+            
+            // Set image for the productName
+            if (productName) {
+                // Fetch image path from API data
+                const formattedProductName = productName.replace(/\s+/g, '_').toLowerCase();
+                const endpoint = getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS_BY_CATEGORY}/${encodeURIComponent(formattedProductName)}`);
                 
-            } catch (error) {
-                console.error('Error loading products:', error);
-                const tbody = document.querySelector('.products-table tbody');
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="error-message">
-                            Error loading products: ${error.message}. Please try again later.
-                        </td>
-                    </tr>
-                `;
+                try {
+                    const res = await fetch(endpoint);
+                    if (res.ok) {
+                        const responseData = await res.json();
+                        const data = responseData.data || responseData;
+                        
+                        // Get the first product's image or use default
+                        const firstProduct = Object.values(data)[0];
+                        const imagePath = firstProduct?.image || 'assets/placeholder-product.png';
+                        
+                        categoryImageElement.src = imagePath;
+                        categoryImageElement.alt = `${productName} - Innovate Electronics`;
+                    } else {
+                        // Fallback to default image if API call fails
+                        categoryImageElement.src = 'assets/placeholder-product.png';
+                        categoryImageElement.alt = `${productName} - Innovate Electronics`;
+                    }
+                } catch (error) {
+                    console.error('Error fetching image:', error);
+                    // Fallback to default image on error
+                    categoryImageElement.src = 'assets/placeholder-product.png';
+                    categoryImageElement.alt = `${productName} - Innovate Electronics`;
+                }
             }
         }
 
-        // Load products when page loads
-        document.addEventListener('DOMContentLoaded', loadProducts);
-    </script>
+        if (!productName) {
+            document.getElementById('products-tbody').innerHTML = `
+                <tr><td colspan="6" style="text-align:center;color:red;padding:20px;">No subcategory (productName) provided in URL.</td></tr>
+            `;
+            return;
+        }
+
+        // Use the proper API endpoint construction with getApiUrl helper
+        // Replace spaces with underscores in productName for API call
+        const formattedProductName = productName.replace(/\s+/g, '_').toLowerCase();
+        const endpoint = getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS_BY_CATEGORY}/${encodeURIComponent(formattedProductName)}`);
+        document.getElementById('products-tbody').innerHTML = ``;
+
+        try {
+            const res = await fetch(endpoint);
+            if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+            const responseData = await res.json();
+
+            // Handle the new API response structure
+            const data = responseData.data || responseData;
+            
+            if (!data || Object.keys(data).length === 0) {
+                document.getElementById('products-tbody').innerHTML = `
+                    <tr><td colspan="6" style="text-align:center;color:#666;padding:20px;">No products found for "${productName}".</td></tr>
+                `;
+                return;
+            }
+
+            const tbody = document.getElementById('products-tbody');
+            tbody.innerHTML = '';
+            
+            // Convert object to array and process each product
+            const productsArray = Object.entries(data).map(([key, product]) => ({
+                id: key,
+                name: product.name || key,
+                image: product.image || 'assets/placeholder-product.png',
+                specifications: product.tableSpecs?.specifications || 'N/A',
+                performance: product.tableSpecs?.performance || 'N/A',
+                outputLevel: product.tableSpecs?.outputLevel || 'N/A',
+                additionalFeatures: product.tableSpecs?.additionalFeatures || 'N/A'
+            }));
+
+            productsArray.forEach((product, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><img src="${product.image}" style="width:60px;height:60px;border-radius:4px;object-fit:cover;" onerror="this.src='assets/placeholder-product.png';"></td>
+                    <td><strong>${product.name}</strong> ${i === productIndex ? '← Selected' : ''}</td>
+                    <td>${product.specifications}</td>
+                    <td>${product.performance}</td>
+                    <td>${product.outputLevel}</td>
+                    <td>${product.additionalFeatures}</td>
+                `;
+                tr.onclick = () => {
+                    window.location.href = `productpagemain.html?id=${product.id}&category=${encodeURIComponent(productName)}`;
+                };
+                if (i === productIndex) tr.style.backgroundColor = '#f0f8ff';
+                tbody.appendChild(tr);
+            });
+
+        } catch (err) {
+            console.error('Fetch error:', err);
+            document.getElementById('products-tbody').innerHTML = `
+                <tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Error loading products: ${err.message}</td></tr>
+            `;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', populatePage);
+</script>
 </body>
 </html>

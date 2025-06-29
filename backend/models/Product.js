@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
 
 /**
- * Product Schema for product details
+ * Product Schema for dynamic nested product structure
  */
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'Product name is required'],
-    trim: true,
-    unique: true
+    trim: true
   },
   category: {
     type: String,
@@ -57,6 +56,11 @@ const productSchema = new mongoose.Schema({
       name: String,
       link: String
     }]
+  },
+  // Dynamic products structure - can handle any category and subcategory
+  products: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
   }
 }, {
   timestamps: true,
@@ -87,6 +91,46 @@ productSchema.statics.search = function(query) {
   return this.find({
     $text: { $search: query }
   }).sort({ score: { $meta: 'textScore' } });
+};
+
+// Static method to get all products by category
+productSchema.statics.getProductsByCategory = function(category) {
+  return this.findOne({}, { [`products.${category}`]: 1 });
+};
+
+// Static method to get all products structure
+productSchema.statics.getAllProducts = function() {
+  return this.findOne({}, { products: 1 });
+};
+
+// Static method to get categories
+productSchema.statics.getCategories = function() {
+  return this.findOne({}, { products: 1 }).then(doc => {
+    if (doc && doc.products) {
+      return Object.keys(doc.products);
+    }
+    return [];
+  });
+};
+
+// Static method to get subcategories within a category
+productSchema.statics.getSubcategories = function(category) {
+  return this.findOne({}, { [`products.${category}`]: 1 }).then(doc => {
+    if (doc && doc.products && doc.products[category]) {
+      return Object.keys(doc.products[category]);
+    }
+    return [];
+  });
+};
+
+// Static method to get a specific product by category and subcategory
+productSchema.statics.getProduct = function(category, subcategory) {
+  return this.findOne({}, { [`products.${category}.${subcategory}`]: 1 }).then(doc => {
+    if (doc && doc.products && doc.products[category] && doc.products[category][subcategory]) {
+      return doc.products[category][subcategory];
+    }
+    return null;
+  });
 };
 
 module.exports = mongoose.model('Product', productSchema); 

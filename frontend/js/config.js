@@ -5,11 +5,19 @@ const API_CONFIG = {
     
     // API endpoints
     ENDPOINTS: {
+        // Legacy endpoints
         CATEGORIES: '/api/categories',
         PRODUCTS: '/api/products',
-        PRODUCTS_BY_CATEGORY: '/api/products',
+        PRODUCTS_BY_CATEGORY: '/api/products/category',
         SEARCH: '/api/search',
-        STATS: '/api/stats'
+        STATS: '/api/stats',
+        
+        // New dynamic product endpoints
+        ALL_CATEGORIES: '/api/products/categories',
+        ALL_PRODUCTS: '/api/products/all',
+        PRODUCTS_BY_CATEGORY_DYNAMIC: '/api/products/category',
+        SUBCATEGORIES: '/api/products/category',
+        SPECIFIC_PRODUCT: '/api/products/category'
     }
 };
 

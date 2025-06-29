@@ -58,8 +58,8 @@ function displayProducts(products) {
   let productsHTML = '';
   
   if (products && products.length > 0) {
-    productsHTML = products.map(item => `
-      <div class="product-item" onclick="viewProduct('${item.id || item._id}')">
+    productsHTML = products.map((item, index) => `
+      <div class="product-item" onclick="viewProduct('${item.name}', ${index})">
         <img src="${item.image || 'assets/placeholder-product.png'}" 
              alt="${item.name}" 
              class="product-thumbnail" 
@@ -80,14 +80,44 @@ function displayProducts(products) {
 }
 
 // Function to handle product view
-function viewProduct(productId) {
-  // Navigate to product detail page or show modal
-  console.log('Viewing product:', productId);
-  // You can implement navigation to a product detail page here
-  // window.location.href = `/product-detail.html?id=${productId}`;
+function viewProduct(productName, productIndex) {
+  // Find the selected product from allProducts by name
+  const selectedProduct = allProducts.find(product => product.name === productName);
   
-  // For now, show an alert (replace with proper modal or navigation)
-  alert(`Product ID: ${productId}\nThis would navigate to product details page.`);
+  if (selectedProduct) {
+    // Get the category title from the current category data
+    const categoryTitle = getCategoryTitle(currentCategory);
+    
+    // Redirect to subcategory.html with product parameters
+    const params = new URLSearchParams({
+      category: categoryTitle, // Main category (e.g., "RF and Microwave")
+      productName: selectedProduct.name, // Subcategory (e.g., "Switches")
+      productIndex: productIndex
+    });
+    window.location.href = `subcategory.html?${params.toString()}`;
+  } else {
+    console.error('Product not found:', productName);
+  }
+}
+
+// Helper function to get category title from category key
+function getCategoryTitle(categoryKey) {
+  // This function should return the actual category title based on the key
+  // For now, we'll use a mapping or try to get it from the current data
+  const categoryMappings = {
+    'switches': 'Switches',
+    'amplifiers': 'Amplifiers',
+    'filters': 'Filters',
+    'oscillators': 'Oscillators',
+    'mixers': 'Mixers',
+    'detectors': 'Detectors',
+    'attenuators': 'Attenuators',
+    'couplers': 'Couplers',
+    'isolators': 'Isolators',
+    'circulators': 'Circulators'
+  };
+  
+  return categoryMappings[categoryKey] || categoryKey;
 }
 
 // Search functionality
@@ -147,7 +177,7 @@ function initializeApp() {
   }
   
   // Fetch data from API
-  fetch('http://localhost:5000/api/categories')
+  fetch(getApiUrl(API_CONFIG.ENDPOINTS.CATEGORIES))
     .then(response => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

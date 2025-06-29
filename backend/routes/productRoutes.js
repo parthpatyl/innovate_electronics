@@ -2,7 +2,112 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
 
-// Route to get all products
+// Route to get all categories
+router.get('/products/categories', async (req, res) => {
+  try {
+    const categories = await Product.getCategories();
+    res.json({
+      success: true,
+      data: categories
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching categories',
+      error: error.message
+    });
+  }
+});
+
+// Route to get all products structure
+router.get('/products/all', async (req, res) => {
+  try {
+    const products = await Product.getAllProducts();
+    res.json({
+      success: true,
+      data: products
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching all products',
+      error: error.message
+    });
+  }
+});
+
+// Route to get subcategories within a category
+router.get('/products/category/:category/subcategories', async (req, res) => {
+  try {
+    const { category } = req.params;
+    const subcategories = await Product.getSubcategories(category);
+    
+    res.json({
+      success: true,
+      data: subcategories
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching subcategories',
+      error: error.message
+    });
+  }
+});
+
+// Route to get a specific product by category and subcategory
+router.get('/products/category/:category/product/:subcategory', async (req, res) => {
+  try {
+    const { category, subcategory } = req.params;
+    const product = await Product.getProduct(category, subcategory);
+    
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: product
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching product',
+      error: error.message
+    });
+  }
+});
+
+// Route to get products by category
+router.get('/products/category/:category', async (req, res) => {
+  try {
+    const { category } = req.params;
+    const products = await Product.getProductsByCategory(category);
+    
+    if (!products || !products.products || !products.products[category]) {
+      return res.status(404).json({
+        success: false,
+        message: 'Category not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: products.products[category]
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching products by category',
+      error: error.message
+    });
+  }
+});
+
+// Route to get all products (legacy - returns the main products document)
 router.get('/products', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -33,25 +138,7 @@ router.get('/products', async (req, res) => {
   }
 });
 
-// Route to get products by category
-router.get('/products/category/:category', async (req, res) => {
-  try {
-    const { category } = req.params;
-    const products = await Product.findByCategory(category);
-    res.json({
-      success: true,
-      data: products
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error fetching products by category',
-      error: error.message
-    });
-  }
-});
-
-// Route to get a single product by ID
+// Route to get a single product by ID (legacy)
 router.get('/products/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -76,7 +163,7 @@ router.get('/products/:id', async (req, res) => {
   }
 });
 
-// Route to create a new product
+// Route to create a new product (legacy)
 router.post('/products', async (req, res) => {
   try {
     const product = new Product(req.body);
@@ -96,7 +183,7 @@ router.post('/products', async (req, res) => {
   }
 });
 
-// Route to update a product
+// Route to update a product (legacy)
 router.put('/products/:id', async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(
@@ -126,7 +213,7 @@ router.put('/products/:id', async (req, res) => {
   }
 });
 
-// Route to delete a product
+// Route to delete a product (legacy)
 router.delete('/products/:id', async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);

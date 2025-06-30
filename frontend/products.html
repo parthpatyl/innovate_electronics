@@ -37,18 +37,17 @@
             .then(response => response.text())
             .then(data => {
                 document.getElementById('header-section').innerHTML = data;
-                // Now header is loaded, setup menu
                 if (typeof setupHeaderMenu === 'function') setupHeaderMenu();
             });
     </script>
     
     <section class="hero">
         <div class="hero-content">
-            <h1>RF and Microwave</h1>
-            <p>Innovate Electronics delivers state-of-the-art solutions across the telecommunications landscape—from detailed indoor coverage mapping in compact wireless systems to comprehensive spectrum analysis and over-the-air testing in expansive network environments. Our end-to-end offerings are thoughtfully engineered</p>
+            <h1 id="hero-title">RF and Microwave</h1>
+            <p id="hero-description">Innovate Electronics delivers state-of-the-art solutions across the telecommunications landscape—from detailed indoor coverage mapping in compact wireless systems to comprehensive spectrum analysis and over-the-air testing in expansive network environments. Our end-to-end offerings are thoughtfully engineered</p>
         </div>
         <div class="hero-image">
-            <img src="assets/image35.png" alt="Test Equipment" class="product-image">
+            <img id="hero-image" src="assets/image35.png" alt="Test Equipment" class="product-image">
         </div>
     </section>
 
@@ -77,6 +76,19 @@
     </section>
     
     <script src="js/category-tabs.js"></script>
+    <script>
+      // Listen for category change events and update hero section
+      document.addEventListener('categoryChanged', function(e) {
+        const { name, image, description } = e.detail;
+        document.getElementById('hero-title').textContent = name;
+        if (description) {
+          document.getElementById('hero-description').textContent = description;
+        }
+        if (image) {
+          document.getElementById('hero-image').src = image;
+        }
+      });
+    </script>
 
     <div id="footer-section"></div>
 

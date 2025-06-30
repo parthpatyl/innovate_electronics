@@ -78,7 +78,6 @@ app.use('/api/cms-simple', cmsSimpleRoutes);
 // MUST BE DEFINED BEFORE product routes to take precedence
 app.get('/api/products/category/:category/product/:subcategory', (req, res) => {
   const { category, subcategory } = req.params;
-  console.log('Mock API called with category:', category, 'subcategory:', subcategory);
   
   try {
     // Read the actual products.json file

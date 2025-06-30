@@ -66,32 +66,36 @@
                 </div>
 
                 <div id="overview" class="tab-content active">
-                    <div class="side-nav">
-                        <div class="side-nav-item active" onclick="openSideContent(event, 'description')">Description</div>
-                        <div class="side-nav-item" onclick="openSideContent(event, 'features')">Features</div>
-                        <div class="side-nav-item" onclick="openSideContent(event, 'applications')">Applications</div>
-                    </div>
-                    <div class="content-area">
-                        <div id="description" class="side-content active"><div class="description-box"></div></div>
-                        <div id="features" class="side-content" style="display: none;"><ul class="features-list"></ul></div>
-                        <div id="applications" class="side-content" style="display: none;"><ul class="features-list"></ul></div>
+                    <div class="tab-content-inner">
+                        <div class="side-nav">
+                            <div class="side-nav-item active" onclick="openSideContent(event, 'description')">Description</div>
+                            <div class="side-nav-item" onclick="openSideContent(event, 'features')">Features</div>
+                            <div class="side-nav-item" onclick="openSideContent(event, 'applications')">Applications</div>
+                        </div>
+                        <div class="content-area">
+                            <div id="description" class="side-content active"><div class="description-box"></div></div>
+                            <div id="features" class="side-content" style="display: none;"><ul class="features-list"></ul></div>
+                            <div id="applications" class="side-content" style="display: none;"><ul class="features-list"></ul></div>
+                        </div>
                     </div>
                 </div>
 
                 <div id="specifications" class="tab-content"></div>
 
                 <div id="library" class="tab-content">
-                    <div class="side-nav">
-                        <div class="side-nav-item active" onclick="openSideContent(event, 'catalouge')">Catalogue</div>
-                        <div class="side-nav-item" onclick="openSideContent(event, 'drawings')">Drawings</div>
-                        <div class="side-nav-item" onclick="openSideContent(event, 'testReports')">Test Reports</div>
-                        <div class="side-nav-item" onclick="openSideContent(event, 'executionFiles')">Execution Files</div>
-                    </div>
-                    <div class="content-area">
-                        <div id="catalouge" class="side-content active"><ul class="catalouge-list"></ul></div>
-                        <div id="drawings" class="side-content" style="display: none;"><ul class="library-list"></ul></div>
-                        <div id="testReports" class="side-content" style="display: none;"><ul class="library-list"></ul></div>
-                        <div id="executionFiles" class="side-content" style="display: none;"><ul class="library-list"></ul></div>
+                    <div class="tab-content-inner">
+                        <div class="side-nav">
+                            <div class="side-nav-item active" onclick="openSideContent(event, 'catalouge')">Catalogue</div>
+                            <div class="side-nav-item" onclick="openSideContent(event, 'drawings')">Drawings</div>
+                            <div class="side-nav-item" onclick="openSideContent(event, 'testReports')">Test Reports</div>
+                            <div class="side-nav-item" onclick="openSideContent(event, 'executionFiles')">Execution Files</div>
+                        </div>
+                        <div class="content-area">
+                            <div id="catalouge" class="side-content active"><ul class="catalouge-list"></ul></div>
+                            <div id="drawings" class="side-content" style="display: none;"><ul class="library-list"></ul></div>
+                            <div id="testReports" class="side-content" style="display: none;"><ul class="library-list"></ul></div>
+                            <div id="executionFiles" class="side-content" style="display: none;"><ul class="library-list"></ul></div>
+                        </div>
                     </div>
                 </div>
             </div>

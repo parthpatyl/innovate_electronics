@@ -22,6 +22,8 @@ function renderTabs(data) {
       renderProducts(key, data);
       // Clear search when switching categories
       if (searchInput) searchInput.value = '';
+      // Dispatch categoryChanged event for hero section
+      dispatchCategoryChanged(data[key]);
     };
     if (idx === 0) {
       tab.classList.add('active');
@@ -29,6 +31,18 @@ function renderTabs(data) {
     }
     tabsContainer.appendChild(tab);
   });
+}
+
+// Dispatch custom event for hero section update
+function dispatchCategoryChanged(categoryData) {
+  const event = new CustomEvent('categoryChanged', {
+    detail: {
+      name: categoryData.title,
+      image: categoryData.headerImage || '',
+      description: categoryData.description || ''
+    }
+  });
+  document.dispatchEvent(event);
 }
 
 // Function to render products for a selected category
@@ -203,6 +217,7 @@ function initializeApp() {
       renderTabs(formattedData);
       if (Object.keys(formattedData).length > 0) {
         renderProducts(Object.keys(formattedData)[0], formattedData);
+        dispatchCategoryChanged(formattedData[Object.keys(formattedData)[0]]);
       }
       setupSearch();
     })

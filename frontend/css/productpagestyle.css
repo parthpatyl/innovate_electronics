@@ -190,10 +190,19 @@ nav {
     display: block;
 }
 
+.tab-content-inner {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 15% 1fr;
+    column-gap: 50px;
+    padding-left: 50px;
+}
+
 /* Side Navigation */
 .side-nav {
-    width: 25%;
-    float: left;
+    width: 100%;
+    border-bottom: none;
+    display: block;
 }
 
 .side-nav-item {
@@ -218,8 +227,7 @@ nav {
 
 /* Content Area */
 .content-area {
-    width: 73%;
-    float: right;
+    width: 100%;
     background-color: white;
     border: 1px solid #ddd;
     padding: 20px;
@@ -228,7 +236,6 @@ nav {
 /* Tables */
 table {
     width: 100%;
-    border-collapse: collapse;
     margin-bottom: 20px;
 }
 
@@ -343,6 +350,10 @@ th {
 
     .library-grid {
         grid-template-columns: 1fr;
+    }
+
+    .tab-content-inner {
+        flex-direction: column;
     }
 }
 

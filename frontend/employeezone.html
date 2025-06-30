@@ -17,7 +17,7 @@
 <body>
   <div id="header-section"></div>
   <div id="overlay"></div>
-  <script src="js/header.js"></script>
+  <!-- <script src="js/header.js"></script>
   <script>
     // Load the header component dynamically with correct path
     (function () {
@@ -29,7 +29,7 @@
           if (typeof setupHeaderMenu === 'function') setupHeaderMenu();
         });
     })();
-  </script>
+  </script> -->
 
   <main>
     <div class="cms-container cms-loaded">
@@ -256,16 +256,6 @@
   <div id="footer-section"></div>
 
   <script>
-    // Load the footer component dynamically with correct path
-    (function () {
-      const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-      fetch(basePath + 'footer.html')
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById('footer-section').innerHTML = data;
-        });
-    })();
-
     // Login functionality
     document.getElementById('loginForm').addEventListener('submit', function (e) {
       e.preventDefault();
@@ -283,14 +273,7 @@
   </script>
 
   <!-- CMS Scripts -->
-  <script src="cms/script.js"></script>
-  <script>
-    // Verification that CMS JavaScript is loaded
-    console.log('🎉 CMS Frontend loaded successfully!');
-    console.log('📁 CSS: cms/styles.css loaded');
-    console.log('⚡ JavaScript: cms/script.js loaded');
-    console.log('🌱 Ready to manage your digital garden!');
-  </script>
+  <script src="js/script.js"></script>
 </body>
 
 </html>

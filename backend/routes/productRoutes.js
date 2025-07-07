@@ -2,23 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
 
-// Route to get all categories
-router.get('/products/categories', async (req, res) => {
-  try {
-    const categories = await Product.getCategories();
-    res.json({
-      success: true,
-      data: categories
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error fetching categories',
-      error: error.message
-    });
-  }
-});
-
 // Route to get all products structure
 router.get('/products/all', async (req, res) => {
   try {
@@ -59,16 +42,13 @@ router.get('/products/category/:category/subcategories', async (req, res) => {
 router.get('/products/category/:category/product/:subcategory', async (req, res) => {
   try {
     const { category, subcategory } = req.params;
-    console.log('Fetching product with category:', category, 'subcategory:', subcategory);
     
     const product = await Product.getProduct(category, subcategory);
-    console.log('Product found:', product ? 'Yes' : 'No');
     
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found',
-        debug: { category, subcategory }
+        message: 'Product not found'
       });
     }
     
@@ -77,32 +57,36 @@ router.get('/products/category/:category/product/:subcategory', async (req, res)
       data: product
     });
   } catch (error) {
-    console.error('Error in getProduct route:', error);
     res.status(500).json({
       success: false,
       message: 'Error fetching product',
-      error: error.message,
-      debug: { category: req.params.category, subcategory: req.params.subcategory }
+      error: error.message
     });
   }
 });
 
-// Route to get products by category
+// Route to get products by category (updated for flat structure)
 router.get('/products/category/:category', async (req, res) => {
   try {
     const { category } = req.params;
-    const products = await Product.getProductsByCategory(category);
     
-    if (!products || !products.products || !products.products[category]) {
+    // Use case-insensitive search for category
+    const products = await Product.find({
+      category: { $regex: new RegExp(`^${category}$`, 'i') }
+    }).sort({ name: 1 });
+    
+    if (!products || products.length === 0) {
       return res.status(404).json({
         success: false,
-        message: 'Category not found'
+        message: `No products found in category: ${category}`,
+        availableCategories: await Product.distinct('category')
       });
     }
     
     res.json({
       success: true,
-      data: products.products[category]
+      data: products,
+      count: products.length
     });
   } catch (error) {
     res.status(500).json({
@@ -144,15 +128,31 @@ router.get('/products', async (req, res) => {
   }
 });
 
-// Route to get a single product by ID (legacy)
-router.get('/products/:id', async (req, res) => {
+// Route to get a single product by ID or name
+router.get('/products/:identifier', async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const { identifier } = req.params;
+    
+    let product;
+    
+    // Check if it's a valid MongoDB ObjectId (24 character hex string)
+    if (/^[0-9a-fA-F]{24}$/.test(identifier)) {
+      // Try to find by ID first
+      product = await Product.findById(identifier);
+    }
+    
+    // If not found by ID or not a valid ObjectId, try to find by name
+    if (!product) {
+      product = await Product.findOne({
+        name: { $regex: new RegExp(identifier, 'i') }
+      });
+    }
     
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found'
+        message: 'Product not found',
+        searchedFor: identifier
       });
     }
     
@@ -164,6 +164,37 @@ router.get('/products/:id', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching product',
+      error: error.message
+    });
+  }
+});
+
+// Route to search products by name (partial match)
+router.get('/products/search/:name', async (req, res) => {
+  try {
+    const { name } = req.params;
+    
+    const products = await Product.find({
+      name: { $regex: new RegExp(name, 'i') }
+    }).sort({ name: 1 });
+    
+    if (!products || products.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `No products found matching: ${name}`
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: products,
+      count: products.length,
+      searchTerm: name
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error searching products',
       error: error.message
     });
   }
@@ -239,6 +270,23 @@ router.delete('/products/:id', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error deleting product',
+      error: error.message
+    });
+  }
+});
+
+// Route to get all available categories (updated for flat structure)
+router.get('/products/categories', async (req, res) => {
+  try {
+    const categories = await Product.distinct('category');
+    res.json({
+      success: true,
+      data: categories.sort()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching categories',
       error: error.message
     });
   }

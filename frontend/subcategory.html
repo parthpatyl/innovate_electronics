@@ -129,12 +129,12 @@
             }
         }
 
-        // If we have a specific productId, fetch that individual product
+        // If we have a specific productId, fetch that individual product by name
         if (productId && category) {
             try {
-                // Use the specific product endpoint: /api/products/category/:category/product/:id
-                const endpoint = getApiUrl(`${API_CONFIG.ENDPOINTS.SPECIFIC_PRODUCT}/${category}/product/${productId}`);
-                console.log('Fetching specific product:', endpoint);
+                // Use the new product endpoint that supports both ID and name: /api/products/:identifier
+                const endpoint = getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS}/${encodeURIComponent(productId)}`);
+                console.log('Fetching specific product by name:', endpoint);
                 
                 const res = await fetch(endpoint);
                 if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
@@ -155,7 +155,7 @@
                     tbody.innerHTML = `
                         <tr style="background-color: #f0f8ff;">
                             <td><img src="${product.image || 'assets/placeholder-product.png'}" style="width:60px;height:60px;border-radius:4px;object-fit:cover;" onerror="this.src='assets/placeholder-product.png';"></td>
-                            <td><strong>${product.name || productId}</strong> ← Selected Product</td>
+                            <td>${product.name || productId}</td>
                             <td>${product.tableSpecs?.specifications || 'N/A'}</td>
                             <td>${product.tableSpecs?.performance || 'N/A'}</td>
                             <td>${product.tableSpecs?.outputLevel || 'N/A'}</td>
@@ -163,10 +163,10 @@
                         </tr>
                     `;
                     
-                    // Add click handler to navigate to detailed product page
+                    // Add click handler to navigate to detailed product page using product name
                     const tr = tbody.querySelector('tr');
                     tr.onclick = () => {
-                        window.location.href = `productpagemain.html?category=${encodeURIComponent(category)}&subcategory=${product.id}`;
+                        window.location.href = `productpagemain.html?category=${encodeURIComponent(category)}&subcategory=${encodeURIComponent(product.name)}`;
                     };
                     tr.style.cursor = 'pointer';
                     
@@ -190,10 +190,8 @@
             return;
         }
 
-        // Use the proper API endpoint construction with getApiUrl helper
-        // Replace spaces with underscores in productName for API call
-        const formattedProductName = productName.replace(/\s+/g, '_').toLowerCase();
-        const endpoint = getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS_BY_CATEGORY}/${encodeURIComponent(formattedProductName)}`);
+        // Use the new API endpoint to fetch products by category name
+        const endpoint = getApiUrl(`${API_CONFIG.ENDPOINTS.PRODUCTS_BY_CATEGORY}/${encodeURIComponent(productName)}`);
         document.getElementById('products-tbody').innerHTML = ``;
 
         try {
@@ -202,9 +200,9 @@
             const responseData = await res.json();
 
             // Handle the new API response structure
-            const data = responseData.data || responseData;
+            const products = responseData.data || [];
             
-            if (!data || Object.keys(data).length === 0) {
+            if (!products || products.length === 0) {
                 document.getElementById('products-tbody').innerHTML = `
                     <tr><td colspan="6" style="text-align:center;color:#666;padding:20px;">No products found for "${productName}".</td></tr>
                 `;
@@ -214,32 +212,21 @@
             const tbody = document.getElementById('products-tbody');
             tbody.innerHTML = '';
             
-            // Convert object to array and process each product
-            const productsArray = Object.entries(data).map(([key, product]) => ({
-                id: key,
-                name: product.name || key,
-                image: product.image || 'assets/placeholder-product.png',
-                specifications: product.tableSpecs?.specifications || 'N/A',
-                performance: product.tableSpecs?.performance || 'N/A',
-                outputLevel: product.tableSpecs?.outputLevel || 'N/A',
-                additionalFeatures: product.tableSpecs?.additionalFeatures || 'N/A'
-            }));
-
-            productsArray.forEach((product, i) => {
+            // Process each product from the array
+            products.forEach((product, i) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><img src="${product.image}" style="width:60px;height:60px;border-radius:4px;object-fit:cover;" onerror="this.src='assets/placeholder-product.png';"></td>
-                    <td><strong>${product.name}</strong> ${i === productIndex ? '← Selected' : ''}</td>
-                    <td>${product.specifications}</td>
-                    <td>${product.performance}</td>
-                    <td>${product.outputLevel}</td>
-                    <td>${product.additionalFeatures}</td>
+                    <td><img src="${product.image || 'assets/placeholder-product.png'}" style="width:60px;height:60px;border-radius:4px;object-fit:cover;" onerror="this.src='assets/placeholder-product.png';"></td>
+                    <td>${product.name}</td>
+                    <td>${product.tableSpecs?.specifications || 'N/A'}</td>
+                    <td>${product.tableSpecs?.performance || 'N/A'}</td>
+                    <td>${product.tableSpecs?.outputLevel || 'N/A'}</td>
+                    <td>${product.tableSpecs?.additionalFeatures || 'N/A'}</td>
                 `;
                 tr.onclick = () => {
-                    // Navigate to the specific product using the new API pattern
-                    window.location.href = `productpagemain.html?category=${encodeURIComponent(category || productName)}&subcategory=${product.id}`;
+                    // Navigate to the specific product using product name instead of ID
+                    window.location.href = `productpagemain.html?category=${encodeURIComponent(category || productName)}&subcategory=${encodeURIComponent(product.name)}`;
                 };
-                if (i === productIndex) tr.style.backgroundColor = '#f0f8ff';
                 tbody.appendChild(tr);
             });
 

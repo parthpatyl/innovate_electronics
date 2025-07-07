@@ -36,11 +36,6 @@ const categorySchema = new mongoose.Schema({
 });
 
 /**
- * Index to optimize query performance on title field
- */
-categorySchema.index({ title: 1 });
-
-/**
  * Virtual: Returns the count of items in the category
  */
 categorySchema.virtual('itemCount').get(function () {

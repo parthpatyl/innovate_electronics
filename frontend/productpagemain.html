@@ -188,7 +188,7 @@
                     console.log('Original Product ID:', finalProductId);
                     console.log('Processed Product ID:', decodedProductId);
                     
-                    const apiUrl = getApiUrl(`${API_CONFIG.ENDPOINTS.SPECIFIC_PRODUCT}/${encodeURIComponent(decodedCategory)}/product/${encodeURIComponent(decodedProductId)}`);
+                    const apiUrl = getApiUrl(`${API_CONFIG.ENDPOINTS.SPECIFIC_PRODUCT}/${encodeURIComponent(decodedProductId)}`);
                     console.log('Fetching product from:', apiUrl);
                     
                     const response = await fetch(apiUrl);

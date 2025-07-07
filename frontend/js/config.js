@@ -17,7 +17,7 @@ const API_CONFIG = {
         ALL_PRODUCTS: '/api/products/all',
         PRODUCTS_BY_CATEGORY_DYNAMIC: '/api/products/category',
         SUBCATEGORIES: '/api/products/category',
-        SPECIFIC_PRODUCT: '/api/products/category'
+        SPECIFIC_PRODUCT: '/api/products'
     }
 };
 

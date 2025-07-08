@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Event = require('../models/Event');
+const eventRegistrationController = require('../controllers/eventRegistrationController');
 
 // Fetch all events
 router.get('/', async (req, res) => {
@@ -35,5 +36,11 @@ router.post('/', async (req, res) => {
     res.status(500).json({ success: false, message: 'Error creating event', error: error.message });
   }
 });
+
+// Registration route for event attendees
+router.post('/register', eventRegistrationController.register);
+
+// Route to get all event registrations (for CMS panel)
+router.get('/registrations', eventRegistrationController.getAll);
 
 module.exports = router; 

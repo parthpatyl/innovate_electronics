@@ -27,3 +27,17 @@ exports.register = async (req, res) => {
     res.status(500).json({ message: 'Database error.' });
   }
 };
+
+exports.getAll = async (req, res) => {
+  try {
+    const filter = {};
+    if (req.query.event_title) {
+      filter.event_title = req.query.event_title;
+    }
+    const registrations = await EventRegistration.find(filter).sort({ createdAt: -1 });
+    res.json({ success: true, data: registrations });
+  } catch (err) {
+    console.error('Error fetching registrations:', err);
+    res.status(500).json({ success: false, message: 'Database error.' });
+  }
+};

@@ -173,98 +173,79 @@
                         }
                     });
                 });
-                // Registration popup logic can be reused as before
-            });
+                // Registration popup and form logic (moved here)
+                const registrationPopup = document.getElementById('registration-popup');
+                const closePopup = document.querySelector('.close-popup');
+                const registrationForm = document.getElementById('event-registration-form');
+                const cancelBtn = document.querySelector('.cancel-btn');
+                let currentEventTitle = '';
 
-        // Event switching functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const eventBtns = document.querySelectorAll('.event-btn');
-            const featuredEvents = document.querySelectorAll('.events-featured-event');
-            const registrationPopup = document.getElementById('registration-popup');
-            const closePopup = document.querySelector('.close-popup');
-            const registrationForm = document.getElementById('event-registration-form');
-            const cancelBtn = document.querySelector('.cancel-btn');
-            let currentEventTitle = '';
-
-            eventBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // Remove active class from all buttons and featured events
-                    eventBtns.forEach(b => b.classList.remove('active'));
-                    featuredEvents.forEach(event => event.classList.remove('active'));
-
-                    // Add active class to clicked button and corresponding event
-                    btn.classList.add('active');
-                    const eventId = btn.dataset.event;
-                    document.querySelector(`.events-featured-event[data-event="${eventId}"]`).classList.add('active');
-                });
-            });
-
-            // Registration popup functionality
-            const registerBtns = document.querySelectorAll('.register-btn');
-            registerBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    currentEventTitle = btn.closest('.events-featured-event').querySelector('.featured-title').textContent;
-                    document.querySelector('.registration-content h2').textContent = `Register for ${currentEventTitle}`;
-                    document.getElementById('event_title').value = currentEventTitle;
-                    registrationPopup.style.display = 'flex';
-                    document.body.style.overflow = 'hidden'; // Prevent background scrolling
-                });
-            });
-
-            // Close popup functions
-            function closeRegistrationPopup() {
-                registrationPopup.style.display = 'none';
-                document.body.style.overflow = ''; // Restore scrolling
-                registrationForm.reset(); // Clear form
-            }
-
-            closePopup.addEventListener('click', closeRegistrationPopup);
-            cancelBtn.addEventListener('click', closeRegistrationPopup);
-            registrationPopup.addEventListener('click', (e) => {
-                if (e.target === registrationPopup) {
-                    closeRegistrationPopup();
-                }
-            });
-
-            // Form submission
-            registrationForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                // Validate checkbox group
-                const checkboxes = registrationForm.querySelectorAll('input[name="interests"]');
-                let checked = false;
-                checkboxes.forEach(box => { if (box.checked) checked = true; });
-                if (!checked) {
-                    alert('Please select at least one area of interest.');
-                    return;
-                }
-                // Gather form data
-                const formData = {
-                    event_title: registrationForm.event_title.value,
-                    full_name: registrationForm.full_name.value,
-                    email: registrationForm.email.value,
-                    phone: registrationForm.phone.value,
-                    company: registrationForm.company.value,
-                    designation: registrationForm.designation.value,
-                    interests: Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value),
-                    questions: registrationForm.questions.value
-                };
-                try {
-                    const res = await fetch('/api/events/register', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(formData)
+                // Register button logic
+                const registerBtns = featuredContainer.querySelectorAll('.register-btn');
+                registerBtns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        currentEventTitle = btn.closest('.events-featured-event').querySelector('.featured-title').textContent;
+                        document.querySelector('.registration-content h2').textContent = `Register for ${currentEventTitle}`;
+                        document.getElementById('event_title').value = currentEventTitle;
+                        registrationPopup.style.display = 'flex';
+                        document.body.style.overflow = 'hidden'; // Prevent background scrolling
                     });
-                    const data = await res.json();
-                    alert(data.message);
-                    if (data.message === 'Registration successful!') {
+                });
+
+                // Close popup functions
+                function closeRegistrationPopup() {
+                    registrationPopup.style.display = 'none';
+                    document.body.style.overflow = ''; // Restore scrolling
+                    registrationForm.reset(); // Clear form
+                }
+
+                closePopup.addEventListener('click', closeRegistrationPopup);
+                cancelBtn.addEventListener('click', closeRegistrationPopup);
+                registrationPopup.addEventListener('click', (e) => {
+                    if (e.target === registrationPopup) {
                         closeRegistrationPopup();
                     }
-                } catch (err) {
-                    alert('There was an error submitting your registration.');
-                }
+                });
+
+                // Form submission
+                registrationForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    // Validate checkbox group
+                    const checkboxes = registrationForm.querySelectorAll('input[name="interests"]');
+                    let checked = false;
+                    checkboxes.forEach(box => { if (box.checked) checked = true; });
+                    if (!checked) {
+                        alert('Please select at least one area of interest.');
+                        return;
+                    }
+                    // Gather form data
+                    const formData = {
+                        event_title: registrationForm.event_title.value,
+                        full_name: registrationForm.full_name.value,
+                        email: registrationForm.email.value,
+                        phone: registrationForm.phone.value,
+                        company: registrationForm.company.value,
+                        designation: registrationForm.designation.value,
+                        interests: Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value),
+                        questions: registrationForm.questions.value
+                    };
+                    try {
+                        const res = await fetch('/api/events/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(formData)
+                        });
+                        const data = await res.json();
+                        alert(data.message);
+                        if (data.message === 'Registration successful!') {
+                            closeRegistrationPopup();
+                        }
+                    } catch (err) {
+                        alert('There was an error submitting your registration.');
+                    }
+                });
             });
-        });
     </script>
     <script src="js/header.js"></script>
     <script src="js/chatbot.js"></script>

@@ -162,37 +162,69 @@ class CMS {
             
             const content = await this.fetchContent(contentType);
             this.renderContentList(content, section);
+
+            // Fetch event registrations if section is events
+            if (section === 'events') {
+                const registrations = await this.fetchEventRegistrations();
+                console.log('Event Registrations:', registrations);
+                // (Instructed: just log for now, UI to be added later)
+            }
         } catch (error) {
             console.error(`Error loading ${section}:`, error);
             listElement.innerHTML = '<div class="error">Failed to load content</div>';
         }
     }
 
+    async fetchEventRegistrations() {
+        try {
+            const res = await fetch(getApiUrl('api/events/registrations'));
+            const data = await res.json();
+            if (data.success) {
+                return data.data;
+            } else {
+                return [];
+            }
+        } catch (err) {
+            console.error('Error fetching event registrations:', err);
+            return [];
+        }
+    }
+
     async fetchStats() {
         try {
-            // Get products count - using the same pattern as subcategory.html
+            // Get products count
             const productsEndpoint = getApiUrl('api/products');
-            console.log('Fetching products for stats:', productsEndpoint);
-            
             const productsResponse = await fetch(productsEndpoint);
             if (!productsResponse.ok) throw new Error(`HTTP error: ${productsResponse.status}`);
             const productsData = await productsResponse.json();
             const productsCount = productsData.success ? productsData.total || productsData.data.length : 0;
-            
+
             // Get categories count
             const categoriesEndpoint = getApiUrl('api/categories');
-            console.log('Fetching categories for stats:', categoriesEndpoint);
-            
             const categoriesResponse = await fetch(categoriesEndpoint);
             if (!categoriesResponse.ok) throw new Error(`HTTP error: ${categoriesResponse.status}`);
             const categoriesData = await categoriesResponse.json();
             const categoriesCount = categoriesData.success ? Object.keys(categoriesData.data).length : 0;
-            
+
+            // Get events count
+            const eventsEndpoint = getApiUrl('api/events');
+            const eventsResponse = await fetch(eventsEndpoint);
+            if (!eventsResponse.ok) throw new Error(`HTTP error: ${eventsResponse.status}`);
+            const eventsData = await eventsResponse.json();
+            const eventsCount = eventsData.success ? eventsData.data.length : 0;
+
+            // Get blogs count
+            const blogsEndpoint = getApiUrl('api/blogs');
+            const blogsResponse = await fetch(blogsEndpoint);
+            if (!blogsResponse.ok) throw new Error(`HTTP error: ${blogsResponse.status}`);
+            const blogsData = await blogsResponse.json();
+            const blogsCount = blogsData.success ? blogsData.data.length : 0;
+
             return {
                 products: productsCount,
                 categories: categoriesCount,
-                events: 0, // Placeholder for future implementation
-                blogs: 0,  // Placeholder for future implementation
+                events: eventsCount,
+                blogs: blogsCount,
                 newsletters: 0 // Placeholder for future implementation
             };
         } catch (error) {
@@ -248,7 +280,22 @@ class CMS {
                 const data = await response.json();
                 return data.success ? data.data : [];
             }
-            
+            if (contentType === 'event') {
+                const endpoint = getApiUrl('api/events');
+                console.log('Fetching events:', endpoint);
+                const response = await fetch(endpoint);
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                const data = await response.json();
+                return data.success ? data.data : [];
+            }
+            if (contentType === 'blog') {
+                const endpoint = getApiUrl('api/blogs');
+                console.log('Fetching blogs:', endpoint);
+                const response = await fetch(endpoint);
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                const data = await response.json();
+                return data.success ? data.data : [];
+            }
             // For other content types, return empty array for now
             return [];
         } catch (error) {
@@ -338,6 +385,31 @@ class CMS {
                             <i class="fas fa-edit"></i> Edit
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="cms.deleteProduct('${product._id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        } else if (section === 'events') {
+            // Render events with a View Info button
+            container.innerHTML = content.map(event => `
+                <div class="content-item">
+                    <div class="content-info">
+                        <div class="content-title">${event.title || 'Untitled Event'}</div>
+                        <div class="content-meta">
+                            <span>${event.date ? new Date(event.date).toLocaleDateString() : 'No Date'}</span>
+                            <span>${event.location || 'No Location'}</span>
+                            <span class="content-status status-${event.status || 'published'}">${event.status || 'published'}</span>
+                        </div>
+                    </div>
+                    <div class="content-actions-btns">
+                        <button class="btn btn-sm btn-info" onclick="cms.viewEventInfo('${event.title.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-info-circle"></i> View Info
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${event._id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${event._id}')">
                             <i class="fas fa-trash"></i> Delete
                         </button>
                     </div>
@@ -853,6 +925,12 @@ class CMS {
     showError(message) {
         // Simple error notification
         alert('Error: ' + message); // You can replace this with a proper notification system
+    }
+
+    // Add this method to the CMS class
+    async viewEventInfo(eventTitle) {
+        // Redirect to the event registrations page with the event_title as a query parameter
+        window.location.href = `event-registrations.html?event_title=${encodeURIComponent(eventTitle)}`;
     }
 }
 

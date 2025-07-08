@@ -25,9 +25,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// Serve static files from frontend
-app.use(express.static(path.join(__dirname, '../frontend')));
-
 // --- API Endpoints Placeholders ---
 
 // Chatbot
@@ -62,6 +59,9 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api', productRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/events', eventRoutes);
+
+// Serve static files from frontend (move below API routes)
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Fallback: serve index.html for any other route (for SPA or direct HTML navigation)
 app.get('*', (req, res) => {

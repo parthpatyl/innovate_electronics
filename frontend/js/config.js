@@ -1,7 +1,7 @@
 // Configuration for API endpoints
 const API_CONFIG = {
-    // Base URL for API calls - change this based on your server setup
-    BASE_URL: window.location.hostname === 'localhost' ? 'http://localhost:5000' : '',
+    // Base URL for API calls - always use backend URL
+    BASE_URL: 'http://localhost:5000',
     
     // API endpoints
     ENDPOINTS: {
@@ -26,10 +26,13 @@ function getApiUrl(endpoint) {
     if (typeof API_CONFIG === 'undefined' || !API_CONFIG.BASE_URL) {
         throw new Error('API_CONFIG is not defined or missing BASE_URL');
     }
-    return (API_CONFIG.BASE_URL + '/' + endpoint).replace(/([^:]\/)\/+/, '$1');
+    // Use the original regex to avoid invalid character error
+    return (API_CONFIG.BASE_URL + '/' + endpoint).replace(/([^:]\/)\/+/g, '$1');
 }
 
 // Export for use in other files
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { API_CONFIG, getApiUrl };
 } 
+// Make getApiUrl available globally
+window.getApiUrl = getApiUrl; 

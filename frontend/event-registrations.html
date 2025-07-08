@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Registrations</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    h1 { margin-bottom: 1rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
+    th { background: #f5f5f5; }
+    .empty { margin-top: 2rem; color: #888; }
+  </style>
+</head>
+<body>
+  <h1>Event Registrations<br><small id="event-title-label"></small></h1>
+  <div id="registrations-container">
+    <div>Loading...</div>
+  </div>
+  <script src="js/config.js"></script>
+  <script>
+    async function fetchRegistrations() {
+      const container = document.getElementById('registrations-container');
+      // Get event_title from query string
+      const params = new URLSearchParams(window.location.search);
+      const eventTitle = params.get('event_title') || 'Unknown Event';
+      document.getElementById('event-title-label').textContent = eventTitle;
+      try {
+        // Use getApiUrl from config.js
+        const endpoint = getApiUrl(`api/events/registrations?event_title=${encodeURIComponent(eventTitle)}`);
+        const res = await fetch(endpoint);
+        const data = await res.json();
+        if (!data.success || !Array.isArray(data.data) || data.data.length === 0) {
+          container.innerHTML = '<div class="empty">No registrations found for this event.</div>';
+          return;
+        }
+        const rows = data.data.map(r => `
+          <tr>
+            <td>${r.event_title || ''}</td>
+            <td>${r.full_name || ''}</td>
+            <td>${r.email || ''}</td>
+            <td>${r.phone || ''}</td>
+            <td>${r.company || ''}</td>
+            <td>${r.designation || ''}</td>
+            <td>${Array.isArray(r.interests) ? r.interests.join(', ') : ''}</td>
+            <td>${r.questions || ''}</td>
+          </tr>
+        `).join('');
+        container.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>Event Title</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Company</th>
+                <th>Designation</th>
+                <th>Interests</th>
+                <th>Questions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        `;
+      } catch (err) {
+        container.innerHTML = '<div class="empty">Error loading registrations.</div>';
+      }
+    }
+    fetchRegistrations();
+  </script>
+</body>
+</html> 

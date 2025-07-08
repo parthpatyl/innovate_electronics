@@ -4,7 +4,8 @@ class CMS {
         this.currentSection = 'dashboard';
         this.currentContentType = null;
         this.editingItem = null;
-        this.apiBaseUrl = '/api/cms-simple';
+        // Use the main product API instead of CMS API
+        this.apiBaseUrl = getApiUrl('api');
         
         this.init();
     }
@@ -168,25 +169,92 @@ class CMS {
     }
 
     async fetchStats() {
-        const response = await fetch(`${this.apiBaseUrl}/stats`);
-        const data = await response.json();
-        return data.success ? data.data : {};
+        try {
+            // Get products count - using the same pattern as subcategory.html
+            const productsEndpoint = getApiUrl('api/products');
+            console.log('Fetching products for stats:', productsEndpoint);
+            
+            const productsResponse = await fetch(productsEndpoint);
+            if (!productsResponse.ok) throw new Error(`HTTP error: ${productsResponse.status}`);
+            const productsData = await productsResponse.json();
+            const productsCount = productsData.success ? productsData.total || productsData.data.length : 0;
+            
+            // Get categories count
+            const categoriesEndpoint = getApiUrl('api/categories');
+            console.log('Fetching categories for stats:', categoriesEndpoint);
+            
+            const categoriesResponse = await fetch(categoriesEndpoint);
+            if (!categoriesResponse.ok) throw new Error(`HTTP error: ${categoriesResponse.status}`);
+            const categoriesData = await categoriesResponse.json();
+            const categoriesCount = categoriesData.success ? Object.keys(categoriesData.data).length : 0;
+            
+            return {
+                products: productsCount,
+                categories: categoriesCount,
+                events: 0, // Placeholder for future implementation
+                blogs: 0,  // Placeholder for future implementation
+                newsletters: 0 // Placeholder for future implementation
+            };
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+            return {
+                products: 0,
+                categories: 0,
+                events: 0,
+                blogs: 0,
+                newsletters: 0
+            };
+        }
     }
 
     async fetchRecentContent() {
-        const response = await fetch(`${this.apiBaseUrl}/content?limit=5`);
-        const data = await response.json();
-        return data.success ? data.data : [];
+        try {
+            // Get recent products - using the same pattern as subcategory.html
+            const endpoint = getApiUrl('api/products?limit=5');
+            console.log('Fetching recent products:', endpoint);
+            
+            const response = await fetch(endpoint);
+            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+            const data = await response.json();
+            
+            if (data.success && data.data) {
+                return data.data.map(product => ({
+                    type: 'product',
+                    title: product.name,
+                    category: product.category,
+                    createdAt: product.createdAt,
+                    status: 'published'
+                }));
+            }
+            return [];
+        } catch (error) {
+            console.error('Error fetching recent content:', error);
+            return [];
+        }
     }
 
     async fetchContent(contentType, filters = {}) {
-        const queryParams = new URLSearchParams();
-        if (filters.status) queryParams.append('status', filters.status);
-        if (filters.search) queryParams.append('search', filters.search);
+        try {
+            if (contentType === 'product') {
+                const queryParams = new URLSearchParams();
+                if (filters.status) queryParams.append('status', filters.status);
+                if (filters.search) queryParams.append('search', filters.search);
 
-        const response = await fetch(`${this.apiBaseUrl}/content?${queryParams}`);
-        const data = await response.json();
-        return data.success ? data.data : [];
+                const endpoint = getApiUrl(`api/products?${queryParams}`);
+                console.log('Fetching products:', endpoint);
+                
+                const response = await fetch(endpoint);
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                const data = await response.json();
+                return data.success ? data.data : [];
+            }
+            
+            // For other content types, return empty array for now
+            return [];
+        } catch (error) {
+            console.error(`Error fetching ${contentType}:`, error);
+            return [];
+        }
     }
 
     updateDashboardStats(stats) {
@@ -244,32 +312,73 @@ class CMS {
             return;
         }
 
-        container.innerHTML = content.map(item => `
-            <div class="content-item">
-                <div class="content-info">
-                    <div class="content-title">${item.title}</div>
-                    <div class="content-meta">
-                        <span>${item.author}</span>
-                        <span>${new Date(item.createdAt).toLocaleDateString()}</span>
-                        <span class="content-status status-${item.status}">${item.status}</span>
+        if (section === 'products') {
+            // Render products with product-specific fields
+            container.innerHTML = content.map(product => `
+                <div class="content-item">
+                    <div class="content-info">
+                        <div class="content-title">${product.name || 'Unnamed Product'}</div>
+                        <div class="content-meta">
+                            <span><i class="fas fa-tag"></i> ${product.category || 'No Category'}</span>
+                            <span><i class="fas fa-clock"></i> ${product.createdAt ? new Date(product.createdAt).toLocaleDateString() : 'No Date'}</span>
+                            ${product.subcategory ? `<span><i class="fas fa-layer-group"></i> ${product.subcategory}</span>` : ''}
+                            <span class="content-status status-published">Published</span>
+                        </div>
+                        ${product.overview && product.overview.description ? `
+                            <div class="content-description">
+                                ${product.overview.description[0] ? product.overview.description[0].substring(0, 100) + '...' : 'No description available'}
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="content-actions-btns">
+                        <button class="btn btn-sm btn-secondary" onclick="cms.viewProduct('${product.name}')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn btn-sm btn-primary" onclick="cms.editProduct('${product.name}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="cms.deleteProduct('${product._id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
                     </div>
                 </div>
-                <div class="content-actions-btns">
-                    <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item.slug}')">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item.slug}')">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
+            `).join('');
+        } else {
+            // Default rendering for other content types
+            container.innerHTML = content.map(item => `
+                <div class="content-item">
+                    <div class="content-info">
+                        <div class="content-title">${item.title || item.name || 'Untitled'}</div>
+                        <div class="content-meta">
+                            <span>${item.author || 'Unknown'}</span>
+                            <span>${item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'No Date'}</span>
+                            <span class="content-status status-${item.status || 'published'}">${item.status || 'published'}</span>
+                        </div>
+                    </div>
+                    <div class="content-actions-btns">
+                        <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item.slug || item._id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item.slug || item._id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `).join('');
+        }
     }
 
     showCreateModal() {
         this.editingItem = null;
-        document.getElementById('modal-title').textContent = `Create New ${this.currentContentType.charAt(0).toUpperCase() + this.currentContentType.slice(1)}`;
-        this.generateForm();
+        
+        if (this.currentContentType === 'product') {
+            document.getElementById('modal-title').textContent = 'Create New Product';
+            this.generateProductForm();
+        } else {
+            document.getElementById('modal-title').textContent = `Create New ${this.currentContentType.charAt(0).toUpperCase() + this.currentContentType.slice(1)}`;
+            this.generateForm();
+        }
+        
         this.showModal();
     }
 
@@ -290,6 +399,116 @@ class CMS {
         } catch (error) {
             console.error('Error loading content for edit:', error);
             this.showError('Failed to load content for editing');
+        }
+    }
+
+    // Product-specific methods
+    async viewProduct(productName) {
+        try {
+            const endpoint = getApiUrl(`api/products/${encodeURIComponent(productName)}`);
+            console.log('Fetching product for viewing:', endpoint);
+            
+            const response = await fetch(endpoint);
+            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                // Use the same navigation pattern as subcategory.html
+                const category = data.data.category || 'Products';
+                window.open(`productpagemain.html?category=${encodeURIComponent(category)}&subcategory=${encodeURIComponent(productName)}`, '_blank');
+            } else {
+                this.showError('Failed to load product details');
+            }
+        } catch (error) {
+            console.error('Error loading product:', error);
+            this.showError('Failed to load product details');
+        }
+    }
+
+    async editProduct(productName) {
+        try {
+            const endpoint = getApiUrl(`api/products/${encodeURIComponent(productName)}`);
+            console.log('Fetching product for editing:', endpoint);
+            
+            const response = await fetch(endpoint);
+            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                this.editingItem = data.data;
+                document.getElementById('modal-title').textContent = 'Edit Product';
+                this.generateProductForm();
+                this.populateProductForm(data.data);
+                this.showModal();
+            } else {
+                this.showError('Failed to load product for editing');
+            }
+        } catch (error) {
+            console.error('Error loading product for edit:', error);
+            this.showError('Failed to load product for editing');
+        }
+    }
+
+    async deleteProduct(productId) {
+        this.deletingItemId = productId;
+        this.deletingItemType = 'product';
+        this.showDeleteModal();
+    }
+
+    generateProductForm() {
+        const form = document.getElementById('content-form');
+        
+        form.innerHTML = `
+            <div class="form-group">
+                <label class="form-label" for="name">Product Name *</label>
+                <input type="text" class="form-input" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="category">Category *</label>
+                <input type="text" class="form-input" id="category" name="category" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="subcategory">Subcategory</label>
+                <input type="text" class="form-input" id="subcategory" name="subcategory">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="image">Image URL</label>
+                <input type="text" class="form-input" id="image" name="image">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-input form-textarea" id="description" name="description" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="features">Features (one per line)</label>
+                <textarea class="form-input form-textarea" id="features" name="features" rows="4" placeholder="Enter features, one per line"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="applications">Applications (one per line)</label>
+                <textarea class="form-input form-textarea" id="applications" name="applications" rows="4" placeholder="Enter applications, one per line"></textarea>
+            </div>
+        `;
+    }
+
+    populateProductForm(product) {
+        document.getElementById('name').value = product.name || '';
+        document.getElementById('category').value = product.category || '';
+        document.getElementById('subcategory').value = product.subcategory || '';
+        document.getElementById('image').value = product.image || '';
+        
+        // Handle description
+        if (product.overview && product.overview.description) {
+            document.getElementById('description').value = product.overview.description.join('\n');
+        }
+        
+        // Handle features
+        if (product.overview && product.overview.features) {
+            document.getElementById('features').value = product.overview.features.join('\n');
+        }
+        
+        // Handle applications
+        if (product.overview && product.overview.applications) {
+            document.getElementById('applications').value = product.overview.applications.join('\n');
         }
     }
 
@@ -468,22 +687,51 @@ class CMS {
 
         try {
             let response;
-            if (this.editingItem) {
-                // Update existing content
-                response = await fetch(`${this.apiBaseUrl}/content/${this.editingItem.slug}`, {
+            
+            // Check if we're editing a product
+            if (this.editingItem && this.editingItem._id) {
+                // This is a product edit
+                const productData = this.prepareProductData(data);
+                
+                // Use product name for the API endpoint
+                const productName = this.editingItem.name;
+                const endpoint = getApiUrl(`api/products/${encodeURIComponent(productName)}`);
+                console.log('Updating product:', endpoint);
+                
+                response = await fetch(endpoint, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(productData)
                 });
-            } else {
-                // Create new content
-                response = await fetch(`${this.apiBaseUrl}/content`, {
+            } else if (this.currentContentType === 'product') {
+                // This is a new product creation
+                const productData = this.prepareProductData(data);
+                const endpoint = getApiUrl('api/products');
+                console.log('Creating new product:', endpoint);
+                
+                response = await fetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(productData)
                 });
+            } else {
+                // Handle other content types (legacy CMS)
+                if (this.editingItem) {
+                    response = await fetch(`${this.apiBaseUrl}/content/${this.editingItem.slug}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    response = await fetch(`${this.apiBaseUrl}/content`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                }
             }
 
+            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
             const result = await response.json();
             
             if (result.success) {
@@ -502,6 +750,28 @@ class CMS {
         }
     }
 
+    prepareProductData(formData) {
+        const productData = {
+            name: formData.name,
+            category: formData.category,
+            image: formData.image
+        };
+
+        // Handle subcategory
+        if (formData.subcategory) {
+            productData.subcategory = formData.subcategory;
+        }
+
+        // Handle overview data
+        productData.overview = {
+            description: formData.description ? formData.description.split('\n').filter(line => line.trim()) : [],
+            features: formData.features ? formData.features.split('\n').filter(line => line.trim()) : [],
+            applications: formData.applications ? formData.applications.split('\n').filter(line => line.trim()) : []
+        };
+
+        return productData;
+    }
+
     async deleteContent(slug) {
         this.itemToDelete = slug;
         this.showDeleteModal();
@@ -509,10 +779,24 @@ class CMS {
 
     async confirmDelete() {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/content/${this.itemToDelete}`, {
-                method: 'DELETE'
-            });
+            let response;
+            
+            // Check if we're deleting a product
+            if (this.deletingItemType === 'product' && this.deletingItemId) {
+                const endpoint = getApiUrl(`api/products/${this.deletingItemId}`);
+                console.log('Deleting product:', endpoint);
+                
+                response = await fetch(endpoint, {
+                    method: 'DELETE'
+                });
+            } else {
+                // Handle other content types (legacy CMS)
+                response = await fetch(`${this.apiBaseUrl}/content/${this.itemToDelete}`, {
+                    method: 'DELETE'
+                });
+            }
 
+            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
             const result = await response.json();
             
             if (result.success) {

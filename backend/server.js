@@ -11,6 +11,8 @@ const eventRegistrationController = require('./controllers/eventRegistrationCont
 // Import CMS routes
 const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const blogRoutes = require('./routes/blogRoutes');
+const eventRoutes = require('./routes/eventRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -33,10 +35,6 @@ app.post('/api/chatbot/message', chatbotController.handleMessage);
 
 // Newsletter subscription
 app.post('/api/newsletter/subscribe', (req, res) => {
-});
-
-// Blogs (fetch all)
-app.get('/api/blogs', (req, res) => {
 });
 
 // Contact form (send email)
@@ -62,6 +60,8 @@ app.post('/api/events/register', eventRegistrationController.register);
 // Product and Category Routes
 app.use('/api/categories', categoryRoutes);
 app.use('/api', productRoutes);
+app.use('/api/blogs', blogRoutes);
+app.use('/api/events', eventRoutes);
 
 // Fallback: serve index.html for any other route (for SPA or direct HTML navigation)
 app.get('*', (req, res) => {

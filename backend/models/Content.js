@@ -1,35 +1,38 @@
 const mongoose = require('mongoose');
 
-/**
- * Content Schema for CMS
- * Supports blog posts, articles, and other content types
- */
+// Blog/Content Schema
 const contentSchema = new mongoose.Schema({
+  // Core fields
   title: {
     type: String,
     required: [true, 'Title is required'],
     trim: true,
     maxlength: [200, 'Title cannot exceed 200 characters']
   },
-  slug: {
+  date: {
     type: String,
-    required: [true, 'Slug is required'],
-    unique: true,
-    trim: true,
-    lowercase: true,
-    // Auto-generate slug from title if not provided
-    default: function() {
-      return this.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '');
-    }
+    required: [true, 'Date is required'],
+    trim: true
   },
   body: {
     type: String,
     required: [true, 'Content body is required'],
     trim: true
   },
+  slug: {
+    type: String,
+    unique: true,
+    trim: true,
+    lowercase: true
+  },
+  type: {
+    type: String,
+    enum: ['blog', 'article', 'newsletter', 'other'],
+    default: 'article',
+    required: true
+  },
+
+  // Author & status
   author: {
     type: String,
     required: [true, 'Author is required'],
@@ -38,14 +41,14 @@ const contentSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ['draft', 'published', 'archived'],
-    default: 'draft',
+    default: 'published',
     required: true
   },
-  // Optional fields for enhanced functionality
+
+  // Optional fields
   excerpt: {
     type: String,
-    trim: true,
-    maxlength: [300, 'Excerpt cannot exceed 300 characters']
+    trim: true
   },
   tags: [{
     type: String,
@@ -55,6 +58,7 @@ const contentSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+
   // SEO fields
   metaTitle: {
     type: String,
@@ -74,8 +78,6 @@ const contentSchema = new mongoose.Schema({
 
 // Index for better query performance
 contentSchema.index({ slug: 1 });
-contentSchema.index({ status: 1 });
-contentSchema.index({ author: 1 });
 contentSchema.index({ createdAt: -1 });
 
 // Virtual for formatted date
@@ -89,25 +91,19 @@ contentSchema.virtual('formattedDate').get(function() {
 
 // Pre-save middleware to ensure slug uniqueness
 contentSchema.pre('save', async function(next) {
-  if (this.isModified('title') && !this.isModified('slug')) {
-    // Generate slug from title if slug wasn't explicitly set
-    this.slug = this.title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
+  // Always generate slug from title
+  let baseSlug = this.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  let slug = baseSlug;
+  let counter = 0;
+  // Check for slug uniqueness and append timestamp if needed
+  while (await this.constructor.findOne({ slug, _id: { $ne: this._id } })) {
+    counter++;
+    slug = `${baseSlug}-${Date.now()}${counter > 1 ? '-' + counter : ''}`;
   }
-  
-  // Check for slug uniqueness
-  const existingContent = await this.constructor.findOne({ 
-    slug: this.slug,
-    _id: { $ne: this._id } // Exclude current document
-  });
-  
-  if (existingContent) {
-    // Append timestamp to make slug unique
-    this.slug = `${this.slug}-${Date.now()}`;
-  }
-  
+  this.slug = slug;
   next();
 });
 

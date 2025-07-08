@@ -173,12 +173,12 @@
         <div class="blogs-carousel-container">
             <button class="carousel-arrow left" aria-label="Previous">&#10094;</button>
             <div class="carousel-track">
-                    
+                <!-- Blogs will be injected here by JS -->
             </div>
             <button class="carousel-arrow right" aria-label="Next">&#10095;</button>
         </div>
         <div class="view-all-blogs">
-            <a href="blogs.html" class="view-all-btn">View All Events</a>
+            <a href="blogs.html" class="view-all-btn">View All Blogs</a>
         </div>
     </section>
 
@@ -189,6 +189,7 @@
         <div class="carousel-container events-carousel-container">
             <button class="carousel-arrow left events-arrow" aria-label="Previous">&#10094;</button>
             <div class="carousel-track events-carousel-track">
+                <!-- Events will be injected here by JS -->
             </div>
             <button class="carousel-arrow right events-arrow" aria-label="Next">&#10095;</button>
         </div>
@@ -341,6 +342,64 @@
             });
         });
     </script>
+
+    <script>
+// Fetch latest blogs and render in carousel
+fetch('/api/blogs')
+    .then(res => res.json())
+    .then(result => {
+        if (!result.success) return;
+        const blogs = (result.data || []).slice(0, 6); // Only latest 6
+        const carouselTrack = document.querySelector('.latest-articles .carousel-track');
+        if (!carouselTrack) return;
+        carouselTrack.innerHTML = '';
+        blogs.forEach(blog => {
+            const blogDiv = document.createElement('div');
+            blogDiv.className = 'carousel-item blog-carousel-item';
+            blogDiv.innerHTML = `
+                <div class="blog-card">
+                    ${blog.featuredImage ? `<img src="${blog.featuredImage}" alt="${blog.title}" class="blog-image">` : ''}
+                    <div class="blog-content">
+                        <h3 class="blog-title">${blog.title}</h3>
+                        <p class="blog-date">${blog.date}</p>
+                        <p class="blog-body">${blog.body.length > 120 ? blog.body.slice(0, 120) + '...' : blog.body}</p>
+                        <a href="blogs.html" class="read-more">Read More</a>
+                    </div>
+                </div>
+            `;
+            carouselTrack.appendChild(blogDiv);
+        });
+    });
+</script>
+
+<script>
+// Fetch latest events and render in carousel
+fetch('/api/events')
+    .then(res => res.json())
+    .then(result => {
+        if (!result.success) return;
+        const events = (result.data || []).slice(0, 6); // Only latest 6
+        const carouselTrack = document.querySelector('.events-carousel-track');
+        if (!carouselTrack) return;
+        carouselTrack.innerHTML = '';
+        events.forEach(event => {
+            const eventDiv = document.createElement('div');
+            eventDiv.className = 'carousel-item event-carousel-item';
+            eventDiv.innerHTML = `
+                <div class="event-card">
+                    ${event.featuredImage ? `<img src="${event.featuredImage}" alt="${event.title}" class="event-image">` : ''}
+                    <div class="event-content">
+                        <h3 class="event-title">${event.title}</h3>
+                        <p class="event-date">${event.date}</p>
+                        <p class="event-body">${event.body.length > 120 ? event.body.slice(0, 120) + '...' : event.body}</p>
+                        <a href="events.html" class="read-more">Read More</a>
+                    </div>
+                </div>
+            `;
+            carouselTrack.appendChild(eventDiv);
+        });
+    });
+</script>
 
 </body>
 

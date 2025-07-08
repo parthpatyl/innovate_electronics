@@ -25,7 +25,7 @@ const productSchema = new mongoose.Schema({
     additionalFeatures: String
   },
   overview: {
-    description: [String],
+    body: [String],
     features: [String],
     applications: [String]
   },
@@ -36,7 +36,7 @@ const productSchema = new mongoose.Schema({
     }],
     mechanical: [{
       item: String,
-      description: String
+      body: String
     }]
   },
   library: {

@@ -53,6 +53,7 @@ class CMS {
         this.currentContentType = null;
         this.editingItem = null;
         this.apiBaseUrl = getApiUrl('api');
+        this._formBound = false; // Add guard property
         
         this.init();
     }
@@ -85,8 +86,9 @@ class CMS {
             this.hideModal();
         });
 
+        // Ensure Save button triggers form submit
         document.getElementById('modal-save').addEventListener('click', () => {
-            this.saveContent();
+            document.getElementById('content-form').requestSubmit();
         });
 
         // Delete modal events
@@ -727,6 +729,11 @@ class CMS {
                 <textarea class="form-input form-textarea" id="applications" name="applications" rows="4" placeholder="Enter applications, one per line"></textarea>
             </div>
         `;
+        // Attach submit event after (re)generating the form
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.saveContent();
+        });
     }
 
     populateProductForm(product) {
@@ -887,6 +894,11 @@ class CMS {
         } else {
             form.innerHTML = '<div class="error">Unknown content type</div>';
         }
+        // Always rebind submit event after innerHTML
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.saveContent();
+        });
     }
 
     bindMarkdownEvents() {

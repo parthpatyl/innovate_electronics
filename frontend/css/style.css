@@ -171,14 +171,13 @@ video {
   flex: 1 1 300px;
   max-width: 600px;
   min-width: 260px;
-  min-height: 500px;
   background-color: #fff;
   border-radius: 8px;
   padding: 10px;
   text-align: center;
   box-shadow: 0 4px 12px rgba(99, 99, 99, 0.08);
   position: relative;
-  overflow: hidden;
+  overflow: visible; /* Allow content to overflow if needed */
   border: 2px solid #91919a;
   margin: 0 auto 20px auto;
   display: flex;
@@ -519,7 +518,7 @@ transition: all 0.3s ease;
 .blogs-carousel-container,
 .events-carousel-container {
   position: relative;
-  max-width: 1900px;
+  max-width: 17 00px;
   margin: 0 auto;
   overflow: hidden;
   padding: 50px;
@@ -612,119 +611,100 @@ transition: all 0.3s ease;
     flex-direction: column;
   }
 }
+@media (max-width: 480px) {
+  .category-images {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 4px;
+  }
+  .img-container {
+    max-width: 50%; 
+    min-height: 120px;
+    padding: 10px 4px;
+    font-size: 0.95rem;
+    max-width: unset;
+  }
+  .img-container img {
+    width: 60px;
+    height: 60px;
+    padding: 6px;
+  }
+}
 
-.blog-card {
+/* --- Redefined Blogs and Events Carousel & Card Styles --- */
+  .blog-card,
+.event-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  padding: 20px;
+  border: 1px solid rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid rgba(0,0,0,0.08);
-  min-height: 340px;
+  min-width: 500px;
+  max-width: 320px;
+  flex: 1 1 300px;
+  margin: 0;
+  padding: 20px 16px 16px 16px;
   transition: transform 0.3s, box-shadow 0.3s;
   text-align: center;
+  height: 100%;
+  box-sizing: border-box;
 }
-.blog-card:hover {
-  transform: translateY(-8px);
+
+.blog-card:hover,
+.event-card:hover {
+  transform: translateY(-8px) scale(1.03);
   box-shadow: 0 8px 32px rgba(243,52,52,0.12);
   border-color: #f33434;
 }
-.blog-image {
+
+.blog-image,
+.event-image {
   width: 100%;
-  height: 180px;
+  height: 160px;
   object-fit: cover;
   margin-bottom: 16px;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  border-radius: 8px;
   background: #f8f9fa;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
-.blog-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-}
-.blog-title {
+
+.blog-title,
+.event-title {
   font-size: 1.1rem;
   font-weight: 600;
   color: #1a1a1a;
   margin: 0 0 8px 0;
-  text-align: left;
+  text-align: center;
 }
-.blog-date {
+
+.blog-date,
+.event-date {
   font-size: 0.9rem;
   color: #f33434;
   margin-bottom: 8px;
 }
-.blog-body {
+
+.blog-body,
+.event-body {
   font-size: 1rem;
   color: #2a3147;
   margin-bottom: 12px;
-  text-align: left;
+  text-align: center;
 }
+
 .read-more {
   color: #f33434;
   text-decoration: underline;
   font-weight: 600;
   font-size: 0.95rem;
   margin-top: auto;
-  align-self: flex-end;
+  align-self: center;
   transition: color 0.2s;
 }
 .read-more:hover {
   color: #ff7e5f;
 }
 
-.event-card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid rgba(0,0,0,0.08);
-  min-height: 340px;
-  transition: transform 0.3s, box-shadow 0.3s;
-  text-align: center;
-}
-.event-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 8px 32px rgba(243,52,52,0.12);
-  border-color: #f33434;
-}
-.event-image {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  margin-bottom: 16px;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  background: #f8f9fa;
-}
-.event-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-}
-.event-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 0 0 8px 0;
-  text-align: left;
-}
-.event-date {
-  font-size: 0.9rem;
-  color: #f33434;
-  margin-bottom: 8px;
-}
-.event-body {
-  font-size: 1rem;
-  color: #2a3147;
-  margin-bottom: 12px;
-  text-align: left;
-}
+/* --- Unified Carousel Styles --- */

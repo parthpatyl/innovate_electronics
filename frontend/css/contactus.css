@@ -1,6 +1,12 @@
 /* General Layout */
-body {
+html, body {
     margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     color: #2d3748;
     line-height: 1.6;
@@ -14,6 +20,9 @@ body {
     align-items: center;
     justify-content: center;
     padding: 2rem;
+    margin-top: 60px; /* Account for fixed header height */
+    position: relative;
+    z-index: 1;
 }
 
 .hero-title {
@@ -30,6 +39,8 @@ body {
     margin: 0 auto;
     background-color: #ffffff;
     max-width: 1400px;
+    position: relative;
+    z-index: 1;
 }
 
 .section-title {
@@ -164,6 +175,7 @@ body {
 @media (max-width: 768px) {
     .hero-section {
         min-height: 300px;
+        margin-top: 60px; /* Keep consistent margin for mobile */
     }
 
     .hero-title {

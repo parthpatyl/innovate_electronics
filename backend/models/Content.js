@@ -23,7 +23,8 @@ const contentSchema = new mongoose.Schema({
     type: String,
     unique: true,
     trim: true,
-    lowercase: true
+    lowercase: true,
+    index: true
   },
   type: {
     type: String,
@@ -77,7 +78,6 @@ const contentSchema = new mongoose.Schema({
 });
 
 // Index for better query performance
-contentSchema.index({ slug: 1 });
 contentSchema.index({ createdAt: -1 });
 
 // Virtual for formatted date

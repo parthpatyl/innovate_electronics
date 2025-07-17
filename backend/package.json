@@ -16,5 +16,10 @@
     "mongoose": "^8.16.1",
     "mysql": "^2.18.1",
     "nodemailer": "^6.9.8"
+  },
+  "devDependencies": {
+    "jest": "^30.0.4",
+    "mocha": "^11.7.1",
+    "supertest": "^7.1.3"
   }
 }

@@ -9,34 +9,33 @@
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/chatbot.css">
   <link rel="stylesheet" href="css/employee.css">
-  <!-- CMS Styles -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="cms/styles.css">
 </head>
 
 <body>
   <div id="header-section"></div>
   <div id="overlay"></div>
-  <!-- <script src="js/header.js"></script>
-  <script>
-    // Load the header component dynamically with correct path
-    (function () {
-      const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-      fetch(basePath + 'header.html')
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById('header-section').innerHTML = data;
-          if (typeof setupHeaderMenu === 'function') setupHeaderMenu();
-        });
-    })();
-  </script> -->
-
   <main>
-    <div class="cms-container cms-loaded">
+    <!-- Login Container -->
+    <div id="login-container" class="login-container">
+      <h2>Employee Login</h2>
+      <form id="login-form">
+        <div class="input-group">
+          <input type="text" id="username" placeholder="Username" required>
+        </div>
+        <div class="input-group">
+          <input type="password" id="password" placeholder="Password" required>
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+    </div>
+
+    <!-- CMS Container (hidden initially) -->
+    <div id="cms-container" class="cms-container" style="display: none;">
       <!-- Sidebar Navigation -->
       <aside class="sidebar">
         <div class="sidebar-header">
-          <h2><i class="fas fa-leaf"></i> Digital Garden</h2>
+          <h2>Innovate Electronics</h2>
           <p>Content Management</p>
         </div>
         
@@ -44,31 +43,26 @@
           <ul>
             <li>
               <a href="#" class="nav-link active" data-section="dashboard">
-                <i class="fas fa-tachometer-alt"></i>
                 <span>Dashboard</span>
               </a>
             </li>
             <li>
               <a href="#" class="nav-link" data-section="products">
-                <i class="fas fa-box"></i>
                 <span>Products</span>
               </a>
             </li>
             <li>
               <a href="#" class="nav-link" data-section="events">
-                <i class="fas fa-calendar-alt"></i>
                 <span>Events</span>
               </a>
             </li>
             <li>
               <a href="#" class="nav-link" data-section="blogs">
-                <i class="fas fa-blog"></i>
                 <span>Blogs</span>
               </a>
             </li>
             <li>
               <a href="#" class="nav-link" data-section="newsletters">
-                <i class="fas fa-envelope"></i>
                 <span>Newsletters</span>
               </a>
             </li>
@@ -85,7 +79,6 @@
             <p id="page-description">Welcome to your content management system</p>
           </div>
           <button class="btn btn-primary" id="create-btn" style="display: none;">
-            <i class="fas fa-plus"></i>
             Create New
           </button>
         </div>
@@ -94,30 +87,18 @@
         <section id="dashboard" class="content-section active">
           <div class="stats-grid">
             <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-box"></i>
-              </div>
               <div class="stat-number" id="products-count">0</div>
               <div class="stat-label">Products</div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-calendar-alt"></i>
-              </div>
               <div class="stat-number" id="events-count">0</div>
               <div class="stat-label">Events</div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-blog"></i>
-              </div>
               <div class="stat-number" id="blogs-count">0</div>
               <div class="stat-label">Blogs</div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-envelope"></i>
-              </div>
               <div class="stat-number" id="newsletters-count">0</div>
               <div class="stat-label">Newsletters</div>
             </div>
@@ -127,7 +108,6 @@
             <h3>Recent Content</h3>
             <div class="content-list" id="recent-content-list">
               <div class="empty-state">
-                <i class="fas fa-seedling"></i>
                 <p>No content yet. Start by creating your first piece of content!</p>
               </div>
             </div>
@@ -138,7 +118,6 @@
         <section id="products" class="content-section">
           <div class="content-actions">
             <div class="search-box">
-              <i class="fas fa-search"></i>
               <input type="text" placeholder="Search products..." id="products-search">
             </div>
             <div class="filter-dropdown">
@@ -160,7 +139,6 @@
         <section id="events" class="content-section">
           <div class="content-actions">
             <div class="search-box">
-              <i class="fas fa-search"></i>
               <input type="text" placeholder="Search events..." id="events-search">
             </div>
             <div class="filter-dropdown">
@@ -182,7 +160,6 @@
         <section id="blogs" class="content-section">
           <div class="content-actions">
             <div class="search-box">
-              <i class="fas fa-search"></i>
               <input type="text" placeholder="Search blogs..." id="blogs-search">
             </div>
             <div class="filter-dropdown">
@@ -204,7 +181,6 @@
         <section id="newsletters" class="content-section">
           <div class="content-actions">
             <div class="search-box">
-              <i class="fas fa-search"></i>
               <input type="text" placeholder="Search newsletters..." id="newsletters-search">
             </div>
             <div class="filter-dropdown">
@@ -230,7 +206,6 @@
         <div class="modal-header">
           <h3 id="modal-title">Create New Content</h3>
           <button class="modal-close" id="modal-close">
-            <i class="fas fa-times"></i>
           </button>
         </div>
         <div class="modal-body">
@@ -251,7 +226,6 @@
         <div class="modal-header">
           <h3>Confirm Delete</h3>
           <button class="modal-close" id="delete-modal-close">
-            <i class="fas fa-times"></i>
           </button>
         </div>
         <div class="modal-body">
@@ -269,15 +243,21 @@
 
   <script>
     // Login functionality
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
+    document.getElementById('login-form').addEventListener('submit', function (e) {
       e.preventDefault();
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
 
       // Simple credentials check
       if (username === 'admin' && password === 'admin') {
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('portalContent').style.display = 'block';
+        // Hide login form and show CMS
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('cms-container').style.display = 'flex';
+        
+        // Initialize CMS after successful login
+        if (typeof CMS !== 'undefined') {
+          window.cms = new CMS();
+        }
       } else {
         alert('Incorrect username or password. Please try again.');
       }

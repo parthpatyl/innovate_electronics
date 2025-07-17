@@ -223,16 +223,33 @@ router.post('/products', async (req, res) => {
 // Route to update a product (legacy)
 router.put('/products/:id', async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const { id } = req.params;
+    let product;
+    
+    // Check if it's a valid MongoDB ObjectId (24 character hex string)
+    if (/^[0-9a-fA-F]{24}$/.test(id)) {
+      // Try to find by ID first
+      product = await Product.findByIdAndUpdate(
+        id,
+        req.body,
+        { new: true, runValidators: true }
+      );
+    }
+    
+    // If not found by ID or not a valid ObjectId, try to find by name
+    if (!product) {
+      product = await Product.findOneAndUpdate(
+        { name: { $regex: new RegExp(id, 'i') } },
+        req.body,
+        { new: true, runValidators: true }
+      );
+    }
     
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found'
+        message: 'Product not found',
+        searchedFor: id
       });
     }
     
@@ -253,12 +270,27 @@ router.put('/products/:id', async (req, res) => {
 // Route to delete a product (legacy)
 router.delete('/products/:id', async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+    let product;
+    
+    // Check if it's a valid MongoDB ObjectId (24 character hex string)
+    if (/^[0-9a-fA-F]{24}$/.test(id)) {
+      // Try to find by ID first
+      product = await Product.findByIdAndDelete(id);
+    }
+    
+    // If not found by ID or not a valid ObjectId, try to find by name
+    if (!product) {
+      product = await Product.findOneAndDelete({
+        name: { $regex: new RegExp(id, 'i') }
+      });
+    }
     
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found'
+        message: 'Product not found',
+        searchedFor: id
       });
     }
     

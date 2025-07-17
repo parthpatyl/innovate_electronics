@@ -15,6 +15,19 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get a single blog by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const blog = await Content.findById(req.params.id);
+    if (!blog) {
+      return res.status(404).json({ success: false, message: 'Blog not found' });
+    }
+    res.json({ success: true, data: blog });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching blog', error: error.message });
+  }
+});
+
 // Create a new blog
 router.post('/', async (req, res) => {
   try {
@@ -47,6 +60,37 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Blog with this slug already exists' });
     }
     res.status(500).json({ success: false, message: 'Error creating blog', error: error.message });
+  }
+});
+
+// Update a blog
+router.put('/:id', async (req, res) => {
+  try {
+    const { title, date, body, author, status, excerpt, tags, featuredImage, metaTitle, metaDescription } = req.body;
+    const blog = await Content.findByIdAndUpdate(
+      req.params.id,
+      { title, date, body, author, status, excerpt, tags, featuredImage, metaTitle, metaDescription },
+      { new: true, runValidators: true }
+    );
+    if (!blog) {
+      return res.status(404).json({ success: false, message: 'Blog not found' });
+    }
+    res.json({ success: true, message: 'Blog updated successfully', data: blog });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error updating blog', error: error.message });
+  }
+});
+
+// Delete a blog
+router.delete('/:id', async (req, res) => {
+  try {
+    const blog = await Content.findByIdAndDelete(req.params.id);
+    if (!blog) {
+      return res.status(404).json({ success: false, message: 'Blog not found' });
+    }
+    res.json({ success: true, message: 'Blog deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error deleting blog', error: error.message });
   }
 });
 

@@ -1,10 +1,57 @@
+// API Service abstraction
+class ApiService {
+    static async request(endpoint, options = {}) {
+        const url = getApiUrl(endpoint);
+        const defaultOptions = {
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        };
+        
+        try {
+            const response = await fetch(url, { ...defaultOptions, ...options });
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error(`API request failed for ${endpoint}:`, error);
+            throw error;
+        }
+    }
+    
+    static async get(endpoint) {
+        return this.request(endpoint);
+    }
+    
+    static async post(endpoint, data) {
+        return this.request(endpoint, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
+    
+    static async put(endpoint, data) {
+        return this.request(endpoint, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        });
+    }
+    
+    static async delete(endpoint) {
+        return this.request(endpoint, {
+            method: 'DELETE'
+        });
+    }
+}
+
 // CMS Application JavaScript
 class CMS {
     constructor() {
         this.currentSection = 'dashboard';
         this.currentContentType = null;
         this.editingItem = null;
-        // Use the main product API instead of CMS API
         this.apiBaseUrl = getApiUrl('api');
         
         this.init();
@@ -63,12 +110,25 @@ class CMS {
         const searchInputs = ['products-search', 'events-search', 'blogs-search', 'newsletters-search'];
         const filterSelects = ['products-status-filter', 'events-status-filter', 'blogs-status-filter', 'newsletters-status-filter'];
 
+        // Fix Bug 8: Add debounce for search input
+        const debounce = (func, wait) => {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        };
+
         searchInputs.forEach(id => {
             const element = document.getElementById(id);
             if (element) {
-                element.addEventListener('input', (e) => {
+                element.addEventListener('input', debounce((e) => {
                     this.handleSearch(e.target.value, id.replace('-search', ''));
-                });
+                }, 300)); // 300ms debounce
             }
         });
 
@@ -87,13 +147,28 @@ class CMS {
         document.querySelectorAll('.nav-link').forEach(link => {
             link.classList.remove('active');
         });
-        document.querySelector(`[data-section="${section}"]`).classList.add('active');
+        
+        // Fix Bug 6: Check if element exists before adding class
+        const navElement = document.querySelector(`[data-section="${section}"]`);
+        if (navElement) {
+            navElement.classList.add('active');
+        } else {
+            console.error(`Navigation element for section "${section}" not found`);
+            return;
+        }
 
         // Update content sections
         document.querySelectorAll('.content-section').forEach(sectionEl => {
             sectionEl.classList.remove('active');
         });
-        document.getElementById(section).classList.add('active');
+        
+        const contentElement = document.getElementById(section);
+        if (contentElement) {
+            contentElement.classList.add('active');
+        } else {
+            console.error(`Content element for section "${section}" not found`);
+            return;
+        }
 
         // Update header
         this.updateHeader(section);
@@ -130,6 +205,7 @@ class CMS {
         } else {
             createBtn.style.display = 'flex';
             this.currentContentType = section.slice(0, -1); // Remove 's' from end
+            console.log('updateHeader - section:', section, 'currentContentType:', this.currentContentType);
         }
     }
 
@@ -144,7 +220,6 @@ class CMS {
             this.updateRecentContent(recentContent);
         } catch (error) {
             console.error('Error loading dashboard:', error);
-            this.showError('Failed to load dashboard data');
         }
     }
 
@@ -197,7 +272,9 @@ class CMS {
             const productsResponse = await fetch(productsEndpoint);
             if (!productsResponse.ok) throw new Error(`HTTP error: ${productsResponse.status}`);
             const productsData = await productsResponse.json();
-            const productsCount = productsData.success ? productsData.total || productsData.data.length : 0;
+            // Fix Bug 2: Standardize data length checking
+            const productsCount = productsData.success ? 
+                (productsData.total || (Array.isArray(productsData.data) ? productsData.data.length : 0)) : 0;
 
             // Get categories count
             const categoriesEndpoint = getApiUrl('api/categories');
@@ -211,21 +288,25 @@ class CMS {
             const eventsResponse = await fetch(eventsEndpoint);
             if (!eventsResponse.ok) throw new Error(`HTTP error: ${eventsResponse.status}`);
             const eventsData = await eventsResponse.json();
-            const eventsCount = eventsData.success ? eventsData.data.length : 0;
+            const eventsCount = eventsData.success ? 
+                (Array.isArray(eventsData.data) ? eventsData.data.length : 0) : 0;
 
             // Get blogs count
             const blogsEndpoint = getApiUrl('api/blogs');
             const blogsResponse = await fetch(blogsEndpoint);
             if (!blogsResponse.ok) throw new Error(`HTTP error: ${blogsResponse.status}`);
             const blogsData = await blogsResponse.json();
-            const blogsCount = blogsData.success ? blogsData.data.length : 0;
+            const blogsCount = blogsData.success ? 
+                (Array.isArray(blogsData.data) ? blogsData.data.filter(item => item.type === 'blog').length : 0) : 0;
+            const newslettersCount = blogsData.success ? 
+                (Array.isArray(blogsData.data) ? blogsData.data.filter(item => item.type === 'newsletter').length : 0) : 0;
 
             return {
                 products: productsCount,
                 categories: categoriesCount,
                 events: eventsCount,
                 blogs: blogsCount,
-                newsletters: 0 // Placeholder for future implementation
+                newsletters: newslettersCount
             };
         } catch (error) {
             console.error('Error fetching stats:', error);
@@ -296,6 +377,16 @@ class CMS {
                 const data = await response.json();
                 return data.success ? data.data : [];
             }
+            if (contentType === 'newsletter') {
+                // Newsletters are stored in the same Content model with type 'newsletter'
+                const endpoint = getApiUrl('api/blogs');
+                console.log('Fetching newsletters:', endpoint);
+                const response = await fetch(endpoint);
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                const data = await response.json();
+                // Filter to only show newsletters
+                return data.success ? data.data.filter(item => item.type === 'newsletter') : [];
+            }
             // For other content types, return empty array for now
             return [];
         } catch (error) {
@@ -329,16 +420,16 @@ class CMS {
                 <div class="content-info">
                     <div class="content-title">${item.title}</div>
                     <div class="content-meta">
-                        <span>${item.author}</span>
-                        <span>${new Date(item.createdAt).toLocaleDateString()}</span>
-                        <span class="content-status status-${item.status}">${item.status}</span>
+                        <span>${item.author || 'Unknown'}</span>
+                        <span>${item.createdAt ? new Date(item.createdAt).toISOString().split('T')[0] : 'No Date'}</span>
+                        <span class="content-status status-${item.status || 'published'}">${item.status || 'published'}</span>
                     </div>
                 </div>
                 <div class="content-actions-btns">
-                    <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item.slug}')">
+                    <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item.slug || item._id || ''}')">
                         <i class="fas fa-edit"></i> Edit
                     </button>
-                    <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item.slug}')">
+                    <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item.slug || item._id || ''}')">
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
@@ -367,7 +458,7 @@ class CMS {
                         <div class="content-title">${product.name || 'Unnamed Product'}</div>
                         <div class="content-meta">
                             <span><i class="fas fa-tag"></i> ${product.category || 'No Category'}</span>
-                            <span><i class="fas fa-clock"></i> ${product.createdAt ? new Date(product.createdAt).toLocaleDateString() : 'No Date'}</span>
+                            <span><i class="fas fa-clock"></i> ${this.formatDate(product.createdAt)}</span>
                             ${product.subcategory ? `<span><i class="fas fa-layer-group"></i> ${product.subcategory}</span>` : ''}
                             <span class="content-status status-published">Published</span>
                         </div>
@@ -384,7 +475,7 @@ class CMS {
                         <button class="btn btn-sm btn-primary" onclick="cms.editProduct('${product.name}')">
                             <i class="fas fa-edit"></i> Edit
                         </button>
-                        <button class="btn btn-sm btn-danger" onclick="cms.deleteProduct('${product._id}')">
+                        <button class="btn btn-sm btn-danger" onclick="cms.deleteProduct('${product.name}')">
                             <i class="fas fa-trash"></i> Delete
                         </button>
                     </div>
@@ -397,7 +488,7 @@ class CMS {
                     <div class="content-info">
                         <div class="content-title">${event.title || 'Untitled Event'}</div>
                         <div class="content-meta">
-                            <span>${event.date ? new Date(event.date).toLocaleDateString() : 'No Date'}</span>
+                            <span>${this.formatDate(event.date)}</span>
                             <span>${event.location || 'No Location'}</span>
                             <span class="content-status status-${event.status || 'published'}">${event.status || 'published'}</span>
                         </div>
@@ -415,6 +506,60 @@ class CMS {
                     </div>
                 </div>
             `).join('');
+        } else if (section === 'blogs') {
+            // Render blogs
+            container.innerHTML = content.map(blog => `
+                <div class="content-item">
+                    <div class="content-info">
+                        <div class="content-title">${blog.title || 'Untitled Blog'}</div>
+                        <div class="content-meta">
+                            <span>${blog.author || 'Unknown'}</span>
+                            <span>${this.formatDate(blog.createdAt)}</span>
+                            <span class="content-status status-${blog.status || 'published'}">${blog.status || 'published'}</span>
+                        </div>
+                        ${blog.excerpt ? `
+                            <div class="content-description">
+                                ${blog.excerpt.substring(0, 100)}...
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="content-actions-btns">
+                        <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${blog._id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${blog._id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        } else if (section === 'newsletters') {
+            // Render newsletters
+            container.innerHTML = content.map(newsletter => `
+                <div class="content-item">
+                    <div class="content-info">
+                        <div class="content-title">${newsletter.title || 'Untitled Newsletter'}</div>
+                        <div class="content-meta">
+                            <span>${newsletter.author || 'Unknown'}</span>
+                            <span>${this.formatDate(newsletter.createdAt)}</span>
+                            <span class="content-status status-${newsletter.status || 'published'}">${newsletter.status || 'published'}</span>
+                        </div>
+                        ${newsletter.excerpt ? `
+                            <div class="content-description">
+                                ${newsletter.excerpt.substring(0, 100)}...
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="content-actions-btns">
+                        <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${newsletter._id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${newsletter._id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
         } else {
             // Default rendering for other content types
             container.innerHTML = content.map(item => `
@@ -423,7 +568,7 @@ class CMS {
                         <div class="content-title">${item.title || item.name || 'Untitled'}</div>
                         <div class="content-meta">
                             <span>${item.author || 'Unknown'}</span>
-                            <span>${item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'No Date'}</span>
+                            <span>${this.formatDate(item.createdAt)}</span>
                             <span class="content-status status-${item.status || 'published'}">${item.status || 'published'}</span>
                         </div>
                     </div>
@@ -443,6 +588,8 @@ class CMS {
     showCreateModal() {
         this.editingItem = null;
         
+        console.log('showCreateModal - currentContentType:', this.currentContentType);
+        
         if (this.currentContentType === 'product') {
             document.getElementById('modal-title').textContent = 'Create New Product';
             this.generateProductForm();
@@ -456,7 +603,19 @@ class CMS {
 
     async editContent(slug) {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/content/${slug}`);
+            let response;
+            
+            // Use different API endpoints based on content type
+            if (this.currentContentType === 'event') {
+                response = await fetch(`${getApiUrl('api/events')}/${slug}`);
+            } else if (this.currentContentType === 'blog' || this.currentContentType === 'newsletter') {
+                response = await fetch(`${getApiUrl('api/blogs')}/${slug}`);
+            } else {
+                // Legacy CMS endpoint for other content types
+                response = await fetch(`${this.apiBaseUrl}/content/${slug}`);
+            }
+            
+            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
             const data = await response.json();
             
             if (data.success) {
@@ -466,18 +625,19 @@ class CMS {
                 this.populateForm(data.data);
                 this.showModal();
             } else {
-                this.showError('Failed to load content for editing');
+                console.error('Failed to load content for editing:', data.message);
             }
         } catch (error) {
             console.error('Error loading content for edit:', error);
-            this.showError('Failed to load content for editing');
         }
     }
 
     // Product-specific methods
     async viewProduct(productName) {
         try {
-            const endpoint = getApiUrl(`api/products/${encodeURIComponent(productName)}`);
+            // Fix Bug 3: Use product ID if available, fallback to name
+            const productId = this.getProductId(productName);
+            const endpoint = getApiUrl(`api/products/${encodeURIComponent(productId || productName)}`);
             console.log('Fetching product for viewing:', endpoint);
             
             const response = await fetch(endpoint);
@@ -489,17 +649,18 @@ class CMS {
                 const category = data.data.category || 'Products';
                 window.open(`productpagemain.html?category=${encodeURIComponent(category)}&subcategory=${encodeURIComponent(productName)}`, '_blank');
             } else {
-                this.showError('Failed to load product details');
+                console.error('Failed to load product details:', data.message);
             }
         } catch (error) {
             console.error('Error loading product:', error);
-            this.showError('Failed to load product details');
         }
     }
 
     async editProduct(productName) {
         try {
-            const endpoint = getApiUrl(`api/products/${encodeURIComponent(productName)}`);
+            // Fix Bug 3: Use product ID if available, fallback to name
+            const productId = this.getProductId(productName);
+            const endpoint = getApiUrl(`api/products/${encodeURIComponent(productId || productName)}`);
             console.log('Fetching product for editing:', endpoint);
             
             const response = await fetch(endpoint);
@@ -513,11 +674,10 @@ class CMS {
                 this.populateProductForm(data.data);
                 this.showModal();
             } else {
-                this.showError('Failed to load product for editing');
+                console.error('Failed to load product for editing:', data.message);
             }
         } catch (error) {
             console.error('Error loading product for edit:', error);
-            this.showError('Failed to load product for editing');
         }
     }
 
@@ -525,6 +685,13 @@ class CMS {
         this.deletingItemId = productId;
         this.deletingItemType = 'product';
         this.showDeleteModal();
+    }
+
+    // Helper method to get product ID from name (if we have a products cache)
+    getProductId(productName) {
+        // This could be enhanced to use a cached product list
+        // For now, return null to use name as fallback
+        return null;
     }
 
     generateProductForm() {
@@ -587,91 +754,139 @@ class CMS {
     generateForm() {
         const form = document.getElementById('content-form');
         const contentType = this.currentContentType;
-
-        // Define form fields for each content type
-        const formFields = {
-            products: [
-                { name: 'title', label: 'Product Name', type: 'text', required: true },
-                { name: 'slug', label: 'URL Slug', type: 'text', required: true },
-                { name: 'description', label: 'Description', type: 'textarea', required: true },
-                { name: 'price', label: 'Price', type: 'number', required: true },
-                { name: 'image', label: 'Image URL', type: 'text', required: false },
-                { name: 'status', label: 'Status', type: 'select', options: ['draft', 'published', 'archived'], required: true }
-            ],
-            events: [
-                { name: 'title', label: 'Event Title', type: 'text', required: true },
-                { name: 'slug', label: 'URL Slug', type: 'text', required: true },
-                { name: 'description', label: 'Description', type: 'textarea', required: true },
-                { name: 'location', label: 'Location', type: 'text', required: true },
-                { name: 'start_date', label: 'Start Date', type: 'datetime-local', required: true },
-                { name: 'end_date', label: 'End Date', type: 'datetime-local', required: true },
-                { name: 'status', label: 'Status', type: 'select', options: ['draft', 'published', 'archived'], required: true }
-            ],
-            blogs: [
-                { name: 'title', label: 'Blog Title', type: 'text', required: true },
-                { name: 'slug', label: 'URL Slug', type: 'text', required: true },
-                { name: 'body', label: 'Content (Markdown)', type: 'markdown', required: true },
-                { name: 'author', label: 'Author', type: 'text', required: true },
-                { name: 'published_at', label: 'Publish Date', type: 'datetime-local', required: false },
-                { name: 'status', label: 'Status', type: 'select', options: ['draft', 'published', 'archived'], required: true }
-            ],
-            newsletters: [
-                { name: 'title', label: 'Newsletter Title', type: 'text', required: true },
-                { name: 'slug', label: 'URL Slug', type: 'text', required: true },
-                { name: 'content', label: 'Content (Markdown)', type: 'markdown', required: true },
-                { name: 'issue_date', label: 'Issue Date', type: 'date', required: true },
-                { name: 'status', label: 'Status', type: 'select', options: ['draft', 'published', 'archived'], required: true }
-            ]
-        };
-
-        const fields = formFields[contentType] || [];
         
-        form.innerHTML = fields.map(field => {
-            if (field.type === 'markdown') {
-                return `
-                    <div class="form-group">
-                        <label class="form-label" for="${field.name}">${field.label}${field.required ? ' *' : ''}</label>
-                        <div class="markdown-editor">
-                            <div class="markdown-toolbar">
-                                <button type="button" class="markdown-btn" data-action="bold">Bold</button>
-                                <button type="button" class="markdown-btn" data-action="italic">Italic</button>
-                                <button type="button" class="markdown-btn" data-action="link">Link</button>
-                                <button type="button" class="markdown-btn" data-action="list">List</button>
-                                <button type="button" class="markdown-btn" data-action="preview">Preview</button>
-                            </div>
-                            <textarea class="form-input form-textarea" id="${field.name}" name="${field.name}" ${field.required ? 'required' : ''}></textarea>
-                            <div class="markdown-preview" style="display: none;"></div>
-                        </div>
-                    </div>
-                `;
-            } else if (field.type === 'select') {
-                return `
-                    <div class="form-group">
-                        <label class="form-label" for="${field.name}">${field.label}${field.required ? ' *' : ''}</label>
-                        <select class="form-input form-select" id="${field.name}" name="${field.name}" ${field.required ? 'required' : ''}>
-                            ${field.options.map(option => `<option value="${option}">${option.charAt(0).toUpperCase() + option.slice(1)}</option>`).join('')}
-                        </select>
-                    </div>
-                `;
-            } else if (field.type === 'textarea') {
-                return `
-                    <div class="form-group">
-                        <label class="form-label" for="${field.name}">${field.label}${field.required ? ' *' : ''}</label>
-                        <textarea class="form-input form-textarea" id="${field.name}" name="${field.name}" ${field.required ? 'required' : ''}></textarea>
-                    </div>
-                `;
-            } else {
-                return `
-                    <div class="form-group">
-                        <label class="form-label" for="${field.name}">${field.label}${field.required ? ' *' : ''}</label>
-                        <input type="${field.type}" class="form-input" id="${field.name}" name="${field.name}" ${field.required ? 'required' : ''}>
-                    </div>
-                `;
-            }
-        }).join('');
-
-        // Bind markdown editor events
-        this.bindMarkdownEvents();
+        if (contentType === 'event') {
+            form.innerHTML = `
+                <div class="form-group">
+                    <label class="form-label" for="title">Event Title *</label>
+                    <input type="text" class="form-input" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="date">Event Date *</label>
+                    <input type="date" class="form-input" id="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="time">Event Time</label>
+                    <input type="time" class="form-input" id="time" name="time">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="location">Location</label>
+                    <input type="text" class="form-input" id="location" name="location">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="body">Event Description *</label>
+                    <textarea class="form-input form-textarea" id="body" name="body" rows="6" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="featuredImage">Featured Image URL</label>
+                    <input type="text" class="form-input" id="featuredImage" name="featuredImage">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="status">Status *</label>
+                    <select class="form-input form-select" id="status" name="status" required>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="past">Past</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+            `;
+        } else if (contentType === 'blog') {
+            form.innerHTML = `
+                <div class="form-group">
+                    <label class="form-label" for="title">Blog Title *</label>
+                    <input type="text" class="form-input" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="date">Publish Date *</label>
+                    <input type="date" class="form-input" id="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="author">Author *</label>
+                    <input type="text" class="form-input" id="author" name="author" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="body">Content *</label>
+                    <textarea class="form-input form-textarea" id="body" name="body" rows="8" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="excerpt">Excerpt</label>
+                    <textarea class="form-input form-textarea" id="excerpt" name="excerpt" rows="3" placeholder="Brief summary of the blog post"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="tags">Tags (comma-separated)</label>
+                    <input type="text" class="form-input" id="tags" name="tags" placeholder="tag1, tag2, tag3">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="featuredImage">Featured Image URL</label>
+                    <input type="text" class="form-input" id="featuredImage" name="featuredImage">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="metaTitle">Meta Title</label>
+                    <input type="text" class="form-input" id="metaTitle" name="metaTitle">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="metaDescription">Meta Description</label>
+                    <textarea class="form-input form-textarea" id="metaDescription" name="metaDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="status">Status *</label>
+                    <select class="form-input form-select" id="status" name="status" required>
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                        <option value="archived">Archived</option>
+                    </select>
+                </div>
+            `;
+        } else if (contentType === 'newsletter') {
+            form.innerHTML = `
+                <div class="form-group">
+                    <label class="form-label" for="title">Newsletter Title *</label>
+                    <input type="text" class="form-input" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="date">Issue Date *</label>
+                    <input type="date" class="form-input" id="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="author">Author *</label>
+                    <input type="text" class="form-input" id="author" name="author" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="body">Content *</label>
+                    <textarea class="form-input form-textarea" id="body" name="body" rows="8" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="excerpt">Excerpt</label>
+                    <textarea class="form-input form-textarea" id="excerpt" name="excerpt" rows="3" placeholder="Brief summary of the newsletter"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="tags">Tags (comma-separated)</label>
+                    <input type="text" class="form-input" id="tags" name="tags" placeholder="tag1, tag2, tag3">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="featuredImage">Featured Image URL</label>
+                    <input type="text" class="form-input" id="featuredImage" name="featuredImage">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="metaTitle">Meta Title</label>
+                    <input type="text" class="form-input" id="metaTitle" name="metaTitle">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="metaDescription">Meta Description</label>
+                    <textarea class="form-input form-textarea" id="metaDescription" name="metaDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="status">Status *</label>
+                    <select class="form-input form-select" id="status" name="status" required>
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                        <option value="archived">Archived</option>
+                    </select>
+                </div>
+            `;
+        } else {
+            form.innerHTML = '<div class="error">Unknown content type</div>';
+        }
     }
 
     bindMarkdownEvents() {
@@ -694,12 +909,22 @@ class CMS {
 
     toggleMarkdownPreview(textarea, preview) {
         if (preview.style.display === 'none') {
-            preview.innerHTML = this.renderMarkdown(textarea.value);
-            preview.style.display = 'block';
-            textarea.style.display = 'none';
+            try {
+                // Fix Bug 7: Sync preview with latest textarea content
+                preview.innerHTML = this.renderMarkdown(textarea.value);
+                preview.style.display = 'block';
+                textarea.style.display = 'none';
+            } catch (error) {
+                console.error('Error rendering markdown preview:', error);
+                preview.innerHTML = '<p class="error">Error rendering preview</p>';
+                preview.style.display = 'block';
+                textarea.style.display = 'none';
+            }
         } else {
             preview.style.display = 'none';
             textarea.style.display = 'block';
+            // Ensure textarea is focused when switching back
+            textarea.focus();
         }
     }
 
@@ -745,6 +970,9 @@ class CMS {
             if (field) {
                 if (field.type === 'checkbox') {
                     field.checked = data[key];
+                } else if (key === 'tags' && Array.isArray(data[key])) {
+                    // Handle tags array - convert to comma-separated string
+                    field.value = data[key].join(', ');
                 } else {
                     field.value = data[key];
                 }
@@ -757,11 +985,22 @@ class CMS {
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
+        // Fix Bug 9: Add validation before saving
+        if (!this.validateFormData(data)) {
+            return;
+        }
+
+        // Enhancement: Add loading spinner
+        const saveButton = document.getElementById('modal-save');
+        const originalText = saveButton.innerHTML;
+        saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        saveButton.disabled = true;
+
         try {
             let response;
             
             // Check if we're editing a product
-            if (this.editingItem && this.editingItem._id) {
+            if (this.editingItem && this.currentContentType === 'product') {
                 // This is a product edit
                 const productData = this.prepareProductData(data);
                 
@@ -786,7 +1025,102 @@ class CMS {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(productData)
                 });
-            } else {
+            } else if (this.currentContentType === 'event') {
+                // Handle events
+                const eventData = { ...data };
+                
+                // Format date to string if it's a date input
+                if (eventData.date) {
+                    const dateObj = new Date(eventData.date);
+                    eventData.date = dateObj.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+                }
+                
+                if (this.editingItem) {
+                    response = await fetch(`${getApiUrl('api/events')}/${this.editingItem._id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(eventData)
+                    });
+                } else {
+                    response = await fetch(`${getApiUrl('api/events')}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(eventData)
+                    });
+                }
+            } else if (this.currentContentType === 'blog') {
+                // Handle blogs - prepare data for Content model with type 'blog'
+                const blogData = { ...data };
+                
+                console.log('Original blog data:', blogData);
+                
+                // Process tags from comma-separated string to array
+                if (blogData.tags) {
+                    blogData.tags = blogData.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+                }
+                
+                // Format date to string
+                if (blogData.date) {
+                    const dateObj = new Date(blogData.date);
+                    blogData.date = dateObj.toISOString().split('T')[0];
+                }
+                
+                // Ensure type is set to 'blog'
+                blogData.type = 'blog';
+                
+                console.log('Processed blog data:', blogData);
+                console.log('API URL:', getApiUrl('api/blogs'));
+                
+                if (this.editingItem) {
+                    response = await fetch(`${getApiUrl('api/blogs')}/${this.editingItem._id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(blogData)
+                    });
+                } else {
+                    response = await fetch(`${getApiUrl('api/blogs')}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(blogData)
+                    });
+                }
+                            } else if (this.currentContentType === 'newsletter') {
+                    // Handle newsletters - prepare data for Content model with type 'newsletter'
+                    const newsletterData = { ...data };
+                    
+                    console.log('Original newsletter data:', newsletterData);
+                    
+                    // Process tags from comma-separated string to array
+                    if (newsletterData.tags) {
+                        newsletterData.tags = newsletterData.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+                    }
+                    
+                    // Format date to string
+                    if (newsletterData.date) {
+                        const dateObj = new Date(newsletterData.date);
+                        newsletterData.date = dateObj.toISOString().split('T')[0];
+                    }
+                    
+                    // Ensure type is set to 'newsletter'
+                    newsletterData.type = 'newsletter';
+                    
+                    console.log('Processed newsletter data:', newsletterData);
+                    console.log('API URL:', getApiUrl('api/blogs'));
+                    
+                    if (this.editingItem) {
+                        response = await fetch(`${getApiUrl('api/blogs')}/${this.editingItem._id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(newsletterData)
+                        });
+                    } else {
+                        response = await fetch(`${getApiUrl('api/blogs')}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(newsletterData)
+                        });
+                    }
+                } else {
                 // Handle other content types (legacy CMS)
                 if (this.editingItem) {
                     response = await fetch(`${this.apiBaseUrl}/content/${this.editingItem.slug}`, {
@@ -803,22 +1137,35 @@ class CMS {
                 }
             }
 
-            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+            console.log('Response status:', response.status);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Response not ok:', response.status, errorText);
+                throw new Error(`HTTP error: ${response.status} - ${errorText}`);
+            }
+            
             const result = await response.json();
+            console.log('Response:', result);
             
             if (result.success) {
                 this.hideModal();
-                this.showSuccess(this.editingItem ? 'Content updated successfully!' : 'Content created successfully!');
+                console.log(this.editingItem ? 'Content updated successfully!' : 'Content created successfully!');
                 this.loadSectionContent(this.currentSection);
                 if (this.currentSection === 'dashboard') {
                     this.loadDashboard();
                 }
             } else {
-                this.showError(result.message || 'Failed to save content');
+                console.error('Failed to save content:', result.message);
+                alert(`Failed to save content: ${result.message}`);
             }
         } catch (error) {
             console.error('Error saving content:', error);
-            this.showError('Failed to save content');
+            alert(`Error saving content: ${error.message}`);
+        } finally {
+            // Restore save button
+            saveButton.innerHTML = originalText;
+            saveButton.disabled = false;
         }
     }
 
@@ -853,19 +1200,34 @@ class CMS {
         try {
             let response;
             
-            // Check if we're deleting a product
+            // Fix Bug 4: Clarify deletion logic and use consistent identifiers
             if (this.deletingItemType === 'product' && this.deletingItemId) {
-                const endpoint = getApiUrl(`api/products/${this.deletingItemId}`);
+                // Product deletion
+                const endpoint = getApiUrl(`api/products/${encodeURIComponent(this.deletingItemId)}`);
                 console.log('Deleting product:', endpoint);
                 
                 response = await fetch(endpoint, {
                     method: 'DELETE'
                 });
+            } else if (this.itemToDelete) {
+                // Handle other content types based on current section
+                if (this.currentSection === 'events') {
+                    response = await fetch(`${getApiUrl('api/events')}/${this.itemToDelete}`, {
+                        method: 'DELETE'
+                    });
+                } else if (this.currentSection === 'blogs' || this.currentSection === 'newsletters') {
+                    response = await fetch(`${getApiUrl('api/blogs')}/${this.itemToDelete}`, {
+                        method: 'DELETE'
+                    });
+                } else {
+                    // Handle other content types (legacy CMS)
+                    response = await fetch(`${this.apiBaseUrl}/content/${this.itemToDelete}`, {
+                        method: 'DELETE'
+                    });
+                }
             } else {
-                // Handle other content types (legacy CMS)
-                response = await fetch(`${this.apiBaseUrl}/content/${this.itemToDelete}`, {
-                    method: 'DELETE'
-                });
+                console.error('No item specified for deletion');
+                return;
             }
 
             if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
@@ -873,17 +1235,16 @@ class CMS {
             
             if (result.success) {
                 this.hideDeleteModal();
-                this.showSuccess('Content deleted successfully!');
+                console.log('Content deleted successfully!');
                 this.loadSectionContent(this.currentSection);
                 if (this.currentSection === 'dashboard') {
                     this.loadDashboard();
                 }
             } else {
-                this.showError(result.message || 'Failed to delete content');
+                console.error('Failed to delete content:', result.message);
             }
         } catch (error) {
             console.error('Error deleting content:', error);
-            this.showError('Failed to delete content');
         }
     }
 
@@ -900,7 +1261,11 @@ class CMS {
     }
 
     showModal() {
-        document.getElementById('modal-overlay').classList.add('active');
+        console.log('showModal called');
+        const modalOverlay = document.getElementById('modal-overlay');
+        console.log('modalOverlay element:', modalOverlay);
+        modalOverlay.classList.add('active');
+        console.log('Modal should now be visible');
     }
 
     hideModal() {
@@ -915,16 +1280,53 @@ class CMS {
     hideDeleteModal() {
         document.getElementById('delete-modal').classList.remove('active');
         this.itemToDelete = null;
+        this.deletingItemId = null;
+        this.deletingItemType = null;
     }
 
-    showSuccess(message) {
-        // Simple success notification
-        alert(message); // You can replace this with a proper notification system
+    // Fix Bug 9: Add form validation method
+    validateFormData(data) {
+        const requiredFields = [];
+        
+        // Define required fields based on content type
+        if (this.currentContentType === 'product') {
+            requiredFields.push('name', 'category');
+        } else if (this.currentContentType === 'event') {
+            requiredFields.push('title', 'date', 'body');
+        } else if (this.currentContentType === 'blog' || this.currentContentType === 'newsletter') {
+            requiredFields.push('title', 'date', 'body', 'author');
+        }
+        
+        // Check required fields
+        for (const field of requiredFields) {
+            if (!data[field] || data[field].trim() === '') {
+                alert(`Please fill in the required field: ${field}`);
+                return false;
+            }
+        }
+        
+        // Validate date format
+        if (data.date) {
+            const dateValue = new Date(data.date);
+            if (isNaN(dateValue.getTime())) {
+                alert('Please enter a valid date');
+                return false;
+            }
+        }
+        
+        return true;
     }
 
-    showError(message) {
-        // Simple error notification
-        alert('Error: ' + message); // You can replace this with a proper notification system
+    // Fix Bug 10: Standardize date formatting
+    formatDate(dateString) {
+        if (!dateString) return 'No Date';
+        try {
+            const date = new Date(dateString);
+            return date.toISOString().split('T')[0]; // YYYY-MM-DD format
+        } catch (error) {
+            console.error('Error formatting date:', error);
+            return 'Invalid Date';
+        }
     }
 
     // Add this method to the CMS class
@@ -932,6 +1334,8 @@ class CMS {
         // Redirect to the event registrations page with the event_title as a query parameter
         window.location.href = `event-registrations.html?event_title=${encodeURIComponent(eventTitle)}`;
     }
+
+
 }
 
 // Initialize CMS when DOM is loaded

@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const Content = require('../models/Content');
+const Blog = require('../models/Blog');
 
 // Fetch all blogs
 router.get('/', async (req, res) => {
   try {
-    const blogs = await Content.find({
-      type: 'blog',
+    const blogs = await Blog.find({
       status: 'published'
     }).sort({ createdAt: -1 });
     res.json({ success: true, data: blogs });
@@ -18,7 +17,7 @@ router.get('/', async (req, res) => {
 // Get a single blog by ID
 router.get('/:id', async (req, res) => {
   try {
-    const blog = await Content.findById(req.params.id);
+    const blog = await Blog.findById(req.params.id);
     if (!blog) {
       return res.status(404).json({ success: false, message: 'Blog not found' });
     }
@@ -52,7 +51,7 @@ router.post('/', async (req, res) => {
     };
     // Remove any slug if present in req.body to ensure auto-generation
     delete contentData.slug;
-    const blog = new Content(contentData);
+    const blog = new Blog(contentData);
     await blog.save();
     res.status(201).json({ success: true, message: 'Blog created successfully', data: blog });
   } catch (error) {
@@ -67,7 +66,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { title, date, body, author, status, excerpt, tags, featuredImage, metaTitle, metaDescription } = req.body;
-    const blog = await Content.findByIdAndUpdate(
+    const blog = await Blog.findByIdAndUpdate(
       req.params.id,
       { title, date, body, author, status, excerpt, tags, featuredImage, metaTitle, metaDescription },
       { new: true, runValidators: true }
@@ -84,7 +83,7 @@ router.put('/:id', async (req, res) => {
 // Delete a blog
 router.delete('/:id', async (req, res) => {
   try {
-    const blog = await Content.findByIdAndDelete(req.params.id);
+    const blog = await Blog.findByIdAndDelete(req.params.id);
     if (!blog) {
       return res.status(404).json({ success: false, message: 'Blog not found' });
     }

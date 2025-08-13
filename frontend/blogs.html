@@ -45,7 +45,7 @@
     <!-- Scripts -->
     <script src="js/header.js"></script>
     <script src="js/chatbot.js"></script>
-    <script src="js/blogs.js"></script>
+    <script src="js/config.js"></script>
     <script>
         fetch('header.html')
             .then(response => response.text())
@@ -77,11 +77,11 @@
             }
         })();
         // Fetch blogs from API and render
-        fetch('/api/blogs')
+        fetch(getApiUrl('api/blogs'))
             .then(res => res.json())
             .then(result => {
                 if (!result.success) return;
-                const blogs = result.data;
+                const blogs = (result.data || []).filter(b => b.status !== 'archived');
                 const blogsList = document.getElementById('blogs-list');
                 const featuredContainer = document.getElementById('blogs-featured-container');
                 blogsList.innerHTML = '';
@@ -91,19 +91,20 @@
                     const btn = document.createElement('button');
                     btn.className = 'blog-article-btn' + (idx === 0 ? ' active' : '');
                     btn.dataset.article = idx + 1;
-                    btn.innerHTML = `<span class="icon">📡</span><span class="article-title">${blog.title}</span>`;
+                    btn.innerHTML = `<span class=\"icon\">📡</span><span class=\"article-title\">${blog.title}</span>`;
                     blogsList.appendChild(btn);
                     // Featured article
                     const articleDiv = document.createElement('div');
                     articleDiv.className = 'blogs-featured-article' + (idx === 0 ? ' active' : '');
                     articleDiv.dataset.article = idx + 1;
                     articleDiv.style.display = idx === 0 ? 'block' : 'none';
+                    const readableDate = blog.date ? new Date(blog.date).toISOString().split('T')[0] : '';
                     articleDiv.innerHTML = `
-                        <div class="featured-img"></div>
-                        <div class="featured-article-content">
-                            <p class="featured-date">Date: ${blog.date}</p>
-                            <h2 class="featured-title">${blog.title}</h2>
-                            <p class="featured-body">${blog.body}</p>
+                        <div class=\"featured-img\"></div>
+                        <div class=\"featured-article-content\">
+                            <p class=\"featured-date\">Date: ${readableDate}</p>
+                            <h2 class=\"featured-title\">${blog.title}</h2>
+                            <p class=\"featured-body\">${blog.body}</p>
                         </div>
                     `;
                     featuredContainer.appendChild(articleDiv);
@@ -120,7 +121,7 @@
                         });
                         btn.classList.add('active');
                         const articleId = btn.dataset.article;
-                        const targetArticle = featuredContainer.querySelector(`.blogs-featured-article[data-article="${articleId}"]`);
+                        const targetArticle = featuredContainer.querySelector(`.blogs-featured-article[data-article=\"${articleId}\"]`);
                         if (targetArticle) {
                             targetArticle.style.display = 'block';
                             targetArticle.classList.add('active');

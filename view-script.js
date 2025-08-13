@@ -428,10 +428,10 @@ class CMS {
                     </div>
                 </div>
                 <div class="content-actions-btns">
-                    <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item.slug || item._id || ''}')">
+                    <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item._id || ''}')">
                         <i class="fas fa-edit"></i> Edit
                     </button>
-                    <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item.slug || item._id || ''}')">
+                    <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item._id || ''}')">
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
@@ -575,10 +575,10 @@ class CMS {
                         </div>
                     </div>
                     <div class="content-actions-btns">
-                        <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item.slug || item._id}')">
+                        <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item._id}')">
                             <i class="fas fa-edit"></i> Edit
                         </button>
-                        <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item.slug || item._id}')">
+                        <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item._id}')">
                             <i class="fas fa-trash"></i> Delete
                         </button>
                     </div>
@@ -603,18 +603,18 @@ class CMS {
         this.showModal();
     }
 
-    async editContent(slug) {
+    async editContent(id) {
         try {
             let response;
 
             // Use different API endpoints based on content type
             if (this.currentContentType === 'event') {
-                response = await fetch(`${getApiUrl('api/events')}/${slug}`);
+                response = await fetch(`${getApiUrl('api/events')}/${id}`);
             } else if (this.currentContentType === 'blog' || this.currentContentType === 'newsletter') {
-                response = await fetch(`${getApiUrl('api/blogs')}/${slug}`);
+                response = await fetch(`${getApiUrl('api/blogs')}/${id}`);
             } else {
                 // Legacy CMS endpoint for other content types
-                response = await fetch(`${this.apiBaseUrl}/content/${slug}`);
+                response = await fetch(`${this.apiBaseUrl}/content/${id}`);
             }
 
             if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
@@ -1135,7 +1135,7 @@ class CMS {
             } else {
                 // Handle other content types (legacy CMS)
                 if (this.editingItem) {
-                    response = await fetch(`${this.apiBaseUrl}/content/${this.editingItem.slug}`, {
+                    response = await fetch(`${this.apiBaseUrl}/content/${this.editingItem._id}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
@@ -1203,8 +1203,8 @@ class CMS {
         return productData;
     }
 
-    async deleteContent(slug) {
-        this.itemToDelete = slug;
+    async deleteContent(id) {
+        this.itemToDelete = id;
         this.showDeleteModal();
     }
 

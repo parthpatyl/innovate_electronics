@@ -1,179 +1,117 @@
 const express = require('express');
 const router = express.Router();
-const Campaign = require('../models/Newsletter');
+const Newsletter = require('../models/Newsletter');
 
-// Get all campaigns
+// List newsletters
 router.get('/', async (req, res) => {
-    try {
-        const campaigns = await Campaign.find()
-            .sort({ createdAt: -1 })
-            .populate('sentBy', 'name email');
-        res.json({ success: true, data: campaigns });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
+	try {
+		const newsletters = await Newsletter.find()
+			.sort({ createdAt: -1 })
+			.populate('sentBy', 'name email');
+		res.json({ success: true, data: newsletters });
+	} catch (error) {
+		res.status(500).json({ success: false, message: error.message });
+	}
 });
 
-// Get a single campaign
+// Get a single newsletter
 router.get('/:id', async (req, res) => {
-    try {
-        const campaign = await Campaign.findById(req.params.id)
-            .populate('sentBy', 'name email');
-        if (!campaign) {
-            return res.status(404).json({ success: false, message: 'Campaign not found' });
-        }
-        res.json({ success: true, data: campaign });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
+	try {
+		const newsletter = await Newsletter.findById(req.params.id)
+			.populate('sentBy', 'name email');
+		if (!newsletter) {
+			return res.status(404).json({ success: false, message: 'Newsletter not found' });
+		}
+		res.json({ success: true, data: newsletter });
+	} catch (error) {
+		res.status(500).json({ success: false, message: error.message });
+	}
 });
 
-// Create a new campaign
+// Create newsletter (force all-subscribers audience)
 router.post('/', async (req, res) => {
-    try {
-        const campaign = new Campaign({
-            ...req.body,
-            sentBy: req.user.id,
-            status: 'draft'
-        });
-        await campaign.save();
-        res.status(201).json({ success: true, data: campaign });
-    } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
-    }
+	try {
+		const payload = {
+			subject: req.body.subject,
+			body: req.body.body,
+			htmlBody: req.body.htmlBody,
+			status: req.body.status || 'draft',
+			audience: 'all-subscribers',
+			recipients: [],
+			sentBy: (req.user && req.user.id) ? req.user.id : null
+		};
+		const newsletter = new Newsletter(payload);
+		await newsletter.save();
+		res.status(201).json({ success: true, data: newsletter });
+	} catch (error) {
+		res.status(400).json({ success: false, message: error.message });
+	}
 });
 
-// Update a campaign
+// Update newsletter (ignore audience/recipients)
 router.put('/:id', async (req, res) => {
-    try {
-        const campaign = await Campaign.findById(req.params.id);
-        if (!campaign) {
-            return res.status(404).json({ success: false, message: 'Campaign not found' });
-        }
+	try {
+		const newsletter = await Newsletter.findById(req.params.id);
+		if (!newsletter) {
+			return res.status(404).json({ success: false, message: 'Newsletter not found' });
+		}
 
-        // Only allow updates to draft campaigns
-        if (campaign.status !== 'draft') {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Cannot update a campaign that has already been sent or is in progress' 
-            });
-        }
+		newsletter.subject = req.body.subject ?? newsletter.subject;
+		newsletter.body = req.body.body ?? newsletter.body;
+		newsletter.htmlBody = req.body.htmlBody ?? newsletter.htmlBody;
+		newsletter.status = req.body.status ?? newsletter.status;
+		newsletter.audience = 'all-subscribers';
+		newsletter.recipients = [];
 
-        Object.assign(campaign, req.body);
-        await campaign.save();
-        res.json({ success: true, data: campaign });
-    } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
-    }
+		await newsletter.save();
+		res.json({ success: true, data: newsletter });
+	} catch (error) {
+		res.status(400).json({ success: false, message: error.message });
+	}
 });
 
-// Delete a campaign
+// Delete newsletter
 router.delete('/:id', async (req, res) => {
-    try {
-        const campaign = await Campaign.findById(req.params.id);
-        if (!campaign) {
-            return res.status(404).json({ success: false, message: 'Campaign not found' });
-        }
-
-        // Only allow deletion of draft campaigns
-        if (campaign.status !== 'draft') {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Cannot delete a campaign that has already been sent or is in progress' 
-            });
-        }
-
-        await campaign.remove();
-        res.json({ success: true, message: 'Campaign deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
+	try {
+		const newsletter = await Newsletter.findById(req.params.id);
+		if (!newsletter) {
+			return res.status(404).json({ success: false, message: 'Newsletter not found' });
+		}
+		await newsletter.deleteOne();
+		res.json({ success: true, message: 'Newsletter deleted successfully' });
+	} catch (error) {
+		res.status(500).json({ success: false, message: error.message });
+	}
 });
 
-// Schedule a campaign
-router.post('/:id/schedule', async (req, res) => {
-    try {
-        const { scheduledFor } = req.body;
-        if (!scheduledFor) {
-            return res.status(400).json({ success: false, message: 'Scheduled date is required' });
-        }
-
-        const campaign = await Campaign.findById(req.params.id);
-        if (!campaign) {
-            return res.status(404).json({ success: false, message: 'Campaign not found' });
-        }
-
-        if (campaign.status !== 'draft') {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Can only schedule draft campaigns' 
-            });
-        }
-
-        campaign.scheduledFor = new Date(scheduledFor);
-        await campaign.save();
-        res.json({ success: true, data: campaign });
-    } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
-    }
-});
-
-// Send a campaign immediately
+// Send newsletter to all active subscribers
 router.post('/:id/send', async (req, res) => {
-    try {
-        const campaign = await Campaign.findById(req.params.id);
-        if (!campaign) {
-            return res.status(404).json({ success: false, message: 'Campaign not found' });
-        }
+	try {
+		const newsletter = await Newsletter.findById(req.params.id);
+		if (!newsletter) {
+			return res.status(404).json({ success: false, message: 'Newsletter not found' });
+		}
 
-        if (campaign.status !== 'draft') {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Can only send draft campaigns' 
-            });
-        }
+		const Subscriber = require('../models/Subscriber');
+		const emailService = require('../services/emailService');
 
-        // Update campaign status to sending
-        campaign.status = 'sending';
-        campaign.sentAt = new Date();
-        await campaign.save();
+		const recipients = await Subscriber.find({ isActive: true }).select('email unsubscribeToken');
+		if (recipients.length === 0) {
+			return res.status(400).json({ success: false, message: 'No active subscribers to send to' });
+		}
 
-        // Here you would typically trigger your email sending service
-        // This would be handled by a separate service/worker
-        // For now, we'll just return success
-        
-        res.json({ 
-            success: true, 
-            message: 'Campaign sending has been initiated',
-            data: campaign 
-        });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
-});
+		const results = await emailService.sendBulkEmails(recipients, newsletter.subject, newsletter.htmlBody);
+		const sent = results.filter(r => r.success).length;
+		const failed = results.length - sent;
 
-// Get campaign statistics
-router.get('/:id/stats', async (req, res) => {
-    try {
-        const campaign = await Campaign.findById(req.params.id);
-        if (!campaign) {
-            return res.status(404).json({ success: false, message: 'Campaign not found' });
-        }
+		newsletter.status = 'published';
+		await newsletter.save();
 
-        const stats = {
-            recipientCount: campaign.recipientCount,
-            sentCount: campaign.sentCount,
-            failedCount: campaign.failedCount,
-            successRate: campaign.successRate,
-            status: campaign.status,
-            scheduledFor: campaign.scheduledFor,
-            sentAt: campaign.sentAt
-        };
-
-        res.json({ success: true, data: stats });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
+		return res.json({ success: true, message: `Sent to all subscribers. ${sent} succeeded, ${failed} failed.`, data: { sent, failed, total: results.length } });
+	} catch (error) {
+		console.error('Newsletter send error:', error);
+		return res.status(500).json({ success: false, message: 'Failed to send newsletter' });
+	}
 });
 
 module.exports = router;

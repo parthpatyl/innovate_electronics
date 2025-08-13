@@ -115,30 +115,6 @@ const validatePagination = (req, res, next) => {
 };
 
 /**
- * Validate slug parameter
- */
-const validateSlug = (req, res, next) => {
-  const { slug } = req.params;
-
-  if (!slug || slug.trim() === '') {
-    return res.status(400).json({
-      success: false,
-      message: 'Slug is required'
-    });
-  }
-
-  // Basic slug validation
-  if (!/^[a-z0-9-]+$/.test(slug)) {
-    return res.status(400).json({
-      success: false,
-      message: 'Invalid slug format'
-    });
-  }
-
-  next();
-};
-
-/**
  * Log CMS operations
  */
 const logCMSOperation = (req, res, next) => {
@@ -255,12 +231,5 @@ const cmsCORS = (req, res, next) => {
   }
 };
 
-module.exports = {
-  validateContent,
-  validatePagination,
-  validateSlug,
-  logCMSOperation,
-  handleCMSError,
-  rateLimit,
-  cmsCORS
-}; 
+// Note: slug-related middleware removed as slugs are no longer used for blogs
+module.exports = {}; 

@@ -26,7 +26,7 @@ class EmailService {
 
     // If using Gmail, you might need to use an app password
     if (process.env.SMTP_USER && process.env.SMTP_PASS) {
-      this.transporter = nodemailer.createTransporter(emailConfig);
+      this.transporter = nodemailer.createTransport(emailConfig);
     } else {
       console.warn('Email service not configured. Set SMTP_USER and SMTP_PASS environment variables.');
     }

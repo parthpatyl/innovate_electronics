@@ -356,13 +356,5 @@ const getContentStats = async (req, res) => {
   }
 };
 
-module.exports = {
-  createContent,
-  getAllContent,
-  getContentBySlug,
-  updateContent,
-  deleteContent,
-  publishContent,
-  archiveContent,
-  getContentStats
-}; 
+// Slug-based CMS controller methods removed since slugs are no longer used for blogs.
+module.exports = {}; 

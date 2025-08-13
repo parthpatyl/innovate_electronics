@@ -20,7 +20,7 @@ const blogSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['draft', 'published'],
+        enum: ['draft', 'published', 'archived'],
         default: 'draft'
     },
     excerpt: {
@@ -41,25 +41,9 @@ const blogSchema = new mongoose.Schema({
     metaDescription: {
         type: String,
         trim: true
-    },
-    slug: {
-        type: String,
-        unique: true
     }
 }, {
     timestamps: true
-});
-
-// Pre-save middleware to generate slug from title
-blogSchema.pre('save', function(next) {
-    if (this.isModified('title')) {
-        this.slug = this.title
-            .toLowerCase()
-            .replace(/[^a-zA-Z0-9]/g, '-')
-            .replace(/-+/g, '-')
-            .replace(/^-|-$/g, '');
-    }
-    next();
 });
 
 module.exports = mongoose.model('Blog', blogSchema);

@@ -38,6 +38,8 @@ class CMS {
 
     init() {
         this.bindEvents();
+        // Load dashboard by default
+        this.navigateToSection('dashboard');
     }
 
     bindEvents() {
@@ -87,6 +89,17 @@ class CMS {
         });
     }
 
+    loadDashboard() {
+        // Fetch counts and update UI
+        fetch(getApiUrl('api/stats'))
+            .then(res => res.json())
+            .then(result => {
+                if (result && result.success) {
+                    this.updateDashboardStats(result.data || {});
+                }
+            })
+            .catch(err => console.error('Failed to load dashboard stats:', err));
+    }
 
     navigateToSection(section) {
         // Update navigation
@@ -195,18 +208,18 @@ class CMS {
         listElement.innerHTML = content.map(item => `
             <div class="content-item">
                 <div class="content-info">
-                    <div class="content-title">${item.title || item.name || 'Untitled'}</div>
+                    <div class="content-title">${item.title || item.subject || item.name || 'Untitled'}</div>
                     <div class="content-meta">
-                        <span>${item.author || item.category || ''}</span>
+                        <span>${item.author || (item.sentBy && (item.sentBy.name || item.sentBy.email)) || item.category || ''}</span>
                         <span>${item.createdAt ? new Date(item.createdAt).toISOString().split('T')[0] : ''}</span>
                         <span class="content-status">${item.status || ''}</span>
                     </div>
                 </div>
                 <div class="content-actions-btns">
-                    <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item.slug || item._id || item.name || ''}')">
+                    <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item._id || item.name || ''}')">
                         <i class="fas fa-edit"></i> Edit
                     </button>
-                    <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item.slug || item._id || item.name || ''}')">
+                    <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item._id || item.name || ''}')">
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
@@ -304,48 +317,27 @@ class CMS {
         } else if (contentType === 'newsletter') {
             form.innerHTML = `
                 <div class="form-group">
-                    <label class="form-label" for="title">Newsletter Title *</label>
-                    <input type="text" class="form-input" id="title" name="title" required>
+                    <label class="form-label" for="subject">Subject *</label>
+                    <input type="text" class="form-input" id="subject" name="subject" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="date">Issue Date *</label>
-                    <input type="date" class="form-input" id="date" name="date" required>
+                    <label class="form-label" for="htmlBody">HTML Body *</label>
+                    <textarea class="form-input form-textarea" id="htmlBody" name="htmlBody" rows="10" placeholder="<h1>Title</h1>..." required></textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="author">Author *</label>
-                    <input type="text" class="form-input" id="author" name="author" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="body">Content *</label>
-                    <textarea class="form-input form-textarea" id="body" name="body" rows="8" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="excerpt">Excerpt</label>
-                    <textarea class="form-input form-textarea" id="excerpt" name="excerpt" rows="3" placeholder="Brief summary of the newsletter"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="tags">Tags (comma-separated)</label>
-                    <input type="text" class="form-input" id="tags" name="tags" placeholder="tag1, tag2, tag3">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="featuredImage">Featured Image URL</label>
-                    <input type="text" class="form-input" id="featuredImage" name="featuredImage">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="metaTitle">Meta Title</label>
-                    <input type="text" class="form-input" id="metaTitle" name="metaTitle">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="metaDescription">Meta Description</label>
-                    <textarea class="form-input form-textarea" id="metaDescription" name="metaDescription" rows="3"></textarea>
+                    <label class="form-label" for="body">Plain Text Body *</label>
+                    <textarea class="form-input form-textarea" id="body" name="body" rows="6" placeholder="Text-only version" required></textarea>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="status">Status *</label>
                     <select class="form-input form-select" id="status" name="status" required>
                         <option value="draft">Draft</option>
                         <option value="published">Published</option>
-                        <option value="archived">Archived</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Audience</label>
+                    <input type="text" class="form-input" value="All subscribers" disabled>
                 </div>
             `;
         } else {
@@ -356,6 +348,31 @@ class CMS {
             e.preventDefault();
             this.saveContent();
         };
+
+        // Bind blog autofill button when rendering blog form
+        if (contentType === 'blog') {
+            // No sample autofill or create buttons
+        }
+
+        // Newsletter-specific dynamic behavior
+        if (contentType === 'newsletter') {
+            const audienceEl = document.getElementById('audience');
+            const recipientsGroupEl = document.getElementById('recipients-group');
+            const recipientsEl = document.getElementById('recipients');
+            if (audienceEl && recipientsGroupEl && recipientsEl) {
+                const updateRecipientsVisibility = () => {
+                    if (audienceEl.value === 'custom') {
+                        recipientsGroupEl.style.display = 'block';
+                        recipientsEl.required = true;
+                    } else {
+                        recipientsGroupEl.style.display = 'none';
+                        recipientsEl.required = false;
+                    }
+                };
+                audienceEl.addEventListener('change', updateRecipientsVisibility);
+                updateRecipientsVisibility();
+            }
+        }
     }
 
         generateProductForm() {
@@ -419,7 +436,6 @@ class CMS {
                 const queryParams = new URLSearchParams();
 
                 const endpoint = getApiUrl(`api/products`);
-                console.log('Fetching products:', endpoint);
                 
                 const response = await fetch(endpoint);
                 if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
@@ -427,30 +443,26 @@ class CMS {
                 return data.success ? data.data : [];
             }
             if (contentType === 'event') {
-                const endpoint = getApiUrl('api/events');
-                console.log('Fetching events:', endpoint);
+                const endpoint = getApiUrl('api/events?status=all');
                 const response = await fetch(endpoint);
                 if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                 const data = await response.json();
                 return data.success ? data.data : [];
             }
             if (contentType === 'blog') {
-                const endpoint = getApiUrl('api/blogs');
-                console.log('Fetching blogs:', endpoint);
+                const endpoint = getApiUrl('api/blogs?status=all');
                 const response = await fetch(endpoint);
                 if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                 const data = await response.json();
                 return data.success ? data.data : [];
             }
             if (contentType === 'newsletter') {
-                // Newsletters are stored in the same Content model with type 'newsletter'
+                // Newsletters are managed as campaigns via dedicated endpoint
                 const endpoint = getApiUrl('api/newsletters');
-                console.log('Fetching newsletters:', endpoint);
                 const response = await fetch(endpoint);
                 if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                 const data = await response.json();
-                // Filter to only show newsletters
-                return data.success ? data.data.filter(item => item.type === 'newsletter') : [];
+                return data.success ? data.data : [];
             }
             // For other content types, return empty array for now
             return [];
@@ -470,7 +482,6 @@ class CMS {
     showCreateModal() {
         this.editingItem = null;
         
-        console.log('showCreateModal - currentContentType:', this.currentContentType);
         
         if (this.currentContentType === 'product') {
             document.getElementById('modal-title').textContent = 'Create New Product';
@@ -489,7 +500,6 @@ class CMS {
             // Fix Bug 3: Use product ID if available, fallback to name
             const productId = this.getProductId(productName);
             const endpoint = getApiUrl(`api/products/${encodeURIComponent(productId || productName)}`);
-            console.log('Fetching product for viewing:', endpoint);
             
             const response = await fetch(endpoint);
             if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
@@ -512,7 +522,6 @@ class CMS {
             // Fix Bug 3: Use product ID if available, fallback to name
             const productId = this.getProductId(productName);
             const endpoint = getApiUrl(`api/products/${encodeURIComponent(productId || productName)}`);
-            console.log('Fetching product for editing:', endpoint);
             
             const response = await fetch(endpoint);
             if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
@@ -643,6 +652,8 @@ class CMS {
             tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
             date: formData.date ? new Date(formData.date).toISOString().split('T')[0] : undefined
         };
+        // Never send slug from client
+        delete blogData.slug;
 
         const endpoint = this.isEditing()
             ? `${getApiUrl(CMS.API_ENDPOINTS.BLOGS)}/${this.editingItem._id}`
@@ -659,13 +670,14 @@ class CMS {
 
     async saveNewsletter(formData) {
         const newsletterData = {
-            ...formData,
-            type: 'newsletter',
-            tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
-            date: formData.date ? new Date(formData.date).toISOString().split('T')[0] : undefined
+            subject: formData.subject,
+            body: formData.body,
+            htmlBody: formData.htmlBody,
+            status: formData.status || 'draft',
+            audience: 'all-subscribers',
+            recipients: []
         };
 
-        // Using dedicated newsletters endpoint
         const endpoint = this.isEditing()
             ? `${getApiUrl(CMS.API_ENDPOINTS.NEWSLETTERS)}/${this.editingItem._id}`
             : getApiUrl(CMS.API_ENDPOINTS.NEWSLETTERS);
@@ -701,8 +713,8 @@ class CMS {
         return productData;
     }
 
-    async deleteContent(slug) {
-        this.itemToDelete = slug;
+    async deleteContent(id) {
+        this.itemToDelete = id;
         this.showDeleteModal();
     }
 
@@ -714,7 +726,6 @@ class CMS {
             if (this.deletingItemType === 'product' && this.deletingItemId) {
                 // Product deletion
                 const endpoint = getApiUrl(`api/products/${encodeURIComponent(this.deletingItemId)}`);
-                console.log('Deleting product:', endpoint);
                 
                 response = await fetch(endpoint, {
                     method: 'DELETE'
@@ -725,8 +736,12 @@ class CMS {
                     response = await fetch(`${getApiUrl('api/events')}/${this.itemToDelete}`, {
                         method: 'DELETE'
                     });
-                } else if (this.currentSection === 'blogs' || this.currentSection === 'newsletters') {
+                } else if (this.currentSection === 'blogs') {
                     response = await fetch(`${getApiUrl('api/blogs')}/${this.itemToDelete}`, {
+                        method: 'DELETE'
+                    });
+                } else if (this.currentSection === 'newsletters') {
+                    response = await fetch(`${getApiUrl('api/newsletters')}/${this.itemToDelete}`, {
                         method: 'DELETE'
                     });
                 } else {
@@ -745,7 +760,7 @@ class CMS {
             
             if (result.success) {
                 this.hideDeleteModal();
-                console.log('Content deleted successfully!');
+                
                 this.loadSectionContent(this.currentSection);
                 if (this.currentSection === 'dashboard') {
                     this.loadDashboard();
@@ -760,22 +775,16 @@ class CMS {
 
     handleSearch(query, section) {
         // Implement search functionality
-        console.log(`Searching ${section} for: ${query}`);
+        
         // You can implement debounced search here
     }
 
-    handleFilter(status, section) {
-        // Implement filter functionality
-        console.log(`Filtering ${section} by status: ${status}`);
-        // You can implement status filtering here
-    }
-
     showModal() {
-        console.log('showModal called');
+        
         const modalOverlay = document.getElementById('modal-overlay');
-        console.log('modalOverlay element:', modalOverlay);
+        
         modalOverlay.classList.add('active');
-        console.log('Modal should now be visible');
+        
     }
 
     hideModal() {
@@ -804,13 +813,30 @@ class CMS {
         } else if (this.currentContentType === 'event') {
             requiredFields.push('title', 'date', 'body');
         } else if (this.currentContentType === 'blog' || this.currentContentType === 'newsletter') {
-            requiredFields.push('title', 'date', 'body', 'author');
+            requiredFields.push(this.currentContentType === 'blog' ? 'title' : 'subject');
+            if (this.currentContentType === 'blog') {
+                requiredFields.push('date', 'body', 'author');
+            } else {
+                requiredFields.push('htmlBody', 'body');
+            }
         }
         
         // Check required fields
         for (const field of requiredFields) {
             if (!data[field] || data[field].trim() === '') {
                 alert(`Please fill in the required field: ${field}`);
+                return false;
+            }
+        }
+        
+        // Additional newsletter validation for custom audience
+        if (this.currentContentType === 'newsletter' && data.audience === 'custom') {
+            const parsedRecipients = (data.recipients || '')
+                .split(/[\n,]/)
+                .map(v => v.trim())
+                .filter(Boolean);
+            if (parsedRecipients.length === 0) {
+                alert('Please provide at least one recipient email');
                 return false;
             }
         }
@@ -827,10 +853,88 @@ class CMS {
         return true;
     }
 
+
+
     // Add this method to the CMS class
     async viewEventInfo(eventTitle) {
         // Redirect to the event registrations page with the event_title as a query parameter
         window.location.href = `event-registrations.html?event_title=${encodeURIComponent(eventTitle)}`;
+    }
+
+    // Add generic editor for blogs/newsletters based on current section
+    async editContent(id) {
+        try {
+            let endpoint = null;
+            let type = null;
+            if (this.currentSection === 'blogs') {
+                type = 'blog';
+                endpoint = `${getApiUrl('api/blogs')}/${id}`;
+            } else if (this.currentSection === 'newsletters') {
+                type = 'newsletter';
+                endpoint = `${getApiUrl('api/newsletters')}/${id}`;
+            } else if (this.currentSection === 'events') {
+                type = 'event';
+                endpoint = `${getApiUrl('api/events')}/${id}`;
+            }
+
+            if (!endpoint) return;
+
+            const res = await fetch(endpoint);
+            if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+            const result = await res.json();
+            if (!result.success) return;
+
+            this.editingItem = result.data;
+            this.currentContentType = type;
+            document.getElementById('modal-title').textContent = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+
+            if (type === 'blog') {
+                this.generateForm();
+                document.getElementById('title').value = this.editingItem.title || '';
+                document.getElementById('date').value = this.editingItem.date ? new Date(this.editingItem.date).toISOString().split('T')[0] : '';
+                document.getElementById('author').value = this.editingItem.author || '';
+                document.getElementById('body').value = this.editingItem.body || '';
+                const tagsStr = Array.isArray(this.editingItem.tags) ? this.editingItem.tags.join(', ') : '';
+                const excerptEl = document.getElementById('excerpt'); if (excerptEl) excerptEl.value = this.editingItem.excerpt || '';
+                const tagsEl = document.getElementById('tags'); if (tagsEl) tagsEl.value = tagsStr;
+                const fiEl = document.getElementById('featuredImage'); if (fiEl) fiEl.value = this.editingItem.featuredImage || '';
+                const mtEl = document.getElementById('metaTitle'); if (mtEl) mtEl.value = this.editingItem.metaTitle || '';
+                const mdEl = document.getElementById('metaDescription'); if (mdEl) mdEl.value = this.editingItem.metaDescription || '';
+                document.getElementById('status').value = this.editingItem.status || 'draft';
+            } else if (type === 'newsletter') {
+                this.generateForm();
+                document.getElementById('subject').value = this.editingItem.subject || '';
+                document.getElementById('htmlBody').value = this.editingItem.htmlBody || '';
+                document.getElementById('body').value = this.editingItem.body || '';
+                const statusEl = document.getElementById('status'); if (statusEl) statusEl.value = this.editingItem.status || 'draft';
+                const audienceEl = document.getElementById('audience'); if (audienceEl && this.editingItem.audience) audienceEl.value = this.editingItem.audience;
+                const recipientsEl = document.getElementById('recipients'); if (recipientsEl && Array.isArray(this.editingItem.recipients)) recipientsEl.value = this.editingItem.recipients.join(', ');
+                // Ensure recipients visibility reflects edited audience
+                const recipientsGroupEl = document.getElementById('recipients-group');
+                if (audienceEl && recipientsGroupEl && recipientsEl) {
+                    if (audienceEl.value === 'custom') {
+                        recipientsGroupEl.style.display = 'block';
+                        recipientsEl.required = true;
+                    } else {
+                        recipientsGroupEl.style.display = 'none';
+                        recipientsEl.required = false;
+                    }
+                }
+            } else if (type === 'event') {
+                this.generateForm();
+                document.getElementById('title').value = this.editingItem.title || '';
+                document.getElementById('date').value = this.editingItem.date ? new Date(this.editingItem.date).toISOString().split('T')[0] : '';
+                const timeEl = document.getElementById('time'); if (timeEl) timeEl.value = this.editingItem.time || '';
+                const locEl = document.getElementById('location'); if (locEl) locEl.value = this.editingItem.location || '';
+                document.getElementById('body').value = this.editingItem.body || '';
+                const fiEl = document.getElementById('featuredImage'); if (fiEl) fiEl.value = this.editingItem.featuredImage || '';
+                document.getElementById('status').value = this.editingItem.status || 'upcoming';
+            }
+
+            this.showModal();
+        } catch (error) {
+            console.error('Error loading content for edit:', error);
+        }
     }
 
 

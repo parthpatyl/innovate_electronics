@@ -8,12 +8,16 @@ const connectDB = require('./config/database');
 const chatbotController = require('./controllers/chatbotController');
 const eventRegistrationController = require('./controllers/eventRegistrationController');
 
+// Register models used by refs
+require('./models/Admin');
+
 // Import CMS routes
 const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const newsletterRoutes = require('./routes/newsletterRoutes');
+const statsRoutes = require('./routes/statsRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -49,6 +53,7 @@ app.use('/api', productRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/newsletters', newsletterRoutes);
+app.use('/api/stats', statsRoutes);
 
 // Serve static files from frontend (move below API routes)
 app.use(express.static(path.join(__dirname, '../frontend')));

@@ -5,9 +5,15 @@ const Blog = require('../models/Blog');
 // Fetch all blogs
 router.get('/', async (req, res) => {
   try {
-    const blogs = await Blog.find({
-      status: 'published'
-    }).sort({ createdAt: -1 });
+    let filter = {};
+    if (req.query.status === 'all') {
+      filter = {};
+    } else if (req.query.status) {
+      filter.status = req.query.status;
+    } else {
+      filter.status = 'published';
+    }
+    const blogs = await Blog.find(filter).sort({ createdAt: -1 });
     res.json({ success: true, data: blogs });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error fetching blogs', error: error.message });
@@ -34,30 +40,33 @@ router.post('/', async (req, res) => {
     if (!title || !body || !author || !date) {
       return res.status(400).json({ success: false, message: 'Title, date, body, and author are required fields' });
     }
-    // Ensure 'blog' tag is present
-    const blogTags = tags && Array.isArray(tags) ? [...new Set([...tags, 'blog'])] : ['blog'];
+
+    const allowedStatuses = ['draft', 'published', 'archived'];
+    const normalizedStatus = typeof status === 'string' ? status.trim().toLowerCase() : undefined;
+    if (normalizedStatus && !allowedStatuses.includes(normalizedStatus)) {
+      return res.status(400).json({ success: false, message: 'Invalid status value' });
+    }
+
+    const normalizedTags = Array.isArray(tags)
+      ? tags
+      : (typeof tags === 'string' ? tags.split(',').map(t => t.trim()).filter(Boolean) : undefined);
+
     const contentData = {
       title,
       date,
       body,
       author,
-      status,
+      ...(normalizedStatus ? { status: normalizedStatus } : {}),
       excerpt,
-      tags: blogTags,
+      ...(normalizedTags ? { tags: normalizedTags } : {}),
       featuredImage,
       metaTitle,
-      metaDescription,
-      type: 'blog'
+      metaDescription
     };
-    // Remove any slug if present in req.body to ensure auto-generation
-    delete contentData.slug;
     const blog = new Blog(contentData);
     await blog.save();
     res.status(201).json({ success: true, message: 'Blog created successfully', data: blog });
   } catch (error) {
-    if (error.code === 11000) {
-      return res.status(400).json({ success: false, message: 'Blog with this slug already exists' });
-    }
     res.status(500).json({ success: false, message: 'Error creating blog', error: error.message });
   }
 });
@@ -66,14 +75,39 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { title, date, body, author, status, excerpt, tags, featuredImage, metaTitle, metaDescription } = req.body;
-    const blog = await Blog.findByIdAndUpdate(
-      req.params.id,
-      { title, date, body, author, status, excerpt, tags, featuredImage, metaTitle, metaDescription },
-      { new: true, runValidators: true }
-    );
+    const blog = await Blog.findById(req.params.id);
     if (!blog) {
       return res.status(404).json({ success: false, message: 'Blog not found' });
     }
+
+    const allowedStatuses = ['draft', 'published', 'archived'];
+    const normalizedStatus = typeof status === 'string' ? status.trim().toLowerCase() : undefined;
+    if (normalizedStatus && !allowedStatuses.includes(normalizedStatus)) {
+      return res.status(400).json({ success: false, message: 'Invalid status value' });
+    }
+
+    const normalizedTags = Array.isArray(tags)
+      ? tags
+      : (typeof tags === 'string' ? tags.split(',').map(t => t.trim()).filter(Boolean) : undefined);
+
+    blog.title = title ?? blog.title;
+    blog.date = date ?? blog.date;
+    blog.body = body ?? blog.body;
+    blog.author = author ?? blog.author;
+    blog.status = (normalizedStatus !== undefined ? normalizedStatus : blog.status);
+    blog.excerpt = excerpt ?? blog.excerpt;
+    blog.tags = (normalizedTags !== undefined ? normalizedTags : blog.tags);
+    blog.featuredImage = featuredImage ?? blog.featuredImage;
+    blog.metaTitle = metaTitle ?? blog.metaTitle;
+    blog.metaDescription = metaDescription ?? blog.metaDescription;
+
+    // Normalize any legacy/invalid stored status before save
+    if (!allowedStatuses.includes(blog.status)) {
+      const fixed = typeof blog.status === 'string' ? blog.status.trim().toLowerCase() : 'draft';
+      blog.status = allowedStatuses.includes(fixed) ? fixed : 'draft';
+    }
+
+    await blog.save();
     res.json({ success: true, message: 'Blog updated successfully', data: blog });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error updating blog', error: error.message });

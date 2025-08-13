@@ -122,7 +122,7 @@
             .then(res => res.json())
             .then(result => {
                 if (!result.success) return;
-                const events = result.data;
+                const events = (result.data || []).filter(e => e.status === 'upcoming');
                 const eventsList = document.getElementById('events-list');
                 const featuredContainer = document.getElementById('events-featured-container');
                 eventsList.innerHTML = '';

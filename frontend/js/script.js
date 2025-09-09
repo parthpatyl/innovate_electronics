@@ -204,6 +204,33 @@ class CMS {
             return;
         }
 
+        if (section === 'events') {
+            listElement.innerHTML = content.map(eventItem => `
+            <div class="content-item">
+                <div class="content-info">
+                    <div class="content-title">${eventItem.title || 'Untitled'}</div>
+                    <div class="content-meta">
+                        <span>${eventItem.location || ''}</span>
+                        <span>${eventItem.date ? new Date(eventItem.date).toISOString().split('T')[0] : ''}</span>
+                        <span class="content-status">${eventItem.status || ''}</span>
+                    </div>
+                </div>
+                <div class="content-actions-btns">
+                    <a class="btn btn-sm btn-info" href="event-registrations.html?event_title=${encodeURIComponent(eventItem.title || '')}">
+                        <i class="fas fa-users"></i> View Registration
+                    </a>
+                    <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${eventItem._id || eventItem.name || ''}')">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${eventItem._id || eventItem.name || ''}')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            `).join('');
+            return;
+        }
+
         // Example rendering logic (customize as needed for your data structure)
         listElement.innerHTML = content.map(item => `
             <div class="content-item">

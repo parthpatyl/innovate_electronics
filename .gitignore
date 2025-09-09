@@ -2,6 +2,6 @@ node_modules/
 DB_Schema.pdf
 DB_Schema.pdf.docx
 Documentation-IE.pdf
-.env
+backend/.env
 /frontend/assets
 .idea/

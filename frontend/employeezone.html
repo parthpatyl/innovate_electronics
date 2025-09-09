@@ -35,7 +35,7 @@
       <!-- Sidebar Navigation -->
       <aside class="sidebar">
         <div class="sidebar-header">
-          <a href="./landingpage.html">Back to Home</a>
+          <button id="logout-btn" class="btn btn-secondary" type="button">Logout</button>
           <h2>Innovate Electronics</h2>
           <p>Content Management</p>
         </div>
@@ -243,6 +243,28 @@
   <div id="footer-section"></div>
 
   <script>
+    // Helper to initialize CMS view
+    function initializeCMSIfPossible() {
+      document.getElementById('login-container').style.display = 'none';
+      document.getElementById('cms-container').style.display = 'flex';
+      if (typeof CMS !== 'undefined') {
+        if (!window.cms) {
+          window.cms = new CMS();
+        }
+      }
+    }
+
+    // Check session on load
+    (function () {
+      try {
+        if (sessionStorage.getItem('cmsLoggedIn') === 'true') {
+          initializeCMSIfPossible();
+        }
+      } catch (e) {
+        // ignore storage access errors
+      }
+    })();
+
     // Login functionality
     document.getElementById('login-form').addEventListener('submit', function (e) {
       e.preventDefault();
@@ -251,18 +273,33 @@
 
       // Simple credentials check
       if (username === 'admin' && password === 'admin') {
-        // Hide login form and show CMS
-        document.getElementById('login-container').style.display = 'none';
-        document.getElementById('cms-container').style.display = 'flex';
-        
-        // Initialize CMS after successful login
-        if (typeof CMS !== 'undefined') {
-          window.cms = new CMS();
+        // Persist session for the life of the tab/window
+        try {
+          sessionStorage.setItem('cmsLoggedIn', 'true');
+        } catch (e) {
+          // ignore storage access errors
         }
+
+        // Hide login form and show CMS
+        initializeCMSIfPossible();
       } else {
         alert('Incorrect username or password. Please try again.');
       }
     });
+
+    // Logout functionality
+    (function () {
+      const logoutBtn = document.getElementById('logout-btn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function () {
+          try {
+            sessionStorage.removeItem('cmsLoggedIn');
+          } catch (e) {}
+          // Reload to reset UI cleanly
+          location.reload();
+        });
+      }
+    })();
   </script>
 
   <!-- CMS Scripts -->

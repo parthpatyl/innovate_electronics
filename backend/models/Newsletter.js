@@ -33,6 +33,10 @@ const newsletterSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Admin',
 		required: false
+	},
+	imageData: {
+		type: String,
+		default: ''
 	}
 }, {
 	timestamps: true

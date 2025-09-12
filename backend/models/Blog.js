@@ -34,6 +34,10 @@ const blogSchema = new mongoose.Schema({
     featuredImage: {
         type: String
     },
+    imageData: {
+        type: String,
+        default: ''
+    },
     metaTitle: {
         type: String,
         trim: true

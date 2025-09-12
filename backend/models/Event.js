@@ -33,6 +33,10 @@ const eventSchema = new mongoose.Schema({
     enum: ['upcoming', 'past', 'cancelled'],
     default: 'upcoming',
     required: true
+  },
+  imageData: {
+    type: String,
+    default: ''
   }
 }, {
   timestamps: true

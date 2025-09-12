@@ -32,7 +32,7 @@ router.get('/:id', async (req, res) => {
 // Create a new event
 router.post('/', async (req, res) => {
   try {
-    const { title, date, time, location, body, featuredImage, status } = req.body;
+    const { title, date, time, location, body, featuredImage, status, imageData } = req.body;
     if (!title || !date || !body) {
       return res.status(400).json({ success: false, message: 'Title, date, and body are required fields' });
     }
@@ -42,8 +42,9 @@ router.post('/', async (req, res) => {
       time,
       location,
       body,
-      featuredImage,
-      status: status || 'upcoming'
+      featuredImage: featuredImage || imageData || '',
+      status: status || 'upcoming',
+      imageData: imageData || ''
     };
     const event = new Event(eventData);
     await event.save();
@@ -59,10 +60,10 @@ router.post('/register', eventRegistrationController.register);
 // Update an event
 router.put('/:id', async (req, res) => {
   try {
-    const { title, date, time, location, body, featuredImage, status } = req.body;
+    const { title, date, time, location, body, featuredImage, status, imageData } = req.body;
     const event = await Event.findByIdAndUpdate(
       req.params.id,
-      { title, date, time, location, body, featuredImage, status },
+      { title, date, time, location, body, featuredImage: featuredImage || imageData || '', status, imageData: imageData || '' },
       { new: true, runValidators: true }
     );
     if (!event) {

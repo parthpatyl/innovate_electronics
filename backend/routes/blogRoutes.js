@@ -36,7 +36,7 @@ router.get('/:id', async (req, res) => {
 // Create a new blog
 router.post('/', async (req, res) => {
   try {
-    const { title, date, body, author, status, excerpt, tags, featuredImage, metaTitle, metaDescription } = req.body;
+    const { title, date, body, author, status, excerpt, tags, featuredImage, metaTitle, metaDescription, imageData } = req.body;
     if (!title || !body || !author || !date) {
       return res.status(400).json({ success: false, message: 'Title, date, body, and author are required fields' });
     }
@@ -59,9 +59,10 @@ router.post('/', async (req, res) => {
       ...(normalizedStatus ? { status: normalizedStatus } : {}),
       excerpt,
       ...(normalizedTags ? { tags: normalizedTags } : {}),
-      featuredImage,
+      featuredImage: featuredImage || imageData || '',
       metaTitle,
-      metaDescription
+      metaDescription,
+      imageData: imageData || ''
     };
     const blog = new Blog(contentData);
     await blog.save();
@@ -74,7 +75,7 @@ router.post('/', async (req, res) => {
 // Update a blog
 router.put('/:id', async (req, res) => {
   try {
-    const { title, date, body, author, status, excerpt, tags, featuredImage, metaTitle, metaDescription } = req.body;
+    const { title, date, body, author, status, excerpt, tags, featuredImage, metaTitle, metaDescription, imageData } = req.body;
     const blog = await Blog.findById(req.params.id);
     if (!blog) {
       return res.status(404).json({ success: false, message: 'Blog not found' });
@@ -97,7 +98,8 @@ router.put('/:id', async (req, res) => {
     blog.status = (normalizedStatus !== undefined ? normalizedStatus : blog.status);
     blog.excerpt = excerpt ?? blog.excerpt;
     blog.tags = (normalizedTags !== undefined ? normalizedTags : blog.tags);
-    blog.featuredImage = featuredImage ?? blog.featuredImage;
+    blog.featuredImage = featuredImage ?? imageData ?? blog.featuredImage;
+    blog.imageData = imageData ?? blog.imageData;
     blog.metaTitle = metaTitle ?? blog.metaTitle;
     blog.metaDescription = metaDescription ?? blog.metaDescription;
 

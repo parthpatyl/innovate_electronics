@@ -259,6 +259,15 @@ class CMS {
         const form = document.getElementById('content-form');
         const contentType = this.currentContentType;
 
+        // Helper for image input and preview
+        const imageInputHTML = `
+            <div class="form-group">
+                <label class="form-label" for="imageUpload">Upload Image</label>
+                <input type="file" class="form-input" id="imageUpload" name="imageUpload" accept="image/*">
+                <div id="image-preview-container" style="margin-top:8px;"></div>
+            </div>
+        `;
+
         if (contentType === 'event') {
             form.innerHTML = `
                 <div class="form-group">
@@ -281,10 +290,7 @@ class CMS {
                     <label class="form-label" for="body">Event Description *</label>
                     <textarea class="form-input form-textarea" id="body" name="body" rows="6" required></textarea>
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="featuredImage">Featured Image URL</label>
-                    <input type="text" class="form-input" id="featuredImage" name="featuredImage">
-                </div>
+                ${imageInputHTML}
                 <div class="form-group">
                     <label class="form-label" for="status">Status *</label>
                     <select class="form-input form-select" id="status" name="status" required>
@@ -320,10 +326,7 @@ class CMS {
                     <label class="form-label" for="tags">Tags (comma-separated)</label>
                     <input type="text" class="form-input" id="tags" name="tags" placeholder="tag1, tag2, tag3">
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="featuredImage">Featured Image URL</label>
-                    <input type="text" class="form-input" id="featuredImage" name="featuredImage">
-                </div>
+                ${imageInputHTML}
                 <div class="form-group">
                     <label class="form-label" for="metaTitle">Meta Title</label>
                     <input type="text" class="form-input" id="metaTitle" name="metaTitle">
@@ -355,6 +358,7 @@ class CMS {
                     <label class="form-label" for="body">Plain Text Body *</label>
                     <textarea class="form-input form-textarea" id="body" name="body" rows="6" placeholder="Text-only version" required></textarea>
                 </div>
+                ${imageInputHTML}
                 <div class="form-group">
                     <label class="form-label" for="status">Status *</label>
                     <select class="form-input form-select" id="status" name="status" required>
@@ -375,6 +379,25 @@ class CMS {
             e.preventDefault();
             this.saveContent();
         };
+
+        // Image upload logic (preview and store file)
+        const imageInput = document.getElementById('imageUpload');
+        const previewContainer = document.getElementById('image-preview-container');
+        this.selectedImageFile = null;
+        if (imageInput) {
+            imageInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                this.selectedImageFile = file || null;
+                previewContainer.innerHTML = '';
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        previewContainer.innerHTML = `<img src="${evt.target.result}" alt="Preview" style="max-width:100%;max-height:120px;">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
 
         // Bind blog autofill button when rendering blog form
         if (contentType === 'blog') {
@@ -606,6 +629,18 @@ class CMS {
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
+        // If image file is selected, read as base64 and add to data
+        if (this.selectedImageFile) {
+            data.uploadedImage = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(this.selectedImageFile);
+            });
+        } else {
+            data.uploadedImage = '';
+        }
+
         if (!this.validateFormData(data)) {
             this._isSaving = false;
             return;
@@ -658,7 +693,10 @@ class CMS {
         if (eventData.date) {
             eventData.date = new Date(eventData.date).toISOString().split('T')[0];
         }
-
+        // Attach uploaded image (base64) if present
+        if (formData.uploadedImage) {
+            eventData.imageData = formData.uploadedImage;
+        }
         const endpoint = this.isEditing()
             ? `${getApiUrl(CMS.API_ENDPOINTS.EVENTS)}/${this.editingItem._id}`
             : getApiUrl(CMS.API_ENDPOINTS.EVENTS);
@@ -681,7 +719,10 @@ class CMS {
         };
         // Never send slug from client
         delete blogData.slug;
-
+        // Attach uploaded image (base64) if present
+        if (formData.uploadedImage) {
+            blogData.imageData = formData.uploadedImage;
+        }
         const endpoint = this.isEditing()
             ? `${getApiUrl(CMS.API_ENDPOINTS.BLOGS)}/${this.editingItem._id}`
             : getApiUrl(CMS.API_ENDPOINTS.BLOGS);
@@ -704,7 +745,10 @@ class CMS {
             audience: 'all-subscribers',
             recipients: []
         };
-
+        // Attach uploaded image (base64) if present
+        if (formData.uploadedImage) {
+            newsletterData.imageData = formData.uploadedImage;
+        }
         const endpoint = this.isEditing()
             ? `${getApiUrl(CMS.API_ENDPOINTS.NEWSLETTERS)}/${this.editingItem._id}`
             : getApiUrl(CMS.API_ENDPOINTS.NEWSLETTERS);
@@ -924,9 +968,6 @@ class CMS {
                 const tagsStr = Array.isArray(this.editingItem.tags) ? this.editingItem.tags.join(', ') : '';
                 const excerptEl = document.getElementById('excerpt'); if (excerptEl) excerptEl.value = this.editingItem.excerpt || '';
                 const tagsEl = document.getElementById('tags'); if (tagsEl) tagsEl.value = tagsStr;
-                const fiEl = document.getElementById('featuredImage'); if (fiEl) fiEl.value = this.editingItem.featuredImage || '';
-                const mtEl = document.getElementById('metaTitle'); if (mtEl) mtEl.value = this.editingItem.metaTitle || '';
-                const mdEl = document.getElementById('metaDescription'); if (mdEl) mdEl.value = this.editingItem.metaDescription || '';
                 document.getElementById('status').value = this.editingItem.status || 'draft';
             } else if (type === 'newsletter') {
                 this.generateForm();
@@ -954,7 +995,6 @@ class CMS {
                 const timeEl = document.getElementById('time'); if (timeEl) timeEl.value = this.editingItem.time || '';
                 const locEl = document.getElementById('location'); if (locEl) locEl.value = this.editingItem.location || '';
                 document.getElementById('body').value = this.editingItem.body || '';
-                const fiEl = document.getElementById('featuredImage'); if (fiEl) fiEl.value = this.editingItem.featuredImage || '';
                 document.getElementById('status').value = this.editingItem.status || 'upcoming';
             }
 

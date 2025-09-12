@@ -38,7 +38,8 @@ router.post('/', async (req, res) => {
 			status: req.body.status || 'draft',
 			audience: 'all-subscribers',
 			recipients: [],
-			sentBy: (req.user && req.user.id) ? req.user.id : null
+			sentBy: (req.user && req.user.id) ? req.user.id : null,
+			imageData: req.body.imageData || ''
 		};
 		const newsletter = new Newsletter(payload);
 		await newsletter.save();
@@ -62,6 +63,7 @@ router.put('/:id', async (req, res) => {
 		newsletter.status = req.body.status ?? newsletter.status;
 		newsletter.audience = 'all-subscribers';
 		newsletter.recipients = [];
+		if (req.body.imageData) newsletter.imageData = req.body.imageData;
 
 		await newsletter.save();
 		res.json({ success: true, data: newsletter });

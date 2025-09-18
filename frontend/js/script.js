@@ -235,7 +235,9 @@ class CMS {
         listElement.innerHTML = content.map(item => `
             <div class="content-item">
                 <div class="content-info">
-                    <div class="content-title">${item.title || item.subject || item.name || 'Untitled'}</div>
+                    <div class="content-title">
+                        ${item.title || item.subject || item.name || 'Untitled'}
+                    </div>
                     <div class="content-meta">
                         <span>${item.author || (item.sentBy && (item.sentBy.name || item.sentBy.email)) || item.category || ''}</span>
                         <span>${item.createdAt ? new Date(item.createdAt).toISOString().split('T')[0] : ''}</span>
@@ -243,7 +245,7 @@ class CMS {
                     </div>
                 </div>
                 <div class="content-actions-btns">
-                    <button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item._id || item.name || ''}')">
+                    <button class="btn btn-sm btn-secondary" onclick="cms.editProduct('${item._id || ''}')">
                         <i class="fas fa-edit"></i> Edit
                     </button>
                     <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item._id || item.name || ''}')">
@@ -427,6 +429,14 @@ class CMS {
 
         generateProductForm() {
         const form = document.getElementById('content-form');
+        // Add image upload input and preview
+        const imageInputHTML = `
+            <div class="form-group">
+                <label class="form-label" for="imageUpload">Upload Image</label>
+                <input type="file" class="form-input" id="imageUpload" name="imageUpload" accept="image/*">
+                <div id="image-preview-container" style="margin-top:8px;"></div>
+            </div>
+        `;
 
         form.innerHTML = `
             <div class="form-group">
@@ -441,10 +451,7 @@ class CMS {
                 <label class="form-label" for="subcategory">Subcategory</label>
                 <input type="text" class="form-input" id="subcategory" name="subcategory">
             </div>
-            <div class="form-group">
-                <label class="form-label" for="image">Image URL</label>
-                <input type="text" class="form-input" id="image" name="image">
-            </div>
+            ${imageInputHTML}
             <div class="form-group">
                 <label class="form-label" for="description">Description</label>
                 <textarea class="form-input form-textarea" id="description" name="description" rows="4"></textarea>
@@ -463,6 +470,25 @@ class CMS {
             e.preventDefault();
             this.saveContent();
         };
+
+        // Image upload logic (preview and store file)
+        const imageInput = document.getElementById('imageUpload');
+        const previewContainer = document.getElementById('image-preview-container');
+        this.selectedImageFile = null;
+        if (imageInput) {
+            imageInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                this.selectedImageFile = file || null;
+                previewContainer.innerHTML = '';
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        previewContainer.innerHTML = `<img src="${evt.target.result}" alt="Preview" style="max-width:100%;max-height:120px;">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
     }
 
     async fetchEventRegistrations() {
@@ -567,16 +593,14 @@ class CMS {
         }
     }
 
-    async editProduct(productName) {
+    // Refactored editProduct to use productId directly (like deleteProduct)
+    async editProduct(productId) {
         try {
-            // Fix Bug 3: Use product ID if available, fallback to name
-            const productId = this.getProductId(productName);
-            const endpoint = getApiUrl(`api/products/${encodeURIComponent(productId || productName)}`);
-            
+            this.editingItem = null;
+            const endpoint = getApiUrl(`api/products/${encodeURIComponent(productId)}`);
             const response = await fetch(endpoint);
             if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
             const data = await response.json();
-            
             if (data.success) {
                 this.editingItem = data.data;
                 document.getElementById('modal-title').textContent = 'Edit Product';
@@ -601,7 +625,13 @@ class CMS {
         document.getElementById('name').value = product.name || '';
         document.getElementById('category').value = product.category || '';
         document.getElementById('subcategory').value = product.subcategory || '';
-        document.getElementById('image').value = product.image || '';
+        // Store the current image for later use in save
+        this.currentProductImage = product.image || '';
+        // Show preview if editing and image exists
+        const previewContainer = document.getElementById('image-preview-container');
+        if (previewContainer && product.image) {
+            previewContainer.innerHTML = `<img src="${product.image}" alt="Preview" style="max-width:100%;max-height:120px;">`;
+        }
         
         // Handle description
         if (product.overview && product.overview.description) {
@@ -766,7 +796,8 @@ class CMS {
         const productData = {
             name: formData.name,
             category: formData.category,
-            image: formData.image
+            // Use uploaded image if present, else use the current image (for edit)
+            image: formData.uploadedImage || this.currentProductImage || ''
         };
 
         // Handle subcategory

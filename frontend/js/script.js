@@ -817,7 +817,7 @@ class CMS {
                     });
                 } else {
                     // Handle other content types (legacy CMS)
-                    response = await fetch(`${this.apiBaseUrl}/content/${this.itemToDelete}`, {
+                    response = await fetch(`${this.apiBaseUrl}/products/${this.itemToDelete}`, {
                         method: 'DELETE'
                     });
                 }

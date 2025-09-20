@@ -232,7 +232,18 @@ class CMS {
         }
 
         // Example rendering logic (customize as needed for your data structure)
-        listElement.innerHTML = content.map(item => `
+        listElement.innerHTML = content.map(item => {
+            let editBtn;
+            if (section === 'products') {
+                editBtn = `<button class="btn btn-sm btn-secondary" onclick="cms.editProduct('${item._id || ''}')">
+                    <i class="fas fa-edit"></i> Edit
+                </button>`;
+            } else {
+                editBtn = `<button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item._id || ''}')">
+                    <i class="fas fa-edit"></i> Edit
+                </button>`;
+            }
+            return `
             <div class="content-item">
                 <div class="content-info">
                     <div class="content-title">
@@ -245,15 +256,14 @@ class CMS {
                     </div>
                 </div>
                 <div class="content-actions-btns">
-                    <button class="btn btn-sm btn-secondary" onclick="cms.editProduct('${item._id || ''}')">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
+                    ${editBtn}
                     <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item._id || item.name || ''}')">
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
 
@@ -989,9 +999,10 @@ class CMS {
             this.editingItem = result.data;
             this.currentContentType = type;
             document.getElementById('modal-title').textContent = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)}`;
-
+            
             if (type === 'blog') {
                 this.generateForm();
+                // Populate blog fields
                 document.getElementById('title').value = this.editingItem.title || '';
                 document.getElementById('date').value = this.editingItem.date ? new Date(this.editingItem.date).toISOString().split('T')[0] : '';
                 document.getElementById('author').value = this.editingItem.author || '';
@@ -1041,4 +1052,4 @@ class CMS {
 // Initialize CMS when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.cms = new CMS();
-}); 
+});

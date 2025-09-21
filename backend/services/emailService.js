@@ -1,220 +1,159 @@
 const nodemailer = require('nodemailer');
-const rateLimit = require('express-rate-limit');
+require('dotenv').config();
 
-class EmailService {
-  constructor() {
-    this.transporter = null;
-    this.rateLimiter = rateLimit({
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100, // limit each IP to 100 requests per windowMs
-      message: 'Too many email requests from this IP, please try again later.'
-    });
-    this.initializeTransporter();
-  }
+const emailConfig = {
+  host: process.env.SMTP_HOST,
+  port: parseInt(process.env.SMTP_PORT),
+  secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+  // Add a default from address
+  from: process.env.SMTP_FROM || `"Innovate Electronics" <no-reply@example.com>`,
+};
 
-  initializeTransporter() {
-    // Use environment variables for email configuration
-    const emailConfig = {
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: process.env.SMTP_PORT || 587,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-      }
-    };
+let transporter;
+let isConfigured = false;
 
-    // If using Gmail, you might need to use an app password
-    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
-      this.transporter = nodemailer.createTransport(emailConfig);
-    } else {
-      console.warn('Email service not configured. Set SMTP_USER and SMTP_PASS environment variables.');
+if (emailConfig.host && emailConfig.auth.user && emailConfig.auth.pass) {
+  transporter = nodemailer.createTransport(emailConfig);
+  isConfigured = true;
+}
+
+const emailService = {
+  getStatus: () => ({
+    configured: isConfigured,
+    host: emailConfig.host,
+    port: emailConfig.port,
+    user: emailConfig.auth.user ? '******' : undefined,
+  }),
+
+  /**
+   * Verifies the SMTP connection.
+   * @returns {Promise<object>} Connection status.
+   */
+  verifyConnection: async () => {
+    if (!isConfigured) {
+      return { status: 'unconfigured', message: 'Email service is not configured.' };
     }
-  }
+    try {
+      await transporter.verify();
+      return { status: 'connected', message: 'SMTP connection successful.', config: emailConfig };
+    } catch (error) {
+      console.error('❌ SMTP Connection Error:', error);
+      return { status: 'error', message: 'SMTP connection failed.', error: error.message };
+    }
+  },
 
-  generateEmailTemplate(subject, htmlBody, unsubscribeToken = null) {
-    const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
-    const unsubscribeLink = unsubscribeToken 
-      ? `${baseUrl}/unsubscribe?token=${unsubscribeToken}`
-      : `${baseUrl}/unsubscribe`;
-
-    return `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>${subject}</title>
-        <style>
-          body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-          }
-          .email-container {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-          }
-          .header {
-            text-align: center;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-          }
-          .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 10px;
-          }
-          .content {
-            margin-bottom: 30px;
-          }
-          .footer {
-            text-align: center;
-            border-top: 1px solid #e1e5e9;
-            padding-top: 20px;
-            font-size: 0.9rem;
-            color: #666;
-          }
-          .unsubscribe-link {
-            color: #667eea;
-            text-decoration: none;
-          }
-          .unsubscribe-link:hover {
-            text-decoration: underline;
-          }
-          @media (max-width: 600px) {
-            body {
-              padding: 10px;
-            }
-            .email-container {
-              padding: 20px;
-            }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="email-container">
-          <div class="header">
-            <div class="logo">Innovate Electronics</div>
-            <h1>${subject}</h1>
-          </div>
-          
-          <div class="content">
-            ${htmlBody}
-          </div>
-          
-          <div class="footer">
-            <p>© 2024 Innovate Electronics. All rights reserved.</p>
-            <p>
-              You're receiving this email because you subscribed to our newsletter.
-              <br>
-              <a href="${unsubscribeLink}" class="unsubscribe-link">Unsubscribe</a>
-            </p>
-          </div>
-        </div>
-      </body>
-      </html>
-    `;
-  }
-
-  async sendEmail(to, subject, htmlBody, unsubscribeToken = null) {
-    if (!this.transporter) {
-      throw new Error('Email service not configured');
+  /**
+   * Sends a single email.
+   * @param {string} to - Recipient's email address.
+   * @param {string} subject - Email subject.
+   * @param {string} htmlBody - HTML content of the email.
+   * @param {string} [unsubscribeToken] - Optional token for unsubscribe link.
+   * @returns {Promise<object>} Result of the send operation.
+   */
+  sendEmail: async (to, subject, htmlBody, unsubscribeToken) => {
+    if (!isConfigured) {
+      console.error('Email service not configured. Cannot send email.');
+      return { success: false, message: 'Email service not configured.' };
     }
 
-    const htmlContent = this.generateEmailTemplate(subject, htmlBody, unsubscribeToken);
+    let finalHtml = htmlBody;
+    if (unsubscribeToken) {
+      const unsubscribeUrl = `${process.env.APP_URL || 'http://localhost:5000'}/api/newsletter/unsubscribe/${unsubscribeToken}`;
+      finalHtml += `<br><hr><p style="font-size: 12px; color: #888;">To unsubscribe from future emails, <a href="${unsubscribeUrl}">click here</a>.</p>`;
+    }
 
     const mailOptions = {
-      from: `"Innovate Electronics" <${process.env.SMTP_USER}>`,
-      to: to,
-      subject: subject,
-      html: htmlContent,
-      text: this.stripHtml(htmlBody) // Fallback text version
+      from: emailConfig.from,
+      to,
+      subject,
+      html: finalHtml,
+      // You can add a plain text version for clients that don't support HTML
+      text: htmlBody.replace(/<[^>]*>?/gm, ''), // Basic text conversion
     };
 
     try {
-      const result = await this.transporter.sendMail(mailOptions);
+      const info = await transporter.sendMail(mailOptions);
+      console.log(`✅ Email sent to ${to}: ${info.messageId}`);
       return {
         success: true,
-        messageId: result.messageId,
-        email: to
+        messageId: info.messageId,
+        email: to,
+        timestamp: new Date().toISOString(),
       };
     } catch (error) {
-      console.error('Email sending failed:', error);
+      console.error(`❌ Error sending email to ${to}:`, error);
       return {
         success: false,
+        email: to,
         error: error.message,
-        email: to
       };
     }
-  }
+  },
 
-  async sendBulkEmails(recipients, subject, htmlBody, batchSize = 10) {
-    if (!this.transporter) {
-      throw new Error('Email service not configured');
+  /**
+   * Sends emails to multiple recipients.
+   * @param {Array<object>} recipients - Array of { email, unsubscribeToken }.
+   * @param {string} subject - Email subject.
+   * @param {string} htmlBody - HTML content of the email.
+   * @param {number} [batchSize=10] - Number of emails to send in parallel.
+   * @returns {Promise<Array<object>>} Array of results for each send operation.
+   */
+  sendBulkEmails: async (recipients, subject, htmlBody, batchSize = 10) => {
+    if (!isConfigured) {
+      console.error('Email service not configured. Cannot send bulk emails.');
+      return recipients.map(r => ({ success: false, email: r.email, message: 'Email service not configured.' }));
     }
 
-    const results = [];
-    const batches = this.chunkArray(recipients, batchSize);
+    if (!Array.isArray(recipients) || recipients.length === 0) {
+      return [];
+    }
 
-    for (let i = 0; i < batches.length; i++) {
-      const batch = batches[i];
-      console.log(`Sending batch ${i + 1}/${batches.length} (${batch.length} emails)`);
+    console.log(`🚀 Starting bulk email send for ${recipients.length} recipients...`);
 
-      const batchPromises = batch.map(recipient => 
-        this.sendEmail(recipient.email, subject, htmlBody, recipient.unsubscribeToken)
-      );
-
-      const batchResults = await Promise.allSettled(batchPromises);
+    const allResults = [];
+    for (let i = 0; i < recipients.length; i += batchSize) {
+      const batch = recipients.slice(i, i + batchSize);
+      console.log(`- Sending batch ${i / batchSize + 1} of ${Math.ceil(recipients.length / batchSize)}...`);
       
-      batchResults.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
-          results.push(result.value);
-        } else {
-          results.push({
-            success: false,
-            error: result.reason.message,
-            email: batch[index].email
-          });
-        }
-      });
+      const batchPromises = batch.map(recipient =>
+        emailService.sendEmail(recipient.email, subject, htmlBody, recipient.unsubscribeToken)
+      );
+      
+      const batchResults = await Promise.all(batchPromises);
+      allResults.push(...batchResults);
 
-      // Rate limiting: wait between batches to avoid spam flags
-      if (i < batches.length - 1) {
-        await this.delay(1000); // 1 second delay between batches
+      // Optional delay between batches to avoid rate limiting
+      if (i + batchSize < recipients.length) {
+        await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
       }
     }
 
-    return results;
-  }
+    const successCount = allResults.filter(r => r.success).length;
+    const failedCount = allResults.length - successCount;
+    console.log(`✅ Bulk send complete. Success: ${successCount}, Failed: ${failedCount}`);
 
-  stripHtml(html) {
-    return html.replace(/<[^>]*>/g, '');
-  }
+    return allResults;
+  },
+};
 
-  chunkArray(array, size) {
-    const chunks = [];
-    for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size));
+// Self-executing function for a quick connection check on startup
+(async () => {
+  if (isConfigured) {
+    try {
+      const verification = await emailService.verifyConnection();
+      if (verification.status === 'connected') {
+        console.log('📧 SMTP Connection Verified Successfully.');
+      } else {
+        console.warn('⚠️ SMTP Connection Verification Failed:', verification.message);
+      }
+    } catch (error) {
+      console.error('Error during initial SMTP verification:', error);
     }
-    return chunks;
   }
+})();
 
-  delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  getRateLimiter() {
-    return this.rateLimiter;
-  }
-}
-
-module.exports = new EmailService(); 
+module.exports = emailService;

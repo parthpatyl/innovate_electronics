@@ -22,7 +22,7 @@ const newsletterSchema = new mongoose.Schema({
 	},
 	audience: {
 		type: String,
-		enum: ['custom', 'all-subscribers', 'test-only'],
+		enum: ['all-subscribers'],
 		default: 'custom'
 	},
 	recipients: {

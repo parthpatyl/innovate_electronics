@@ -1,5 +1,5 @@
 const Subscriber = require('../models/Subscriber');
-const Campaign = require('../models/Campaign');
+const Newsletter = require('../models/Newsletter');
 const emailService = require('../services/emailService');
 const crypto = require('crypto');
 

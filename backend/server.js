@@ -7,6 +7,7 @@ const path = require('path');
 const connectDB = require('./config/database');
 const chatbotController = require('./controllers/chatbotController');
 const eventRegistrationController = require('./controllers/eventRegistrationController');
+newsletterController = require('./controllers/newsletterController');
 
 // Register models used by refs
 require('./models/Admin');
@@ -35,8 +36,7 @@ app.use(cookieParser());
 app.post('/api/chatbot/message', chatbotController.handleMessage);
 
 // Newsletter subscription
-app.post('/api/newsletter/subscribe', (req, res) => {
-});
+app.post('/api/newsletter/subscribe', newsletterController.subscribe);
 
 // Contact form (send email)
 app.post('/api/contact', (req, res) => {

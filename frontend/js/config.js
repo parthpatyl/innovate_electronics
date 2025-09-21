@@ -1,7 +1,7 @@
 // Configuration for API endpoints
 const API_CONFIG = {
-    // Base URL for API calls - always use backend URL
-    BASE_URL: 'http://localhost:5000',
+    // Base URL for API calls - automatically detect environment
+    BASE_URL: window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://momentscape-backend.onrender.com/',
     
     // API endpoints
     ENDPOINTS: {

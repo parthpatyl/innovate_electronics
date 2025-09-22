@@ -2,6 +2,15 @@ const express = require('express');
 const router = express.Router();
 const Newsletter = require('../models/Newsletter');
 
+// Helper function to replace relative image paths with absolute paths
+const makeImagePathsAbsolute = (htmlContent) => {
+	// In a real-world scenario, this should come from a config file or environment variable
+	const baseUrl = 'http://localhost:5000'; 
+	// This regex finds src attributes in img tags that start with a "/"
+	return htmlContent.replace(/<img src="\/([^"]+)"/g, `<img src="${baseUrl}/$1"`);
+  };
+  
+
 // List newsletters
 router.get('/', async (req, res) => {
 	try {
@@ -22,7 +31,7 @@ router.get('/:id', async (req, res) => {
 		if (!newsletter) {
 			return res.status(404).json({ success: false, message: 'Newsletter not found' });
 		}
-		res.json({ success: true, data: newsletter });
+		res.status(200).json({ success: true, data: newsletter });
 	} catch (error) {
 		res.status(500).json({ success: false, message: error.message });
 	}
@@ -43,6 +52,17 @@ router.post('/', async (req, res) => {
 		};
 		const newsletter = new Newsletter(payload);
 		await newsletter.save();
+
+		// If published, send to all active subscribers
+		if (newsletter.status === 'published') {
+		  const Subscriber = require('../models/Subscriber');
+		  const emailService = require('../services/emailService');
+		  const subscribers = await Subscriber.find({ isActive: true });
+		  const recipients = subscribers.map(sub => ({ email: sub.email, unsubscribeToken: sub.unsubscribeToken }));
+		  const absoluteHtmlBody = makeImagePathsAbsolute(newsletter.htmlBody);
+		  await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody);
+		}
+
 		res.status(201).json({ success: true, data: newsletter });
 	} catch (error) {
 		res.status(400).json({ success: false, message: error.message });
@@ -66,6 +86,19 @@ router.put('/:id', async (req, res) => {
 		if (req.body.imageData) newsletter.imageData = req.body.imageData;
 
 		await newsletter.save();
+
+		// If status was changed to 'published', send to all active subscribers
+		if (req.body.status === 'published') {
+			const Subscriber = require('../models/Subscriber');
+			const emailService = require('../services/emailService');
+			const subscribers = await Subscriber.find({ isActive: true });
+			if (subscribers.length > 0) {
+				const recipients = subscribers.map(sub => ({ email: sub.email, unsubscribeToken: sub.unsubscribeToken }));
+				const absoluteHtmlBody = makeImagePathsAbsolute(newsletter.htmlBody);
+				await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody);
+			}
+		}
+
 		res.json({ success: true, data: newsletter });
 	} catch (error) {
 		res.status(400).json({ success: false, message: error.message });
@@ -101,8 +134,8 @@ router.post('/:id/send', async (req, res) => {
 		if (recipients.length === 0) {
 			return res.status(400).json({ success: false, message: 'No active subscribers to send to' });
 		}
-
-		const results = await emailService.sendBulkEmails(recipients, newsletter.subject, newsletter.htmlBody);
+		const absoluteHtmlBody = makeImagePathsAbsolute(newsletter.htmlBody);
+		const results = await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody);
 		const sent = results.filter(r => r.success).length;
 		const failed = results.length - sent;
 

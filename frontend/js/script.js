@@ -799,7 +799,20 @@ class CMS {
             body: JSON.stringify(newsletterData)
         });
 
-        return this.handleApiResponse(response);
+        // Show feedback to admin
+        let result;
+        try {
+            result = await this.handleApiResponse(response);
+            if (newsletterData.status === 'published') {
+                alert('Newsletter published and sent to all subscribers!');
+            } else {
+                alert('Newsletter saved as draft.');
+            }
+        } catch (err) {
+            alert('Failed to save or send newsletter: ' + err.message);
+            throw err;
+        }
+        return result;
     }
 
     prepareProductData(formData) {

@@ -4,6 +4,19 @@ const emailService = require('../services/emailService');
 const crypto = require('crypto');
 
 const newsletterController = {
+  // Get all newsletters
+  getAllNewsletters: async (req, res) => {
+    try {
+      const newsletters = await Newsletter.find(query)
+        .sort({ createdAt: -1 })
+        .populate('sentBy', 'name email');
+
+      res.json({ success: true, data: newsletters });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Failed to fetch newsletters' });
+    }
+  },
+
   // Subscribe to newsletter
   subscribe: async (req, res) => {
     try {

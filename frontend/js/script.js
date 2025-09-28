@@ -366,10 +366,6 @@ class CMS {
                     <label class="form-label" for="htmlBody">HTML Body *</label>
                     <textarea class="form-input form-textarea" id="htmlBody" name="htmlBody" rows="10" placeholder="<h1>Title</h1>..." required></textarea>
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="body">Plain Text Body *</label>
-                    <textarea class="form-input form-textarea" id="body" name="body" rows="6" placeholder="Text-only version" required></textarea>
-                </div>
                 ${imageInputHTML}
                 <div class="form-group">
                     <label class="form-label" for="status">Status *</label>
@@ -779,7 +775,6 @@ class CMS {
     async saveNewsletter(formData) {
         const newsletterData = {
             subject: formData.subject,
-            body: formData.body,
             htmlBody: formData.htmlBody,
             status: formData.status || 'draft',
             audience: 'all-subscribers',
@@ -787,7 +782,7 @@ class CMS {
         };
         // Attach uploaded image (base64) if present
         if (formData.uploadedImage) {
-            newsletterData.imageData = formData.uploadedImage;
+            newsletterData.imageData = formData.uploadedImage; // This key is processed by the backend
         }
         const endpoint = this.isEditing()
             ? `${getApiUrl(CMS.API_ENDPOINTS.NEWSLETTERS)}/${this.editingItem._id}`
@@ -938,12 +933,8 @@ class CMS {
         } else if (this.currentContentType === 'event') {
             requiredFields.push('title', 'date', 'body');
         } else if (this.currentContentType === 'blog' || this.currentContentType === 'newsletter') {
-            requiredFields.push(this.currentContentType === 'blog' ? 'title' : 'subject');
-            if (this.currentContentType === 'blog') {
-                requiredFields.push('date', 'body', 'author');
-            } else {
-                requiredFields.push('htmlBody', 'body');
-            }
+            requiredFields.push(this.currentContentType === 'blog' ? 'title' : 'subject', 'htmlBody');
+            if (this.currentContentType === 'blog') requiredFields.push('date', 'body', 'author');
         }
         
         // Check required fields
@@ -1028,7 +1019,6 @@ class CMS {
                 this.generateForm();
                 document.getElementById('subject').value = this.editingItem.subject || '';
                 document.getElementById('htmlBody').value = this.editingItem.htmlBody || '';
-                document.getElementById('body').value = this.editingItem.body || '';
                 const statusEl = document.getElementById('status'); if (statusEl) statusEl.value = this.editingItem.status || 'draft';
                 const audienceEl = document.getElementById('audience'); if (audienceEl && this.editingItem.audience) audienceEl.value = this.editingItem.audience;
                 const recipientsEl = document.getElementById('recipients'); if (recipientsEl && Array.isArray(this.editingItem.recipients)) recipientsEl.value = this.editingItem.recipients.join(', ');

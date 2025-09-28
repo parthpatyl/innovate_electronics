@@ -7,10 +7,6 @@ const newsletterSchema = new mongoose.Schema({
 		trim: true,
 		maxlength: [200, 'Subject cannot exceed 200 characters']
 	},
-	body: {
-		type: String,
-		required: [true, 'Newsletter body is required']
-	},
 	htmlBody: {
 		type: String,
 		required: [true, 'HTML body is required']

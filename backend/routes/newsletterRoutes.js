@@ -42,7 +42,6 @@ router.post('/', async (req, res) => {
 	try {
 		const payload = {
 			subject: req.body.subject,
-			body: req.body.body,
 			htmlBody: req.body.htmlBody,
 			status: req.body.status || 'draft',
 			audience: 'all-subscribers',
@@ -60,7 +59,7 @@ router.post('/', async (req, res) => {
 		  const subscribers = await Subscriber.find({ isActive: true });
 		  const recipients = subscribers.map(sub => ({ email: sub.email, unsubscribeToken: sub.unsubscribeToken }));
 		  const absoluteHtmlBody = makeImagePathsAbsolute(newsletter.htmlBody);
-		  await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody);
+		  await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody, { imageData: newsletter.imageData });
 		}
 
 		res.status(201).json({ success: true, data: newsletter });
@@ -78,7 +77,6 @@ router.put('/:id', async (req, res) => {
 		}
 
 		newsletter.subject = req.body.subject ?? newsletter.subject;
-		newsletter.body = req.body.body ?? newsletter.body;
 		newsletter.htmlBody = req.body.htmlBody ?? newsletter.htmlBody;
 		newsletter.status = req.body.status ?? newsletter.status;
 		newsletter.audience = 'all-subscribers';
@@ -95,7 +93,7 @@ router.put('/:id', async (req, res) => {
 			if (subscribers.length > 0) {
 				const recipients = subscribers.map(sub => ({ email: sub.email, unsubscribeToken: sub.unsubscribeToken }));
 				const absoluteHtmlBody = makeImagePathsAbsolute(newsletter.htmlBody);
-				await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody);
+				await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody, { imageData: newsletter.imageData });
 			}
 		}
 
@@ -135,7 +133,7 @@ router.post('/:id/send', async (req, res) => {
 			return res.status(400).json({ success: false, message: 'No active subscribers to send to' });
 		}
 		const absoluteHtmlBody = makeImagePathsAbsolute(newsletter.htmlBody);
-		const results = await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody);
+		const results = await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody, { imageData: newsletter.imageData });
 		const sent = results.filter(r => r.success).length;
 		const failed = results.length - sent;
 

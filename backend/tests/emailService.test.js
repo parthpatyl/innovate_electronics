@@ -138,7 +138,7 @@ describe('EmailService Integration Tests', () => {
         <p>Testing batch processing capabilities.</p>
       `;
 
-      const results = await emailService.sendBulkEmails(recipients, subject, htmlBody, 1);
+      const results = await emailService.sendBulkEmails(recipients, subject, htmlBody, [], 1);
       
       console.log('Bulk email results:', results);
       

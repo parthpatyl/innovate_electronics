@@ -46,10 +46,6 @@ const validateCampaign = [
     .trim()
     .isLength({ min: 1, max: 200 })
     .withMessage('Subject is required and cannot exceed 200 characters'),
-  body('body')
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage('Campaign body is required'),
   body('htmlBody')
     .trim()
     .isLength({ min: 1 })

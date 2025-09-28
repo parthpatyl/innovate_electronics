@@ -44,10 +44,6 @@ app.post('/api/contact', (req, res) => {
   res.json({ message: 'Email sent (placeholder).' });
 });
 
-
-// Event registration
-app.post('/api/events/register', eventRegistrationController.register);
-
 // Product and Category Routes
 app.use('/api/categories', categoryRoutes);
 app.use('/api', productRoutes);

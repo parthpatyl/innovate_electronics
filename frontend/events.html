@@ -42,6 +42,7 @@
             <h2>Event Registration</h2>
             <form id="event-registration-form">
                 <input type="hidden" id="event_title" name="event_title" />
+                <input type="hidden" id="event_location" name="location" />
                 <div class="form-group">
                     <label for="full_name">Full Name *</label>
                     <input type="text" id="full_name" name="full_name" required>
@@ -146,7 +147,7 @@
                             <h2 class="featured-title">${event.title}</h2>
                             <div class="event-details">
                                 ${event.time ? `<p class="event-time"><strong>Time:</strong> ${event.time}</p>` : ''}
-                                ${event.location ? `<p class="event-location"><strong>Location:</strong> ${event.location}</p>` : ''}
+                                ${event.location ? `<p class="event-location"><strong>Link:</strong> <a href="${event.location}" target="_blank" rel="noopener noreferrer">${event.location}</a></p>` : ''}
                             </div>
                             <p class="featured-body">${event.body}</p>
                             <button class="register-btn">Register Now</button>
@@ -179,10 +180,12 @@
                 const registrationForm = document.getElementById('event-registration-form');
                 const cancelBtn = document.querySelector('.cancel-btn');
                 let currentEventTitle = '';
+                let currentEventLocation = '';
 
                 // Register button logic
                 const registerBtns = featuredContainer.querySelectorAll('.register-btn');
                 registerBtns.forEach(btn => {
+                    const eventCard = btn.closest('.events-featured-event');
                     btn.addEventListener('click', (e) => {
                         e.preventDefault();
                         currentEventTitle = btn.closest('.events-featured-event').querySelector('.featured-title').textContent;
@@ -190,6 +193,10 @@
                         document.getElementById('event_title').value = currentEventTitle;
                         registrationPopup.style.display = 'flex';
                         document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                        // Capture and set location
+                        const locationLink = eventCard.querySelector('.event-location a');
+                        currentEventLocation = locationLink ? locationLink.href : 'N/A';
+                        document.getElementById('event_location').value = currentEventLocation;
                     });
                 });
 
@@ -222,6 +229,7 @@
                     // Gather form data
                     const formData = {
                         event_title: registrationForm.event_title.value,
+                        location: registrationForm.event_location.value,
                         full_name: registrationForm.full_name.value,
                         email: registrationForm.email.value,
                         phone: registrationForm.phone.value,

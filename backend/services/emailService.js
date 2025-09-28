@@ -51,6 +51,7 @@ const emailService = {
    * @param {string} to - Recipient's email address.
    * @param {string} subject - Email subject.
    * @param {string} htmlBody - HTML content of the email.
+   * @param {string} body - Optional plain text content.
    * @param {string} [unsubscribeToken] - Optional token for unsubscribe link.
    * @returns {Promise<object>} Result of the send operation.
    */

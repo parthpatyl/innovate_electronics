@@ -1,0 +1,36 @@
+[
+  {
+    "category": "RF and Microwave",
+    "items": [
+      "Switches",
+      "Cable Assembly",
+      "Waveguides",
+      "Amplifiers",
+      "Filters",
+      "Passive Components",
+      "Antennas"
+    ]
+  },
+  {
+    "category": "Test & Measurement",
+    "items": [
+      "Vibration Test Machine",
+      "Environmental Chamber",
+      "EMI EMC Chamber",
+      "Anechoic Chamber",
+      "EMI EMC Scanner/Probe",
+      "Reverberation Chamber"
+    ]
+  },
+  {
+    "category": "Speciality Materials",
+    "items": [
+      "Rohacell Sheets",
+      "Rohacell Shapes",
+      "Composite Components",
+      "Acoustic Insulation",
+      "Thermal Insulation",
+      "Turnkey Solution"
+    ]
+  }
+]

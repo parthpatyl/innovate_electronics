@@ -1,27 +1,108 @@
-exports.handleMessage = (req, res) => {
+const Category = require('../models/Category');
+const Event = require('../models/Event');
+const templates = require('./chatbotTemplates');
+
+const getProductCategories = async () => {
+  const categories = await Category.distinct('title');
+  if (categories.length > 0) {
+    return { reply: templates.productCategories(categories), options: [] };
+  }
+  return { reply: templates.productsGeneral(), options: [] };
+};
+
+const getUpcomingEvents = async () => {
+  const upcomingEvents = await Event.find({ status: 'upcoming' }).sort({ date: 1 }).limit(3);
+  if (upcomingEvents.length > 0) {
+    return { reply: templates.upcomingEvents(upcomingEvents), options: [] };
+  }
+  return { reply: templates.noUpcomingEvents(), options: [] };
+};
+
+const intents = [
+  {
+    keywords: ['hi', 'hello', 'hey'],
+    handler: () => ({
+      reply: templates.greeting(),
+      options: ['Products', 'Events', 'Support'],
+    })
+  },
+  {
+    keywords: ['options', 'help', 'menu'],
+    handler: () => ({
+      reply: templates.helpMenu(),
+      options: ['Products', 'Events', 'Support', 'Newsletter', 'Contact Options'],
+    })
+  },
+  {
+    keywords: ['products', 'product', 'buy', 'shop'],
+    handler: getProductCategories,
+  },
+  {
+    keywords: ['events', 'event', 'workshop', 'webinar'],
+    handler: getUpcomingEvents,
+  },
+  {
+    keywords: ['support', 'contact', 'help me', 'talk to'],
+    handler: () => ({
+      reply: templates.support(),
+      options: [],
+    })
+  },
+  {
+    keywords: ['newsletter', 'subscribe', 'updates', 'email'],
+    handler: () => ({
+      reply: templates.newsletter(),
+      options: [],
+    })
+  },
+  {
+    keywords: ['thank', 'thanks'],
+    handler: () => ({
+      reply: templates.thankYou(),
+      options: ['Products', 'Events', 'Support'],
+    })
+  },
+  {
+    keywords: ['bye', 'goodbye', 'see you'],
+    handler: () => ({
+      reply: templates.goodbye(),
+      options: [],
+    })
+  },
+];
+
+exports.handleMessage = async (req, res) => {
   const { message } = req.body;
-  let reply = '';
-  let options = [];
 
   if (!message) {
-    reply = 'Please enter a message.';
-  } else {
-    const msg = message.toLowerCase();
-    if (msg.includes('options') || msg.includes('help')) {
-      reply = 'Please choose one of the following options:';
-      options = ['Products', 'Events', 'Support', 'Newsletter'];
-    } else if (msg.includes('products')) {
-      reply = 'We offer a wide range of electronic products...';
-    } else if (msg.includes('events')) {
-      reply = 'You can register for events using our event form...';
-    } else if (msg.includes('support')) {
-      reply = 'Please describe the issue you’re facing. We’re here to help.';
-    } else if (msg.includes('newsletter')) {
-      reply = 'Would you like to subscribe to our newsletter?';
-    } else {
-      reply = "I'm sorry, I didn't quite get that. Try typing 'help' to see options.";
-    }
+    return res.json({ reply: 'Please enter a message.', options: [] });
   }
 
-  res.json({ reply, options });
+  // Basic sanitization
+  const sanitizedMessage = message.trim().toLowerCase();
+  if (!sanitizedMessage) {
+    return res.json({ reply: 'Please enter a message.', options: [] });
+  }
+
+  try {
+    const matchedIntent = intents.find(intent =>
+      intent.keywords.some(keyword => sanitizedMessage.includes(keyword))
+    );
+
+    let response;
+    if (matchedIntent) {
+      response = await matchedIntent.handler();
+    } else {
+      // Default fallback response
+      response = {
+        reply: templates.fallback(),
+        options: ['Products', 'Events', 'Support', 'Newsletter'],
+      };
+    }
+
+    res.json(response);
+  } catch (error) {
+    console.error('Chatbot controller error:', error);
+    res.json({ reply: templates.error(), options: [] });
+  }
 };

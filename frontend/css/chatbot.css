@@ -1,11 +1,12 @@
+/* Base Chatbot Window Styles */
 #chatbot-window {
   position: fixed;
   bottom: 110px;
   right: 50px;
-  width: 400px;
-  height: 420px; /* Increased window height for more content */
+  width: 450px;
+  height: 520px;
   max-width: 120vw;
-  max-height: 100vh; /* Prevents overflow on small screens */
+  max-height: 100vh;
   background: #f4f4f4;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.18);
@@ -15,42 +16,54 @@
   overflow: hidden;
   font-family: inherit;
 }
+
 #chatbot-window.open {
   display: flex;
 }
+
 .chatbot-header {
-  background: #f33434;
+  background: linear-gradient(135deg, #f33434 0%, #d92d2d 100%);
   color: #fff;
   padding: 12px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 1.1rem;
+  box-shadow: 0 2px 8px rgba(243, 52, 52, 0.2);
 }
+
 #chatbot-close {
   background: none;
   border: none;
   color: #fff;
   font-size: 1.5rem;
   cursor: pointer;
+  transition: transform 0.2s;
 }
+
+#chatbot-close:hover {
+  transform: scale(1.1);
+}
+
 .chatbot-messages {
   background: #fff;
   flex: 1;
-  padding: 18px 14px; /* More padding for better readability */
+  padding: 18px 14px;
   overflow-y: auto;
-  min-height: 180px;  /* Increased min-height */
-  max-height: 370px;  /* Increased max-height */
-  font-size: 1.08rem; /* Slightly larger font */
+  min-height: 180px;
+  max-height: 370px;
+  font-size: 1.08rem;
   border-bottom: 1px solid #f2f2f2;
   border-radius: 0 0 8px 8px;
 }
+
 .chatbot-input-area {
   display: flex;
   border-top: 1px solid #eee;
   background: #fafbfc;
-  padding: 10px 10px 8px 10px; /* More padding for comfort */
+  padding: 10px 10px 8px 10px;
 }
+
 .chatbot-input-area input[type="text"] {
   flex: 1;
   border: none;
@@ -63,10 +76,12 @@
   box-shadow: 0 1px 4px rgba(99,99,99,0.07);
   transition: box-shadow 0.18s;
 }
+
 .chatbot-input-area input[type="text"]:focus {
   box-shadow: 0 2px 8px rgba(243,52,52,0.13);
   border: 1px solid #f33434;
 }
+
 .chatbot-input-area button {
   border: none;
   color: #ff0000;
@@ -77,68 +92,53 @@
   cursor: pointer;
   margin: 0;
 }
-/* Chatbot Contact Options Styles */
-.contact-options {
+
+/* Quick Buttons */
+.chatbot-quick-buttons {
   display: flex;
-  flex-direction: column;
-  gap: 4px; /* further reduced gap */
-  margin: 2px 0;
+  flex-wrap: nowrap;
+  gap: 8px;
+  padding: 8px;
+  justify-content: center;
+  background: #fafbfc;
 }
-.contact-card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(99,99,99,0.06);
-  padding: 6px 4px; /* further reduced padding */
-  display: flex;
-  flex-direction: column;
-  gap: 3px; /* further reduced gap */
-  border: 1px solid #ececec;
-}
-.contact-title {
-  font-weight: 600;
-  font-size: 1rem; /* smaller */
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: #f33434;
-}
-.contact-status {
-  margin-left: auto;
-  font-size: 0.95rem;
-  padding: 0 5px;
-  border-radius: 7px;
-  background: #ffeaea;
-  color: #f33434;
-  border: 1px solid #fbbcbc;
-}
-.contact-desc {
-  font-size: 0.87rem;
-  color: #555;
-  line-height: 1.2;
-}
-.contact-btn {
-  background: #fff;
-  color: #f33434;
-  border: 1px solid #f33434;
-  border-radius: 5px;
-  padding: 2px 8px; /* smaller */
-  font-weight: 600;
-  font-size: 1rem;
+
+.quick-btn {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 6px 12px;
   cursor: pointer;
-  margin-top: 1px;
-  transition: 0.2s, color 0.2s;
+  font-size: 16px;
+  transition: background-color 0.2s, transform 0.1s;
 }
-.contact-btn:hover {
-  background: #f33434;
-  color: #fff;
+
+.quick-btn:hover {
+  background-color: #d92d2d;
+  transform: translateY(-1px);
 }
-.contact-link {
-  color: #f33434;
-  font-size: 1rem;
-  font-weight: 600;
-  text-decoration: underline;
-  margin-top: 1px;
+
+/* Message Bubbles */
+.bot-msg {
+  display: block;
+  width: fit-content;
+  margin-right: auto;
+  margin-left: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #333;
+  background: #e9e9eb;
+  padding: 12px 16px;
+  border-radius: 18px 18px 18px 4px;
+  font-weight: 400;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(99, 99, 99, 0.07);
+  max-width: 90%;
+  word-break: break-word;
+  line-height: 1.5;
 }
+
 .user-msg {
   display: block;
   width: fit-content;
@@ -152,30 +152,362 @@
   border-radius: 18px 18px 4px 18px;
   font-weight: 500;
   font-size: 1rem;
-  box-shadow: 0 2px 8px rgba(243,52,52,0.07);
+  box-shadow: 0 2px 8px rgba(243,52,52,0.15);
   max-width: 80%;
   word-break: break-word;
   text-align: right;
 }
 
-.chatbot-quick-buttons {
+.greeting-text, /* This is now the main container */
+.help-content,
+.products-content,
+.events-content,
+.support-content,
+.newsletter-content,
+.thanks-content,
+.goodbye-content,
+.fallback-content,
+.error-content {
+  flex: 1;
+} 
+
+.greeting-text strong,
+.help-content strong,
+.products-content strong,
+.events-content strong,
+.support-content strong,
+.newsletter-content strong,
+.thanks-content strong,
+.goodbye-content strong,
+.fallback-content strong,
+.error-content strong {
+  color: #d92d2d;
+  font-size: 1.05rem;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.greeting-text p,
+.help-content p,
+.products-content p,
+.events-content p,
+.support-content p,
+.newsletter-content p,
+.thanks-content p,
+.goodbye-content p,
+.fallback-content p,
+.error-content p {
+  margin: 6px 0;
+  color: #555;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.greeting-question {
+  color: #f33434 !important;
+  font-weight: 600 !important;
+  margin-top: 10px !important;
+}
+
+/* Help Features Grid */
+.help-features {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.help-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 4px 0;
+}
+
+.help-prompt {
+  margin-top: 10px !important;
+  font-style: italic;
+  color: #666 !important;
+}
+
+/* Lists */
+.bot-msg .bot-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bot-msg .bot-list-item {
+  display: flex;
+  align-items: flex-start;
+  color: #444;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.event-item {
+  padding: 6px 0;
+}
+
+.event-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.event-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.event-date {
+  font-size: 0.85rem;
+  color: #d92d2d;
+  font-weight: 500;
+}
+
+/* CTA Boxes */
+.cta-box {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+  border-left: 3px solid #f33434;
+  padding: 10px 12px;
+  margin-top: 10px;
+  border-radius: 6px;
+}
+
+.cta-box p {
+  margin: 0 !important;
+  color: #333 !important;
+  font-weight: 500 !important;
+}
+
+.info-box {
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f2ff 100%);
+  border-left: 3px solid #4a90e2;
+}
+
+.highlight-box {
+  background: linear-gradient(135deg, #fffbf0 0%, #fff3e0 100%);
+  border-left: 3px solid #ff9800;
+}
+
+/* Links */
+.bot-msg a,
+.bot-msg .inline-link {
+  color: #f33434;
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.bot-msg a:hover,
+.bot-msg .inline-link:hover {
+  color: #d92d2d;
+}
+
+/* Suggestion Tags */
+.suggestion-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 8px;
-  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
 }
 
-.quick-btn {
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  border-radius: 15px;
-  padding: 6px 12px;
+.suggestion-tag {
+  background: #fff;
+  color: #f33434;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid #f33434;
   cursor: pointer;
-  font-size: 16px;
+  transition: all 0.2s;
 }
 
-.quick-btn:hover {
-  background-color: #a91b1b;
+.suggestion-tag:hover {
+  background: #f33434;
+  color: #fff;
+}
+
+/* Goodbye Tag */
+.goodbye-tag {
+  margin-top: 8px !important;
+  font-style: italic;
+  color: #888 !important;
+  font-size: 0.88rem !important;
+}
+
+/* Events and Newsletter Styles */
+.events-container,
+.newsletter-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 5px;
+}
+
+.event-item {
+  background-color: #f9f9f9;
+  border-left: 3px solid #f33434;
+  padding: 3px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.event-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.event-date {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.newsletter-description {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.newsletter-link {
+  color: #f33434;
+  text-decoration: underline;
+}
+
+
+/* Contact Options Styles */
+.bot-msg .contact-options {
+  background: transparent;
+  padding: 8px 0 0 0;
+  box-shadow: none;
+  border: none;
+}
+
+.contact-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.contact-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(99,99,99,0.08);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid #ececec;
+  transition: all 0.2s;
+}
+
+.contact-card:hover {
+  box-shadow: 0 4px 12px rgba(243, 52, 52, 0.12);
+  border-color: #f33434;
+}
+
+.contact-title {
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  color: #f33434;
+}
+
+.contact-status {
+  margin-left: auto;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+  font-weight: 600;
+}
+
+.contact-status.online {
+  background: #ffeaea;
+  color: #f33434;
+  border: 1px solid #fbbcbc;
+}
+
+.contact-desc {
+  font-size: 0.87rem;
+  color: #666;
+  line-height: 1.3;
+}
+
+.contact-btn {
+  background: #fff;
+  color: #f33434;
+  border: 1px solid #f33434;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: all 0.2s;
+}
+
+.contact-btn:hover {
+  background: #f33434;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(243, 52, 52, 0.2);
+}
+
+.contact-link {
+  color: #f33434;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 2px;
+  display: inline-block;
+  transition: color 0.2s;
+}
+
+.contact-link:hover {
+  color: #d92d2d;
+  text-decoration: underline;
+}
+
+/* Benefits List */
+.benefits-list {
+  background: rgba(255, 255, 255, 0.5);
+  padding: 10px;
+  border-radius: 6px;
+  margin: 8px 0 !important;
+}
+
+/* Products/Events Intro Text */
+.products-intro,
+.events-intro,
+.support-intro {
+  font-weight: 500 !important;
+  color: #444 !important;
+}
+
+/* Scrollbar Styling */
+.chatbot-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chatbot-messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.chatbot-messages::-webkit-scrollbar-thumb {
+  background: #f33434;
+  border-radius: 3px;
+}
+
+.chatbot-messages::-webkit-scrollbar-thumb:hover {
+  background: #d92d2d;
 }

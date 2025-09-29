@@ -15,12 +15,11 @@
       </div>
       <div class="chatbot-messages"></div>
       <div class="chatbot-quick-buttons">
-          <button class="quick-btn" data-msg="Hi">Hello</button>
-          <button class="quick-btn" data-msg="Products">Products</button>
+          <button class="quick-btn" data-msg="Hi">Hi</button>
+          <button class="quick-btn" data-msg="Products">Categories</button>
           <button class="quick-btn" data-msg="Events">Events</button>
           <button class="quick-btn" data-msg="Support">Support</button>
           <button class="quick-btn" data-msg="Newsletter">Newsletter</button>
-          <button class="quick-btn" data-msg="contact-options">Contact Options</button>
       </div>
       <form class="chatbot-input-area">
           <input type="text" id="chatbot-input" placeholder="Enter your message..." autocomplete="on" />
@@ -59,8 +58,11 @@
 
   // Add bot message
   function addBotMessage(text) {
-      messages.innerHTML += `<div class='bot-msg'>${text}</div>`;
-      messages.scrollTop = messages.scrollHeight;
+    const botMsgDiv = document.createElement('div');
+    botMsgDiv.className = 'bot-msg';
+    botMsgDiv.innerHTML = text; // Use innerHTML to render links, lists, etc.
+    messages.appendChild(botMsgDiv);
+    messages.scrollTop = messages.scrollHeight;
   }
 
   // Add bot options
@@ -152,19 +154,8 @@
               return;
           }
           
-          messages.innerHTML += `<div class='user-msg'>${msg}</div>`;
-          try {
-              const res = await fetch('/api/chatbot/message', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ message: msg })
-              });
-              const data = await res.json();
-              messages.innerHTML += `<div class='bot-msg'>${data.reply}</div>`;
-          } catch (err) {
-              messages.innerHTML += `<div class='bot-msg'>Sorry, there was an error contacting the chatbot.</div>`;
-          }
-          messages.scrollTop = messages.scrollHeight;
+          addUserMessage(msg);
+          await sendMessageToBot(msg);
       }
   });
 

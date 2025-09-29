@@ -451,11 +451,18 @@ class CMS {
             </div>
             <div class="form-group">
                 <label class="form-label" for="category">Category *</label>
-                <input type="text" class="form-input" id="category" name="category" required>
+                <select class="form-input form-select" id="category" name="category" required>
+                    <option value="">Select a Category</option>
+                    <option value="RF and Microwave">RF and Microwave</option>
+                    <option value="Test & Measurement">Test & Measurement</option>
+                    <option value="Speciality Materials">Speciality Materials</option>
+                </select>
             </div>
             <div class="form-group">
                 <label class="form-label" for="subcategory">Subcategory</label>
-                <input type="text" class="form-input" id="subcategory" name="subcategory">
+                <select class="form-input form-select" id="subcategory" name="subcategory">
+                    <option value="">Select a category first</option>
+                </select>
             </div>
             ${imageInputHTML}
             <div class="form-group">
@@ -495,6 +502,48 @@ class CMS {
                 }
             });
         }
+
+        // --- Dependent Dropdown Logic ---
+        const categoryDropdown = document.getElementById('category');
+        const subcategoryDropdown = document.getElementById('subcategory');
+
+        const subcategoryMap = {
+            "RF and Microwave": [
+                "Switches", "Cable Assembly", "Waveguides", "Amplifiers", "Filters",
+                "Passive Components", "Antennas"
+            ],
+            "Test & Measurement": [
+                "Vibration Test Machine", "Environmental Chamber", "EMI EMC Chamber",
+                "Anechoic Chamber", "EMI EMC Scanner/Probe", "Reverberation Chamber"
+            ],
+            "Speciality Materials": [
+                "Rohacell Sheets", "Rohacell Shapes", "Composite Components",
+                "Acoustic Insulation", "Thermal Insulation", "Turnkey Solution"
+            ]
+        };
+
+        categoryDropdown.addEventListener('change', (e) => {
+            const selectedCategory = e.target.value;
+            const subcategories = subcategoryMap[selectedCategory] || [];
+
+            // Clear current subcategory options
+            subcategoryDropdown.innerHTML = '';
+
+            if (subcategories.length > 0) {
+                // Add a default option
+                const defaultOption = new Option('Select a Subcategory', '');
+                subcategoryDropdown.add(defaultOption);
+
+                // Populate with new options
+                subcategories.forEach(sub => {
+                    const option = new Option(sub, sub);
+                    subcategoryDropdown.add(option);
+                });
+            } else {
+                // If no subcategories, show a relevant message
+                subcategoryDropdown.innerHTML = '<option value="">No subcategories available</option>';
+            }
+        });
     }
 
     async fetchEventRegistrations() {

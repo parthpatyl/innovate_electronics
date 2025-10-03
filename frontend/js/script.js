@@ -5,7 +5,8 @@ class CMS {
         PRODUCTS: 'api/products',
         EVENTS: 'api/events',
         BLOGS: 'api/blogs',
-        NEWSLETTERS: 'api/newsletters'
+        NEWSLETTERS: 'api/newsletters',
+        TESTIMONIALS: 'api/testimonials'
     };
 
     constructor() {
@@ -143,7 +144,8 @@ class CMS {
             products: 'Products',
             events: 'Events',
             blogs: 'Blogs',
-            newsletters: 'Newsletters'
+            newsletters: 'Newsletters',
+            testimonials: 'Testimonials'
         };
 
         const descriptions = {
@@ -151,7 +153,8 @@ class CMS {
             products: 'Manage your product catalog',
             events: 'Organize and schedule events',
             blogs: 'Create and edit blog posts',
-            newsletters: 'Design newsletter issues'
+            newsletters: 'Design newsletter issues',
+            testimonials: 'Manage client testimonials'
         };
 
         document.getElementById('page-title').textContent = titles[section];
@@ -307,7 +310,7 @@ class CMS {
                     <label class="form-label" for="status">Status *</label>
                     <select class="form-input form-select" id="status" name="status" required>
                         <option value="upcoming">Upcoming</option>
-                        <option value="past">Past</option>
+                        <option value="archived">Archived</option>
                         <option value="cancelled">Cancelled</option>
                     </select>
                 </div>
@@ -377,6 +380,33 @@ class CMS {
                 <div class="form-group">
                     <label class="form-label">Audience</label>
                     <input type="text" class="form-input" value="All subscribers" disabled>
+                </div>
+            `;
+        } else if (contentType === 'testimonial') {
+            form.innerHTML = `
+                <div class="form-group">
+                    <label class="form-label" for="name">Client Name *</label>
+                    <input type="text" class="form-input" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="title">Client Title/Designation</label>
+                    <input type="text" class="form-input" id="title" name="title" placeholder="e.g., Senior Technology Lead">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="text">Testimonial Text *</label>
+                    <textarea class="form-input form-textarea" id="text" name="text" rows="5" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="rating">Rating (1-5) *</label>
+                    <input type="number" class="form-input" id="rating" name="rating" min="1" max="5" required>
+                </div>
+                ${imageInputHTML}
+                <div class="form-group">
+                    <label class="form-label" for="status">Status *</label>
+                    <select class="form-input form-select" id="status" name="status" required>
+                        <option value="published">Published</option>
+                        <option value="draft">Draft</option>
+                    </select>
                 </div>
             `;
         } else {
@@ -595,6 +625,13 @@ class CMS {
                 const data = await response.json();
                 return data.success ? data.data : [];
             }
+            if (contentType === 'testimonial') {
+                const endpoint = getApiUrl('api/testimonials?status=all');
+                const response = await fetch(endpoint);
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                const data = await response.json();
+                return data.success ? data.data : [];
+            }
             // For other content types, return empty array for now
             return [];
         } catch (error) {
@@ -608,6 +645,7 @@ class CMS {
         document.getElementById('events-count').textContent = stats.events || 0;
         document.getElementById('blogs-count').textContent = stats.blogs || 0;
         document.getElementById('newsletters-count').textContent = stats.newsletters || 0;
+        document.getElementById('testimonials-count').textContent = stats.testimonials || 0;
     }
 
     showCreateModal() {
@@ -739,7 +777,8 @@ class CMS {
                 'product': () => this.saveProduct(data),
                 'event': () => this.saveEvent(data),
                 'blog': () => this.saveBlog(data),
-                'newsletter': () => this.saveNewsletter(data)
+                'newsletter': () => this.saveNewsletter(data),
+                'testimonial': () => this.saveTestimonial(data)
             };
 
             const handler = contentHandlers[this.currentContentType];
@@ -859,6 +898,27 @@ class CMS {
         return result;
     }
 
+    async saveTestimonial(formData) {
+        const testimonialData = { ...formData };
+        // Attach uploaded image (base64) if present
+        if (formData.uploadedImage) {
+            testimonialData.image = formData.uploadedImage;
+        }
+        delete testimonialData.uploadedImage;
+
+        const endpoint = this.isEditing()
+            ? `${getApiUrl(CMS.API_ENDPOINTS.TESTIMONIALS)}/${this.editingItem._id}`
+            : getApiUrl(CMS.API_ENDPOINTS.TESTIMONIALS);
+
+        const response = await fetch(endpoint, {
+            method: this.isEditing() ? 'PUT' : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(testimonialData)
+        });
+
+        return this.handleApiResponse(response);
+    }
+
     prepareProductData(formData) {
         const productData = {
             name: formData.name,
@@ -911,6 +971,10 @@ class CMS {
                     });
                 } else if (this.currentSection === 'newsletters') {
                     response = await fetch(`${getApiUrl('api/newsletters')}/${this.itemToDelete}`, {
+                        method: 'DELETE'
+                    });
+                } else if (this.currentSection === 'testimonials') {
+                    response = await fetch(`${getApiUrl('api/testimonials')}/${this.itemToDelete}`, {
                         method: 'DELETE'
                     });
                 } else {
@@ -984,6 +1048,8 @@ class CMS {
         } else if (this.currentContentType === 'blog' || this.currentContentType === 'newsletter') {
             requiredFields.push(this.currentContentType === 'blog' ? 'title' : 'subject', 'htmlBody');
             if (this.currentContentType === 'blog') requiredFields.push('date', 'body', 'author');
+        } else if (this.currentContentType === 'testimonial') {
+            requiredFields.push('name', 'text', 'rating');
         }
         
         // Check required fields
@@ -1040,6 +1106,9 @@ class CMS {
             } else if (this.currentSection === 'events') {
                 type = 'event';
                 endpoint = `${getApiUrl('api/events')}/${id}`;
+            } else if (this.currentSection === 'testimonials') {
+                type = 'testimonial';
+                endpoint = `${getApiUrl('api/testimonials')}/${id}`;
             }
 
             if (!endpoint) return;
@@ -1090,6 +1159,14 @@ class CMS {
                 const locEl = document.getElementById('location'); if (locEl) locEl.value = this.editingItem.location || '';
                 document.getElementById('body').value = this.editingItem.body || '';
                 document.getElementById('status').value = this.editingItem.status || 'upcoming';
+            }
+            else if (type === 'testimonial') {
+                this.generateForm();
+                document.getElementById('name').value = this.editingItem.name || '';
+                document.getElementById('title').value = this.editingItem.title || '';
+                document.getElementById('text').value = this.editingItem.text || '';
+                document.getElementById('rating').value = this.editingItem.rating || 5;
+                document.getElementById('status').value = this.editingItem.status || 'published';
             }
 
             this.showModal();

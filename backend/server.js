@@ -18,6 +18,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const newsletterRoutes = require('./routes/newsletterRoutes');
+const testimonialRoutes = require('./routes/testimonialRoutes');
 const statsRoutes = require('./routes/statsRoutes');
 
 const app = express();
@@ -50,6 +51,7 @@ app.use('/api', productRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/newsletters', newsletterRoutes);
+app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/stats', statsRoutes);
 
 // Serve static files from frontend (move below API routes)

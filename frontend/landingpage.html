@@ -201,45 +201,7 @@
     <section class="testimonials">
         <p class="testimonial-title">What Our Clients Say</p>
         <div class="testimonials-grid">
-            <!-- First Row -->
-            <div class="testimonial">
-                <div class="profile">
-                    <img src="assets/id.png" alt="Client" class="profile-img">
-                    <div class="profile-info">
-                        <h4>Dr. Satish Prabhakar</h4>
-                        <p>Senior Technology Lead</p>
-                    </div>
-                </div>
-                <p class="testimonial-text">"The RF components from Innovate Electronics have consistently outperformed
-                    our expectations in extreme conditions..."</p>
-                <div class="rating">★★★★★</div>
-            </div>
-
-            <div class="testimonial">
-                <div class="profile">
-                    <img src="assets/id.png" alt="Client" class="profile-img">
-                    <div class="profile-info">
-                        <h4>Dr. Satish Prabhakar</h4>
-                        <p>Senior Technology Lead</p>
-                    </div>
-                </div>
-                <p class="testimonial-text">"The RF components from Innovate Electronics have consistently outperformed
-                    our expectations in extreme conditions..."</p>
-                <div class="rating">★★★★★</div>
-            </div>
-
-            <div class="testimonial">
-                <div class="profile">
-                    <img src="assets/id.png" alt="Client" class="profile-img">
-                    <div class="profile-info">
-                        <h4>Dr. Satish Prabhakar</h4>
-                        <p>Senior Technology Lead</p>
-                    </div>
-                </div>
-                <p class="testimonial-text">"The RF components from Innovate Electronics have consistently outperformed
-                    our expectations in extreme conditions..."</p>
-                <div class="rating">★★★★★</div>
-            </div>
+            <!-- Testimonials will be loaded here dynamically -->
         </div>
     </section>
 
@@ -436,6 +398,40 @@ fetch('/api/events')
             leftBtnSelector: '.carousel-arrow.left.events-arrow',
             rightBtnSelector: '.carousel-arrow.right.events-arrow'
         });
+    });
+</script>
+
+<script>
+// Fetch testimonials and render them
+fetch('/api/testimonials')
+    .then(res => res.json())
+    .then(result => {
+        if (!result.success) {
+            console.error('Failed to load testimonials');
+            return;
+        }
+        const testimonials = (result.data || []).slice(0, 3); // Show up to 3
+        const grid = document.querySelector('.testimonials-grid');
+        if (!grid) return;
+        
+        if (testimonials.length === 0) {
+            grid.innerHTML = '<p style="text-align: center; width: 100%; color: #666;">No testimonials available yet.</p>';
+            return;
+        }
+
+        grid.innerHTML = testimonials.map(item => `
+            <div class="testimonial">
+                <div class="profile">
+                    <img src="${item.image || 'assets/id.png'}" alt="Client" class="profile-img" onerror="this.src='assets/id.png'">
+                    <div class="profile-info">
+                        <h4>${item.name}</h4>
+                        <p>${item.title || ''}</p>
+                    </div>
+                </div>
+                <p class="testimonial-text">"${item.text}"</p>
+                <div class="rating">${'★'.repeat(item.rating)}${'☆'.repeat(5 - item.rating)}</div>
+            </div>
+        `).join('');
     });
 </script>
 

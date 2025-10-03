@@ -171,7 +171,7 @@ router.put('/:id', async (req, res) => {
     const { title, date, time, location, body, featuredImage, status, imageData } = req.body;
     const event = await Event.findByIdAndUpdate(
       req.params.id,
-      { title, date, time, location, body, featuredImage: featuredImage || imageData || '', status, imageData: imageData || '' },
+      { title, date, time, location, body, featuredImage: featuredImage || imageData || '', status: status || 'upcoming', imageData: imageData || '' },
       { new: true, runValidators: true }
     );
     if (!event) {

@@ -67,6 +67,11 @@
                 <span>Newsletters</span>
               </a>
             </li>
+            <li>
+              <a href="#" class="nav-link" data-section="testimonials">
+                <span>Testimonials</span>
+              </a>
+            </li>
           </ul>
         </nav>
       </aside>
@@ -102,6 +107,10 @@
             <div class="stat-card">
               <div class="stat-number" id="newsletters-count">0</div>
               <div class="stat-label">Newsletters</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="testimonials-count">0</div>
+              <div class="stat-label">Testimonials</div>
             </div>
           </div>
         </section>
@@ -195,6 +204,26 @@
           
           <div class="content-list" id="newsletters-list">
             <div class="loading">Loading newsletters...</div>
+          </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="content-section">
+          <div class="content-actions">
+            <div class="search-box">
+              <input type="text" placeholder="Search testimonials..." id="testimonials-search">
+            </div>
+            <div class="filter-dropdown">
+              <select id="testimonials-status-filter">
+                <option value="">All Status</option>
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="content-list" id="testimonials-list">
+            <div class="loading">Loading testimonials...</div>
           </div>
         </section>
       </div>

@@ -30,7 +30,7 @@ const eventSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['upcoming', 'past', 'cancelled'],
+    enum: ['upcoming', 'archived', 'cancelled'],
     default: 'upcoming',
     required: true
   },

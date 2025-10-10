@@ -79,7 +79,7 @@
             loadingSpinner.style.display = 'block';
 
             // Fetch all categories from API
-            fetch(getApiUrl(API_CONFIG.ENDPOINTS.CATEGORIES))
+            fetch(getApiUrl(API_CONFIG.ENDPOINTS.UNIFIED_PRODUCTS))
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);

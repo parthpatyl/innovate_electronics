@@ -1,13 +1,5 @@
 // CMS Application JavaScript
 class CMS {
-    // API endpoint constants
-    static API_ENDPOINTS = {
-        PRODUCTS: 'api/products',
-        EVENTS: 'api/events',
-        BLOGS: 'api/blogs',
-        NEWSLETTERS: 'api/newsletters',
-        TESTIMONIALS: 'api/testimonials'
-    };
 
     constructor() {
         this.currentSection = 'dashboard';
@@ -799,12 +791,12 @@ class CMS {
 
     async saveProduct(formData) {
         const productData = this.prepareProductData(formData);
-        const endpoint = this.isEditing() 
-            ? `${getApiUrl(CMS.API_ENDPOINTS.PRODUCTS)}/${encodeURIComponent(this.editingItem.name)}`
-            : getApiUrl(CMS.API_ENDPOINTS.PRODUCTS);
+        const endpoint = this.isEditing()
+            ? `${getApiUrl(API_CONFIG.ENDPOINTS.PRODUCTS)}/${encodeURIComponent(this.editingItem._id)}`
+            : getApiUrl(API_CONFIG.ENDPOINTS.PRODUCTS);
 
         const response = await fetch(endpoint, {
-            method: this.isEditing() ? 'PUT' : 'POST',
+            method: this.isEditing() ? 'PUT' : 'POST', // Backend should handle unified product logic
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(productData)
         });
@@ -822,8 +814,8 @@ class CMS {
             eventData.imageData = formData.uploadedImage;
         }
         const endpoint = this.isEditing()
-            ? `${getApiUrl(CMS.API_ENDPOINTS.EVENTS)}/${this.editingItem._id}`
-            : getApiUrl(CMS.API_ENDPOINTS.EVENTS);
+            ? `${getApiUrl(API_CONFIG.ENDPOINTS.EVENTS)}/${this.editingItem._id}`
+            : getApiUrl(API_CONFIG.ENDPOINTS.EVENTS);
 
         const response = await fetch(endpoint, {
             method: this.isEditing() ? 'PUT' : 'POST',
@@ -848,8 +840,8 @@ class CMS {
             blogData.imageData = formData.uploadedImage;
         }
         const endpoint = this.isEditing()
-            ? `${getApiUrl(CMS.API_ENDPOINTS.BLOGS)}/${this.editingItem._id}`
-            : getApiUrl(CMS.API_ENDPOINTS.BLOGS);
+            ? `${getApiUrl(API_CONFIG.ENDPOINTS.BLOGS)}/${this.editingItem._id}`
+            : getApiUrl(API_CONFIG.ENDPOINTS.BLOGS);
 
         const response = await fetch(endpoint, {
             method: this.isEditing() ? 'PUT' : 'POST',
@@ -873,8 +865,8 @@ class CMS {
             newsletterData.imageData = formData.uploadedImage; // This key is processed by the backend
         }
         const endpoint = this.isEditing()
-            ? `${getApiUrl(CMS.API_ENDPOINTS.NEWSLETTERS)}/${this.editingItem._id}`
-            : getApiUrl(CMS.API_ENDPOINTS.NEWSLETTERS);
+            ? `${getApiUrl(API_CONFIG.ENDPOINTS.NEWSLETTERS)}/${this.editingItem._id}`
+            : getApiUrl(API_CONFIG.ENDPOINTS.NEWSLETTERS);
 
         const response = await fetch(endpoint, {
             method: this.isEditing() ? 'PUT' : 'POST',
@@ -907,8 +899,8 @@ class CMS {
         delete testimonialData.uploadedImage;
 
         const endpoint = this.isEditing()
-            ? `${getApiUrl(CMS.API_ENDPOINTS.TESTIMONIALS)}/${this.editingItem._id}`
-            : getApiUrl(CMS.API_ENDPOINTS.TESTIMONIALS);
+            ? `${getApiUrl(API_CONFIG.ENDPOINTS.TESTIMONIALS)}/${this.editingItem._id}`
+            : getApiUrl(API_CONFIG.ENDPOINTS.TESTIMONIALS);
 
         const response = await fetch(endpoint, {
             method: this.isEditing() ? 'PUT' : 'POST',
@@ -922,9 +914,12 @@ class CMS {
     prepareProductData(formData) {
         const productData = {
             name: formData.name,
+            // For unified products, we need to know which category to add/update it in.
             category: formData.category,
             // Use uploaded image if present, else use the current image (for edit)
-            image: formData.uploadedImage || this.currentProductImage || ''
+            image: formData.uploadedImage || this.currentProductImage || '',
+            // Pass the original product ID if editing, so backend can find it in the nested array
+            _id: this.isEditing() ? this.editingItem._id : undefined
         };
 
         // Handle subcategory

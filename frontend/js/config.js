@@ -5,19 +5,19 @@ const API_CONFIG = {
     
     // API endpoints
     ENDPOINTS: {
-        // Legacy endpoints
-        CATEGORIES: '/api/categories',
-        PRODUCTS: '/api/products',
-        PRODUCTS_BY_CATEGORY: '/api/products/category',
-        SEARCH: '/api/search',
-        STATS: '/api/stats',
-        
-        // New dynamic product endpoints from category-demo.html
-        ALL_CATEGORIES: '/api/products/categories',
-        ALL_PRODUCTS: '/api/products/all',
-        PRODUCTS_BY_CATEGORY_DYNAMIC: '/api/products/category',
-        SUBCATEGORIES: '/api/products/category',
-        SPECIFIC_PRODUCT: '/api/products'
+        // CMS Endpoints
+        PRODUCTS: 'api/products', // Managed via CMS
+        CATEGORIES: 'api/unifiedproducts', // Alias for public-facing category pages
+        PRODUCTS_BY_SUBCATEGORY: 'api/products/category', // Base path for /:category/subcategory/:subcategory
+        UNIFIED_PRODUCTS: 'api/unifiedproducts', // For public-facing product pages
+        EVENTS: 'api/events',
+        BLOGS: 'api/blogs',
+        NEWSLETTERS: 'api/newsletters',
+        NEWSLETTER_SUBSCRIBE: 'api/newsletter/subscribe',
+        TESTIMONIALS: 'api/testimonials',
+        STATS: 'api/stats',
+        CHATBOT: 'api/chatbot/message',
+        CONTACT: 'api/contact'
     }
 };
 

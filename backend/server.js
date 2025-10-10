@@ -13,13 +13,12 @@ newsletterController = require('./controllers/newsletterController');
 require('./models/Admin');
 
 // Import CMS routes
-const productRoutes = require('./routes/productRoutes');
-const categoryRoutes = require('./routes/categoryRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const newsletterRoutes = require('./routes/newsletterRoutes');
 const testimonialRoutes = require('./routes/testimonialRoutes');
 const statsRoutes = require('./routes/statsRoutes');
+const unifiedProductRoutes = require('./routes/unifiedProductRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -45,9 +44,8 @@ app.post('/api/contact', (req, res) => {
   res.json({ message: 'Email sent (placeholder).' });
 });
 
-// Product and Category Routes
-app.use('/api/categories', categoryRoutes);
-app.use('/api', productRoutes);
+// API Routes
+app.use('/api/unifiedproducts', unifiedProductRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/newsletters', newsletterRoutes);

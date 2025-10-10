@@ -94,44 +94,24 @@ function displayProducts(products) {
 }
 
 // Function to handle product view
-function viewProduct(productName, productIndex) {
+function viewProduct(productName) {
   // Find the selected product from allProducts by name
   const selectedProduct = allProducts.find(product => product.name === productName);
   
   if (selectedProduct) {
-    // Get the category title from the current category data
-    const categoryTitle = getCategoryTitle(currentCategory);
-    
+    // Get the category title from the currently selected category's data
+    // The 'data' object is available in the scope of the event handler that calls this.
+    const categoryTitle = window.currentApiData[currentCategory].title;
+
     // Redirect to subcategory.html with product parameters
     const params = new URLSearchParams({
       category: categoryTitle, // Main category (e.g., "RF and Microwave")
-      productName: selectedProduct.name, // Subcategory (e.g., "Switches")
-      productIndex: productIndex
+      productName: selectedProduct.name // Subcategory (e.g., "Switches")
     });
     window.location.href = `subcategory.html?${params.toString()}`;
   } else {
     console.error('Product not found:', productName);
   }
-}
-
-// Helper function to get category title from category key
-function getCategoryTitle(categoryKey) {
-  // This function should return the actual category title based on the key
-  // For now, we'll use a mapping or try to get it from the current data
-  const categoryMappings = {
-    'switches': 'Switches',
-    'amplifiers': 'Amplifiers',
-    'filters': 'Filters',
-    'oscillators': 'Oscillators',
-    'mixers': 'Mixers',
-    'detectors': 'Detectors',
-    'attenuators': 'Attenuators',
-    'couplers': 'Couplers',
-    'isolators': 'Isolators',
-    'circulators': 'Circulators'
-  };
-  
-  return categoryMappings[categoryKey] || categoryKey;
 }
 
 // Search functionality
@@ -180,6 +160,7 @@ function performSearch(searchTerm) {
 }
 
 // Initialize the application
+let currentApiData = {}; // Make API data globally accessible for viewProduct
 function initializeApp() {
   // Show loading state
   if (productsGrid) {
@@ -202,22 +183,12 @@ function initializeApp() {
       console.log('API Data received:', apiResponse);
       
       // Handle the API response structure
-      const apiData = apiResponse.data || apiResponse;
-      
-      // Convert the object into the format we need
-      const formattedData = {};
-      Object.keys(apiData).forEach((key) => {
-        formattedData[key] = {
-          title: apiData[key].title,
-          headerImage: apiData[key].headerImage,
-          items: apiData[key].items || []
-        };
-      });
+      window.currentApiData = apiResponse.data || {};
 
-      renderTabs(formattedData);
-      if (Object.keys(formattedData).length > 0) {
-        renderProducts(Object.keys(formattedData)[0], formattedData);
-        dispatchCategoryChanged(formattedData[Object.keys(formattedData)[0]]);
+      renderTabs(window.currentApiData);
+      if (Object.keys(window.currentApiData).length > 0) {
+        renderProducts(Object.keys(window.currentApiData)[0], window.currentApiData);
+        dispatchCategoryChanged(window.currentApiData[Object.keys(window.currentApiData)[0]]);
       }
       setupSearch();
     })

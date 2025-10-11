@@ -118,8 +118,10 @@
         document.getElementById('category-description').textContent = defaultDescription;
         document.getElementById('intro-text').textContent = defaultDescription;
 
-        // Construct the new, more efficient endpoint URL
-        const endpoint = `${getApiUrl(API_CONFIG.ENDPOINTS.PRODUCTS_BY_SUBCATEGORY)}/${encodeURIComponent(category)}/subcategory/${encodeURIComponent(productName)}`;
+        // Construct the new unified products API endpoint URL
+        // Convert category to normalized key (e.g., "RF and Microwave" -> "rfandmicrowave")
+        const normalizedCategory = category.toLowerCase().replace(/ & /g, 'and').replace(/\s+/g, '');
+        const endpoint = `${getApiUrl(API_CONFIG.ENDPOINTS.UNIFIED_PRODUCTS)}/${encodeURIComponent(normalizedCategory)}/subcategory/${encodeURIComponent(productName)}`;
         document.getElementById('products-tbody').innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;">Loading products...</td></tr>`;
 
         try {

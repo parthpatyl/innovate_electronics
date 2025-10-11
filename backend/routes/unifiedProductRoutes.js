@@ -16,5 +16,19 @@ router.get('/', unifiedProductsController.getUnifiedProducts);
  */
 router.get('/:categoryKey', unifiedProductsController.getUnifiedProductByCategory);
 
+/**
+ * @route   GET /api/unifiedproducts/:categoryKey/subcategory/:subcategory
+ * @desc    Get products by subcategory within a specific category
+ * @access  Public
+ */
+router.get('/:categoryKey/subcategory/:subcategory', unifiedProductsController.getProductsBySubcategory);
+
+/**
+ * @route   GET /api/unifiedproducts/product/:productName
+ * @desc    Get a specific product by name across all categories
+ * @access  Public
+ */
+router.get('/product/:productName', unifiedProductsController.getProductByName);
+
 
 module.exports = router;

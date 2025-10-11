@@ -171,24 +171,19 @@
                     // Show loading state
                     document.getElementById('product-title').textContent = 'Loading...';
                     
-                    // Use the correct API endpoint for category/subcategory structure
-                    // The endpoint is: /api/products/category/:category/product/:subcategory
-                    if (!mappedCategory) {
-                        throw new Error('Category parameter is required');
+                    // Use the new unified products API endpoint
+                    // The endpoint is: /api/unifiedproducts/product/:productName
+                    if (!finalProductId) {
+                        throw new Error('Product name parameter is required');
                     }
                     
                     // Decode URL parameters to get the original values
-                    const decodedCategory = decodeURIComponent(mappedCategory);
-                    let decodedProductId = decodeURIComponent(finalProductId);
+                    let decodedProductName = decodeURIComponent(finalProductId);
                     
-                    // Use the original product ID format as expected by the API
-                    // No need to convert to lowercase or replace spaces with underscores
+                    console.log('Original Product Name:', finalProductId);
+                    console.log('Processed Product Name:', decodedProductName);
                     
-                    console.log('Category:', decodedCategory);
-                    console.log('Original Product ID:', finalProductId);
-                    console.log('Processed Product ID:', decodedProductId);
-                    
-                    const apiUrl = getApiUrl(`${API_CONFIG.ENDPOINTS.SPECIFIC_PRODUCT}/${encodeURIComponent(decodedProductId)}`);
+                    const apiUrl = getApiUrl(`${API_CONFIG.ENDPOINTS.UNIFIED_PRODUCTS}/product/${encodeURIComponent(decodedProductName)}`);
                     console.log('Fetching product from:', apiUrl);
                     
                     const response = await fetch(apiUrl);
@@ -220,9 +215,8 @@
                         <h3>Error Loading Product</h3>
                         <p>${error.message}</p>
                         <p>Original Category: ${category || 'Not provided'}</p>
-                        <p>Mapped Category: ${mappedCategory || 'Not provided'}</p>
-                        <p>Original Product ID: ${finalProductId || 'Not provided'}</p>
-                        <p>Processed Product ID: ${decodedProductId || 'Not provided'}</p>
+                        <p>Product Name: ${finalProductId || 'Not provided'}</p>
+                        <p>Processed Product Name: ${decodedProductName || 'Not provided'}</p>
                         <p>API URL: ${apiUrl || 'Not generated'}</p>
                     `;
                     document.querySelector('.main-container').prepend(errorDiv);
@@ -236,7 +230,9 @@
                 
                 // Update hero section
                 document.getElementById('product-title').textContent = product.name || 'Product Name';
-                document.getElementById('product-category').textContent = product.category || 'Product Category';
+                // Use the category and subcategory from the API response
+                const categoryText = product.category ? `${product.category}${product.subcategory ? ` - ${product.subcategory}` : ''}` : 'Product Category';
+                document.getElementById('product-category').textContent = categoryText;
                 
                 // Update main product image
                 const mainImage = document.getElementById('main-product-image');
@@ -252,8 +248,8 @@
                 if (product.overview) {
                     // Description
                     const descriptionBox = document.querySelector('.description-box');
-                    if (product.overview.description && product.overview.description.length > 0) {
-                        descriptionBox.innerHTML = product.overview.description.map(desc => `<p>${desc}</p>`).join('');
+                    if (product.overview.body && product.overview.body.length > 0) {
+                        descriptionBox.innerHTML = product.overview.body.map(desc => `<p>${desc}</p>`).join('');
                     } else {
                         descriptionBox.innerHTML = '<p>No description available.</p>';
                     }
@@ -295,7 +291,7 @@
                         specsHTML += '<div class="spec-section"><h3>Mechanical Specifications</h3><table class="specs-table">';
                         specsHTML += '<tr><th>Item</th><th>Description</th></tr>';
                         product.specifications.mechanical.forEach(spec => {
-                            specsHTML += `<tr><td>${spec.item}</td><td>${spec.description}</td></tr>`;
+                            specsHTML += `<tr><td>${spec.item}</td><td>${spec.body || 'N/A'}</td></tr>`;
                         });
                         specsHTML += '</table></div>';
                     }

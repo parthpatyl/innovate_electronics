@@ -30,5 +30,25 @@ router.get('/:categoryKey/subcategory/:subcategory', unifiedProductsController.g
  */
 router.get('/product/:productName', unifiedProductsController.getProductByName);
 
+/**
+ * @route   POST /api/unifiedproducts
+ * @desc    Create a new product within a category/subcategory
+ * @access  Private (CMS)
+ */
+router.post('/', unifiedProductsController.createProduct);
+
+/**
+ * @route   PUT /api/unifiedproducts/:id
+ * @desc    Update a product by its ID
+ * @access  Private (CMS)
+ */
+router.put('/:id', unifiedProductsController.updateProduct);
+
+/**
+ * @route   DELETE /api/unifiedproducts/:id
+ * @desc    Delete a product by its ID
+ * @access  Private (CMS)
+ */
+router.delete('/:id', unifiedProductsController.deleteProduct);
 
 module.exports = router;

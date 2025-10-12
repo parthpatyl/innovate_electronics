@@ -6,7 +6,7 @@ const API_CONFIG = {
     // API endpoints
     ENDPOINTS: {
         // CMS Endpoints
-        PRODUCTS: 'api/products', // Managed via CMS
+        PRODUCTS: 'api/unifiedproducts', // Managed via CMS
         CATEGORIES: 'api/unifiedproducts', // Alias for public-facing category pages
         PRODUCTS_BY_SUBCATEGORY: 'api/products/category', // Base path for /:category/subcategory/:subcategory
         UNIFIED_PRODUCTS: 'api/unifiedproducts', // For public-facing product pages

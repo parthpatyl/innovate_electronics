@@ -19,64 +19,50 @@ const UnifiedProductSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-  // The `items` array from Category.js is now represented by the `products` array below.
-  // The `subproducts` from Category.js `items` are now a `subcategory` field on each product.
-
-  // Array of products, replacing the separate Product collection
-  products: [{
-    // Fields from the old Product model
+  // This array represents the subcategories within the main category.
+  items: [{
     name: {
       type: String,
-      required: [true, 'Product name is required'],
+      required: [true, 'Subcategory name is required'],
       trim: true
     },
-    subcategory: { // This was implicitly the 'item.name' in the old Category model
-      type: String,
-      trim: true
-    },
-    image: {
-      type: String,
-      trim: true
-    },
-    tableSpecs: {
-      specifications: String,
-      performance: String,
-      outputLevel: String,
-      additionalFeatures: String
-    },
-    overview: {
-      body: [String],
-      features: [String],
-      applications: [String]
-    },
-    specifications: {
-      electrical: [{
-        parameter: String,
-        specification: String
-      }],
-      mechanical: [{
-        item: String,
-        body: String
-      }]
-    },
-    library: {
-      catalogue: [{ name: String, link: String }],
-      drawings: [{ name: String, link: String }],
-      testReports: [{ name: String, link: String }],
-      executionFiles: [{ name: String, link: String }]
-    }
+    // Array of products within this subcategory
+    products: [{
+      name: { type: String, required: true, trim: true },
+      image: { type: String, trim: true },
+      tableSpecs: {
+        specifications: String,
+        performance: String,
+        outputLevel: String,
+        additionalFeatures: String
+      },
+      overview: {
+        body: [String],
+        features: [String],
+        applications: [String]
+      },
+      specifications: {
+        electrical: [{ parameter: String, specification: String }],
+        mechanical: [{ item: String, body: String }]
+      },
+      library: {
+        catalogue: [{ name: String, link: String }],
+        drawings: [{ name: String, link: String }],
+        testReports: [{ name: String, link: String }],
+        executionFiles: [{ name: String, link: String }]
+      }
+    }]
   }]
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
   toObject: { virtuals: true }
 });
-
 // Index for efficient category title lookups
 UnifiedProductSchema.index({ title: 1 });
 
 // Index to support searching for products within a category
-UnifiedProductSchema.index({ "products.name": 'text', "products.subcategory": 'text' });
+UnifiedProductSchema.index({ "items.products.name": 'text', "items.name": 'text' });
 
 /**
  * Virtual: Returns the count of products in the category
@@ -84,6 +70,4 @@ UnifiedProductSchema.index({ "products.name": 'text', "products.subcategory": 't
 UnifiedProductSchema.virtual('productCount').get(function () {
   return this.products ? this.products.length : 0;
 });
-
-
 module.exports = mongoose.model('UnifiedProduct', UnifiedProductSchema);

@@ -586,14 +586,21 @@ class CMS {
     async fetchContent(contentType, filters = {}) {
         try {
             if (contentType === 'product') {
-                const queryParams = new URLSearchParams();
-
-                const endpoint = getApiUrl(`api/products`);
+                const endpoint = getApiUrl(API_CONFIG.ENDPOINTS.PRODUCTS);
                 
                 const response = await fetch(endpoint);
                 if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                 const data = await response.json();
-                return data.success ? data.data : [];
+                if (!data.success) return [];
+
+                // The unified products endpoint returns an object of categories.
+                // We need to flatten it into a single array of products for the CMS list view.
+                const allProducts = [];
+                for (const categoryKey in data.data) {
+                    const category = data.data[categoryKey];
+                    category.items.forEach(item => allProducts.push(...(item.products || [])));
+                }
+                return allProducts;
             }
             if (contentType === 'event') {
                 const endpoint = getApiUrl('api/events?status=all');
@@ -916,22 +923,17 @@ class CMS {
             name: formData.name,
             // For unified products, we need to know which category to add/update it in.
             category: formData.category,
+            subcategory: formData.subcategory,
             // Use uploaded image if present, else use the current image (for edit)
             image: formData.uploadedImage || this.currentProductImage || '',
             // Pass the original product ID if editing, so backend can find it in the nested array
-            _id: this.isEditing() ? this.editingItem._id : undefined
-        };
-
-        // Handle subcategory
-        if (formData.subcategory) {
-            productData.subcategory = formData.subcategory;
-        }
-
-        // Handle overview data
-        productData.overview = {
-            description: formData.description ? formData.description.split('\n').filter(line => line.trim()) : [],
-            features: formData.features ? formData.features.split('\n').filter(line => line.trim()) : [],
-            applications: formData.applications ? formData.applications.split('\n').filter(line => line.trim()) : []
+            _id: this.isEditing() ? this.editingItem._id : undefined,
+            // Structure the overview object correctly for the backend
+            overview: {
+                body: formData.description ? formData.description.split('\n').filter(line => line.trim()) : [],
+                features: formData.features ? formData.features.split('\n').filter(line => line.trim()) : [],
+                applications: formData.applications ? formData.applications.split('\n').filter(line => line.trim()) : []
+            }
         };
 
         return productData;

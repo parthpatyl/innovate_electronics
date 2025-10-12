@@ -1,4 +1,5 @@
 const UnifiedProduct = require('../models/UnifiedProduct');
+const mongoose = require('mongoose');
 
 /**
  * Fetches all unified product data.
@@ -164,9 +165,143 @@ const getProductByName = async (req, res) => {
   }
 };
 
+/**
+ * Creates a new product and adds it to the correct category and subcategory.
+ * @route POST /api/unifiedproducts
+ */
+const createProduct = async (req, res) => {
+  try {
+    const { name, category, subcategory, image, overview } = req.body;
+
+    if (!name || !category || !subcategory) {
+      return res.status(400).json({ success: false, message: 'Name, category, and subcategory are required.' });
+    }
+
+    const categoryDoc = await UnifiedProduct.findOne({ title: category });
+    if (!categoryDoc) {
+      return res.status(404).json({ success: false, message: `Category "${category}" not found.` });
+    }
+
+    const subcategoryItem = categoryDoc.items.find(item => item.name === subcategory);
+    if (!subcategoryItem) {
+      return res.status(404).json({ success: false, message: `Subcategory "${subcategory}" not found in "${category}".` });
+    }
+
+    // Check for duplicate product name within the same subcategory
+    const productExists = subcategoryItem.products.some(p => p.name.toLowerCase() === name.toLowerCase());
+    if (productExists) {
+      return res.status(409).json({ success: false, message: `Product with name "${name}" already exists in this subcategory.` });
+    }
+
+    const newProduct = {
+      _id: new mongoose.Types.ObjectId(),
+      name,
+      image: image || '',
+      overview: overview || {},
+      tableSpecs: {}, // Default empty object
+      specifications: {}, // Default empty object
+      library: {} // Default empty object
+    };
+
+    subcategoryItem.products.push(newProduct);
+    await categoryDoc.save();
+
+    res.status(201).json({ success: true, data: newProduct, message: 'Product created successfully.' });
+  } catch (error) {
+    console.error('Error creating product:', error);
+    res.status(500).json({ success: false, message: 'Server error while creating product.' });
+  }
+};
+
+/**
+ * Updates an existing product by its ID.
+ * @route PUT /api/unifiedproducts/:id
+ */
+const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params; // This is the product's _id
+    const { name, category, subcategory, image, overview } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid product ID.' });
+    }
+
+    const categoryDoc = await UnifiedProduct.findOne({ "items.products._id": id });
+    if (!categoryDoc) {
+      return res.status(404).json({ success: false, message: 'Product not found.' });
+    }
+
+    let product;
+    let subcategoryItem;
+
+    for (const item of categoryDoc.items) {
+      product = item.products.id(id);
+      if (product) {
+        subcategoryItem = item;
+        break;
+      }
+    }
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found.' });
+    }
+
+    // Update fields
+    product.name = name ?? product.name;
+    product.image = image ?? product.image;
+    product.overview = overview ?? product.overview; // The overview object is passed directly
+    // Note: This logic doesn't handle moving a product to a different category/subcategory.
+    // That would require a more complex delete-and-create operation.
+
+    await categoryDoc.save();
+
+    res.json({ success: true, data: product, message: 'Product updated successfully.' });
+  } catch (error) {
+    console.error(`Error updating product with ID "${req.params.id}":`, error);
+    res.status(500).json({ success: false, message: 'Server error while updating product.' });
+  }
+};
+
+/**
+ * Deletes a product by its ID.
+ * @route DELETE /api/unifiedproducts/:id
+ */
+const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid product ID.' });
+    }
+
+    const categoryDoc = await UnifiedProduct.findOne({ "items.products._id": id });
+    if (!categoryDoc) {
+      return res.status(404).json({ success: false, message: 'Product not found.' });
+    }
+
+    // Mongoose subdocument removal
+    categoryDoc.items.forEach(item => {
+        const product = item.products.id(id);
+        if (product) {
+            product.remove();
+        }
+    });
+
+    await categoryDoc.save();
+
+    res.json({ success: true, message: 'Product deleted successfully.' });
+  } catch (error) {
+    console.error(`Error deleting product with ID "${req.params.id}":`, error);
+    res.status(500).json({ success: false, message: 'Server error while deleting product.' });
+  }
+};
+
 module.exports = {
   getUnifiedProducts,
   getUnifiedProductByCategory,
   getProductsBySubcategory,
-  getProductByName
+  getProductByName,
+  createProduct,
+  updateProduct,
+  deleteProduct
 };

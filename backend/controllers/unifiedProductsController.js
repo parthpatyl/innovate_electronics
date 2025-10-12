@@ -274,23 +274,22 @@ const deleteProduct = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid product ID.' });
     }
 
-    const categoryDoc = await UnifiedProduct.findOne({ "items.products._id": id });
-    if (!categoryDoc) {
+    // To delete from a nested array, we find the parent document and use $pull
+    // on the specific sub-array. The query for $pull needs to identify the
+    // exact product to remove.
+    const result = await UnifiedProduct.findOneAndUpdate(
+      { "items.products._id": new mongoose.Types.ObjectId(id) }, // Find the document containing the product
+      { $pull: { "items.$[].products": { _id: new mongoose.Types.ObjectId(id) } } }, // Pull the product from the correct sub-array
+      { new: true }
+    );
+
+    if (!result) {
       return res.status(404).json({ success: false, message: 'Product not found.' });
     }
 
-    // Mongoose subdocument removal
-    categoryDoc.items.forEach(item => {
-        const product = item.products.id(id);
-        if (product) {
-            product.remove();
-        }
-    });
-
-    await categoryDoc.save();
-
     res.json({ success: true, message: 'Product deleted successfully.' });
   } catch (error) {
+    // Corrected error logging to use the ID from params
     console.error(`Error deleting product with ID "${req.params.id}":`, error);
     res.status(500).json({ success: false, message: 'Server error while deleting product.' });
   }

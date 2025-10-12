@@ -237,7 +237,7 @@ class CMS {
                 editBtn = `<button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item._id || ''}')">
                     <i class="fas fa-edit"></i> Edit
                 </button>`;
-            }
+            } 
             return `
             <div class="content-item">
                 <div class="content-info">
@@ -252,7 +252,7 @@ class CMS {
                 </div>
                 <div class="content-actions-btns">
                     ${editBtn}
-                    <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item._id || item.name || ''}')">
+                    <button class="btn btn-sm btn-danger" onclick="cms.deleteContent('${item._id || ''}')">
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
@@ -587,7 +587,6 @@ class CMS {
         try {
             if (contentType === 'product') {
                 const endpoint = getApiUrl(API_CONFIG.ENDPOINTS.PRODUCTS);
-                
                 const response = await fetch(endpoint);
                 if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                 const data = await response.json();
@@ -688,16 +687,19 @@ class CMS {
     // Refactored editProduct to use productId directly (like deleteProduct)
     async editProduct(productId) {
         try {
+            // The unified products controller doesn't have a GET by product ID endpoint.
+            // We must fetch all products and find the one with the matching ID.
+            // This is inefficient but matches the current backend capabilities.
+            const allProducts = await this.fetchContent('product');
+            const productToEdit = allProducts.find(p => p._id === productId);
+
             this.editingItem = null;
-            const endpoint = getApiUrl(`api/products/${encodeURIComponent(productId)}`);
-            const response = await fetch(endpoint);
-            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-            const data = await response.json();
-            if (data.success) {
-                this.editingItem = data.data;
+
+            if (productToEdit) {
+                this.editingItem = productToEdit;
                 document.getElementById('modal-title').textContent = 'Edit Product';
                 this.generateProductForm();
-                this.populateProductForm(data.data);
+                this.populateProductForm(productToEdit);
                 this.showModal();
             } else {
                 console.error('Failed to load product for editing:', data.message);
@@ -707,8 +709,8 @@ class CMS {
         }
     }
 
-    async deleteProduct(productId) {
-        this.deletingItemId = productId;
+    async deleteProduct(productName) {
+        this.deletingItemName = productName;
         this.deletingItemType = 'product';
         this.showDeleteModal();
     }
@@ -726,10 +728,18 @@ class CMS {
         }
         
         // Handle description
-        if (product.overview && product.overview.description) {
-            document.getElementById('description').value = product.overview.description.join('\n');
+        if (product.overview && product.overview.body) {
+            document.getElementById('description').value = Array.isArray(product.overview.body) ? product.overview.body.join('\n') : (product.overview.body || '');
+        } else {
+            document.getElementById('description').value = '';
         }
         
+        // The `populateProductForm` was missing the logic to find the category and subcategory
+        // for the product being edited. This is needed for the backend to find the document.
+        // We will add this information to the `editingItem` object.
+        document.getElementById('category').value = product.category || '';
+        document.getElementById('category').dispatchEvent(new Event('change')); // Trigger change to populate subcategories
+        document.getElementById('subcategory').value = product.subcategory || '';
         // Handle features
         if (product.overview && product.overview.features) {
             document.getElementById('features').value = product.overview.features.join('\n');
@@ -748,6 +758,12 @@ class CMS {
         this._isSaving = true;
 
         const form = document.getElementById('content-form');
+        // This is a workaround because `new FormData(form)` doesn't pick up disabled fields.
+        // The category dropdown is disabled during subcategory population, so we re-enable it.
+        if (document.getElementById('category')) {
+            document.getElementById('category').disabled = false;
+        }
+
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
@@ -798,7 +814,7 @@ class CMS {
 
     async saveProduct(formData) {
         const productData = this.prepareProductData(formData);
-        const endpoint = this.isEditing()
+        const endpoint = this.isEditing() && this.editingItem?._id
             ? `${getApiUrl(API_CONFIG.ENDPOINTS.PRODUCTS)}/${encodeURIComponent(this.editingItem._id)}`
             : getApiUrl(API_CONFIG.ENDPOINTS.PRODUCTS);
 
@@ -949,11 +965,8 @@ class CMS {
             let response;
             
             // Fix Bug 4: Clarify deletion logic and use consistent identifiers
-            if (this.deletingItemType === 'product' && this.deletingItemId) {
-                // Product deletion
-                const endpoint = getApiUrl(`api/products/${encodeURIComponent(this.deletingItemId)}`);
-                
-                response = await fetch(endpoint, {
+            if (this.currentSection === 'products') {
+                response = await fetch(`${getApiUrl(API_CONFIG.ENDPOINTS.UNIFIED_PRODUCTS)}/${this.itemToDelete}`, {
                     method: 'DELETE'
                 });
             } else if (this.itemToDelete) {

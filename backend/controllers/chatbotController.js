@@ -1,4 +1,4 @@
-const Category = require('../models/Category');
+const Category = require('../models/UnifiedProduct');
 const Event = require('../models/Event');
 const templates = require('./chatbotTemplates');
 

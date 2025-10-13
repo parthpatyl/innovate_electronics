@@ -144,11 +144,11 @@
   width: fit-content;
   margin-left: auto;
   margin-right: 0;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   color: #fff;
-  background: linear-gradient(90deg, #f33434 70%, #ff7e5f 100%);
-  padding: 8px 18px;
+  background: #f33434;
+  padding: 6px 9px;
   border-radius: 18px 18px 4px 18px;
   font-weight: 500;
   font-size: 1rem;
@@ -232,8 +232,7 @@
 /* Lists */
 .bot-msg .bot-list {
   list-style: none;
-  padding-left: 0;
-  margin: 10px 0;
+  padding-left: 10px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -248,7 +247,7 @@
 }
 
 .event-item {
-  padding: 6px 0;
+  padding: 3px 0;
 }
 
 .event-details {
@@ -510,4 +509,36 @@
 
 .chatbot-messages::-webkit-scrollbar-thumb:hover {
   background: #d92d2d;
+}
+
+/* Options Styling */
+.bot-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.chat-option-btn {
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 500;
+  border: 1px solid #e0e0e0;
+}
+
+.chat-option-btn:hover {
+  background: #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.chat-option-btn.selected {
+  background: #f33434;
+  color: #fff;
+  border-color: #f33434;
+  box-shadow: 0 2px 8px rgba(243, 52, 52, 0.2);
 }

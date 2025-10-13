@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const unifiedProductsController = require('../controllers/unifiedProductsController');
+const upload = require('../middleware/uploadMiddleware');
 
 /**
  * @route   GET /api/unifiedproducts
@@ -35,14 +36,14 @@ router.get('/product/:productName', unifiedProductsController.getProductByName);
  * @desc    Create a new product within a category/subcategory
  * @access  Private (CMS)
  */
-router.post('/', unifiedProductsController.createProduct);
+router.post('/', upload.single('productImage'), unifiedProductsController.createProduct);
 
 /**
  * @route   PUT /api/unifiedproducts/:id
  * @desc    Update a product by its ID
  * @access  Private (CMS)
  */
-router.put('/:id', unifiedProductsController.updateProduct);
+router.put('/:id', upload.single('productImage'), unifiedProductsController.updateProduct);
 
 /**
  * @route   DELETE /api/unifiedproducts/:id

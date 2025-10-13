@@ -29,7 +29,7 @@ const UnifiedProductSchema = new mongoose.Schema({
     // Array of products within this subcategory
     products: [{
       name: { type: String, required: true, trim: true },
-      image: { type: String, trim: true },
+      imageUrl: { type: String, trim: true },
       tableSpecs: {
         specifications: String,
         performance: String,

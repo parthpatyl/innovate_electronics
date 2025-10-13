@@ -54,6 +54,7 @@ app.use('/api/stats', statsRoutes);
 
 // Serve static files from frontend (move below API routes)
 app.use(express.static(path.join(__dirname, '../frontend')));
+app.use(express.static('public')); 
 
 // Fallback: serve index.html for any other route (for SPA or direct HTML navigation)
 app.get('*', (req, res) => {

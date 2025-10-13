@@ -1,5 +1,7 @@
 const UnifiedProduct = require('../models/UnifiedProduct');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 
 /**
  * Fetches all unified product data.
@@ -171,7 +173,7 @@ const getProductByName = async (req, res) => {
  */
 const createProduct = async (req, res) => {
   try {
-    const { name, category, subcategory, image, overview } = req.body;
+    const { name, category, subcategory, overview } = req.body;
 
     if (!name || !category || !subcategory) {
       return res.status(400).json({ success: false, message: 'Name, category, and subcategory are required.' });
@@ -193,10 +195,16 @@ const createProduct = async (req, res) => {
       return res.status(409).json({ success: false, message: `Product with name "${name}" already exists in this subcategory.` });
     }
 
+    // Construct the image URL from the uploaded file
+    let imageUrl = '';
+    if (req.file) {
+      imageUrl = `/uploads/images/${req.file.filename}`;
+    }
+
     const newProduct = {
       _id: new mongoose.Types.ObjectId(),
       name,
-      image: image || '',
+      imageUrl: imageUrl,
       overview: overview || {},
       tableSpecs: {}, // Default empty object
       specifications: {}, // Default empty object
@@ -220,7 +228,7 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params; // This is the product's _id
-    const { name, category, subcategory, image, overview } = req.body;
+    const { name, overview } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: 'Invalid product ID.' });
@@ -246,10 +254,23 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Product not found.' });
     }
 
+    const oldImageUrl = product.imageUrl;
+
     // Update fields
     product.name = name ?? product.name;
-    product.image = image ?? product.image;
     product.overview = overview ?? product.overview; // The overview object is passed directly
+
+    // If a new image is uploaded, update the imageUrl and delete the old one
+    if (req.file) {
+      product.imageUrl = `/uploads/images/${req.file.filename}`;
+      if (oldImageUrl) {
+        const oldImagePath = path.join(__dirname, '..', 'public', oldImageUrl);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+    }
+
     // Note: This logic doesn't handle moving a product to a different category/subcategory.
     // That would require a more complex delete-and-create operation.
 

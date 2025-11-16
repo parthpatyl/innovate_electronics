@@ -18,6 +18,7 @@
     <div id="overlay"></div>
     <script src="js/header.js"></script>
     <script src="js/chatbot.js"></script>
+    <script src="js/config.js"></script>
 
     <header class="hero-section">
         <div class="hero-overlay">
@@ -84,6 +85,41 @@
                 </div>
             </div>
         </section>
+
+        <!-- Contact Form Section -->
+        <section class="contact-form-section">
+            <h2 class="section-title">SEND US A MESSAGE</h2>
+            <div class="contact-form-container">
+                <form id="contact-form" class="contact-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Name *</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" placeholder="Optional">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" rows="6" required placeholder="Tell us how we can help you..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                    <div id="contact-alert" class="contact-alert" style="display: none;"></div>
+                </form>
+            </div>
+        </section>
     </main>
 
     <div id="footer-section"></div>
@@ -125,8 +161,80 @@
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('footer-section').innerHTML = data;
+                    // Load footer.js after footer is loaded
+                    const script = document.createElement('script');
+                    script.src = basePath + 'js/footer.js';
+                    document.body.appendChild(script);
                 });
         })();
+    </script>
+
+    <script>
+        // Contact form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const contactForm = document.getElementById('contact-form');
+            const contactAlert = document.getElementById('contact-alert');
+            
+            function showContactAlert(message, isSuccess) {
+                contactAlert.textContent = message;
+                contactAlert.className = 'contact-alert ' + (isSuccess ? 'success' : 'error');
+                contactAlert.style.display = 'block';
+                
+                setTimeout(() => {
+                    contactAlert.style.display = 'none';
+                }, 5000);
+            }
+
+            if (contactForm) {
+                contactForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const submitButton = contactForm.querySelector('button[type="submit"]');
+                    const originalButtonText = submitButton.textContent;
+                    
+                    // Disable form while submitting
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Sending...';
+                    
+                    const formData = {
+                        name: document.getElementById('name').value,
+                        email: document.getElementById('email').value,
+                        phone: document.getElementById('phone').value,
+                        subject: document.getElementById('subject').value,
+                        message: document.getElementById('message').value
+                    };
+                    
+                    try {
+                        const apiUrl = typeof getApiUrl === 'function' 
+                            ? getApiUrl('api/contact')
+                            : '/api/contact';
+                        
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            showContactAlert(result.message || 'Thank you for your message! We will get back to you soon.', true);
+                            contactForm.reset();
+                        } else {
+                            showContactAlert(result.message || 'Failed to send message. Please try again.', false);
+                        }
+                    } catch (error) {
+                        console.error('Contact form error:', error);
+                        showContactAlert('An error occurred. Please try again later.', false);
+                    } finally {
+                        submitButton.disabled = false;
+                        submitButton.textContent = originalButtonText;
+                    }
+                });
+            }
+        });
     </script>
 </body>
 

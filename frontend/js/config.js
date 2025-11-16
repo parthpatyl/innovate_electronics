@@ -23,9 +23,15 @@ const API_CONFIG = {
 
 // Helper function to get full API URL
 function getApiUrl(endpoint) {
-    if (typeof API_CONFIG === 'undefined' || !API_CONFIG.BASE_URL) {
-        throw new Error('API_CONFIG is not defined or missing BASE_URL');
+    if (typeof API_CONFIG === 'undefined') {
+        throw new Error('API_CONFIG is not defined');
     }
+    
+    // If BASE_URL is empty (production), use relative URL
+    if (!API_CONFIG.BASE_URL || API_CONFIG.BASE_URL === '') {
+        return '/' + endpoint.replace(/^\//, '');
+    }
+    
     // Use the original regex to avoid invalid character error
     return (API_CONFIG.BASE_URL + '/' + endpoint).replace(/([^:]\/)\/+/g, '$1');
 }

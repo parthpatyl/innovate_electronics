@@ -7,7 +7,7 @@ const newsletterController = {
   // Get all newsletters
   getAllNewsletters: async (req, res) => {
     try {
-      const newsletters = await Newsletter.find(query)
+      const newsletters = await Newsletter.find({})
         .sort({ createdAt: -1 })
         .populate('sentBy', 'name email');
 

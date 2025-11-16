@@ -30,9 +30,12 @@ if (newsletterForm) {
         const originalButtonText = submitButton.textContent;
         submitButton.textContent = 'Subscribing...';
 
-        //Update the URL while deployment
+        // Use getApiUrl helper function for API calls
         try {
-            const response = await fetch('http://localhost:5000/api/newsletter/subscribe', {
+            const apiUrl = typeof getApiUrl === 'function' 
+                ? getApiUrl('api/newsletter/subscribe')
+                : '/api/newsletter/subscribe';
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

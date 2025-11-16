@@ -290,7 +290,7 @@ class CMS {
                     <input type="time" class="form-input" id="time" name="time">
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="location">Location</label>
+                    <label class="form-label" for="location">Location/Link</label>
                     <input type="text" class="form-input" id="location" name="location">
                 </div>
                 <div class="form-group">

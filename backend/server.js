@@ -7,7 +7,8 @@ const path = require('path');
 const connectDB = require('./config/database');
 const chatbotController = require('./controllers/chatbotController');
 const eventRegistrationController = require('./controllers/eventRegistrationController');
-newsletterController = require('./controllers/newsletterController');
+const newsletterController = require('./controllers/newsletterController');
+const contactController = require('./controllers/contactController');
 
 // Register models used by refs
 require('./models/Admin');
@@ -39,10 +40,7 @@ app.post('/api/chatbot/message', chatbotController.handleMessage);
 app.post('/api/newsletter/subscribe', newsletterController.subscribe);
 
 // Contact form (send email)
-app.post('/api/contact', (req, res) => {
-  // TODO: Integrate email sending logic
-  res.json({ message: 'Email sent (placeholder).' });
-});
+app.post('/api/contact', contactController.submitContact);
 
 // API Routes
 app.use('/api/unifiedproducts', unifiedProductRoutes);

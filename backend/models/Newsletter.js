@@ -33,6 +33,10 @@ const newsletterSchema = new mongoose.Schema({
 	imageData: {
 		type: String,
 		default: ''
+	},
+	featuredImage: {
+		type: String,
+		default: ''
 	}
 }, {
 	timestamps: true

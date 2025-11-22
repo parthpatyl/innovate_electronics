@@ -236,8 +236,8 @@
                 
                 // Update main product image
                 const mainImage = document.getElementById('main-product-image');
-                if (product.image) {
-                    mainImage.src = product.image;
+                if (product.imageUrl) {
+                    mainImage.src = product.imageUrl;
                     mainImage.alt = product.name;
                 } else {
                     mainImage.src = 'assets/placeholder-product.png';

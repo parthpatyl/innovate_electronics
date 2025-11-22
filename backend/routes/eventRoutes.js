@@ -4,6 +4,7 @@ const Event = require('../models/Event');
 const EventRegistration = require('../models/EventRegistration');
 const eventRegistrationController = require('../controllers/eventRegistrationController');
 const emailService = require('../services/emailService');
+const upload = require('../middleware/uploadMiddleware');
 // Fetch all events
 router.get('/', async (req, res) => {
   try {
@@ -31,21 +32,27 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create a new event
-router.post('/', async (req, res) => {
+router.post('/', upload.single('featuredImage'), async (req, res) => {
   try {
-    const { title, date, time, location, body, featuredImage, status, imageData } = req.body;
+    const { title, date, time, location, body, status } = req.body;
     if (!title || !date || !body) {
       return res.status(400).json({ success: false, message: 'Title, date, and body are required fields' });
     }
+
+    // Construct the image URL from the uploaded file
+    let imageUrl = '';
+    if (req.file) {
+      imageUrl = `/uploads/images/${req.file.filename}`;
+    }
+
     const eventData = {
       title,
       date,
       time,
       location,
       body,
-      featuredImage: featuredImage || imageData || '',
-      status: status || 'upcoming',
-      imageData: imageData || ''
+      featuredImage: imageUrl,
+      status: status || 'upcoming'
     };
     const event = new Event(eventData);
     await event.save();
@@ -59,8 +66,8 @@ router.post('/', async (req, res) => {
 router.post('/register', async (req, res) => {
   console.log("Received registration:", req.body);
   const {
-      event_title, location, full_name, email, phone,
-      company, designation, interests, questions
+    event_title, location, full_name, email, phone,
+    company, designation, interests, questions
   } = req.body;
 
   // (Optional) Save registration to DB here
@@ -111,7 +118,7 @@ router.post('/register', async (req, res) => {
 
   // Send confirmation email to the registrant
   const emailResult = await emailService.sendEmail(
-      email, subject, htmlBody
+    email, subject, htmlBody
   );
 
   // Send notification email to the event organizer/registration email
@@ -141,9 +148,9 @@ router.post('/register', async (req, res) => {
   }
 
   if (emailResult.success) {
-      res.json({ success: true, message: 'Registration successful Sent!' });
+    res.json({ success: true, message: 'Registration successful Sent!' });
   } else {
-      res.status(500).json({ success: false, message: 'Registration failed. Could not send email.' });
+    res.status(500).json({ success: false, message: 'Registration failed. Could not send email.' });
   }
 });
 
@@ -166,17 +173,27 @@ router.post('/send-email', async (req, res) => {
 });
 
 // Update an event
-router.put('/:id', async (req, res) => {
+router.put('/:id', upload.single('featuredImage'), async (req, res) => {
   try {
-    const { title, date, time, location, body, featuredImage, status, imageData } = req.body;
-    const event = await Event.findByIdAndUpdate(
-      req.params.id,
-      { title, date, time, location, body, featuredImage: featuredImage || imageData || '', status: status || 'upcoming', imageData: imageData || '' },
-      { new: true, runValidators: true }
-    );
+    const { title, date, time, location, body, status } = req.body;
+    const event = await Event.findById(req.params.id);
     if (!event) {
       return res.status(404).json({ success: false, message: 'Event not found' });
     }
+
+    // Update image URL if a new file was uploaded
+    if (req.file) {
+      event.featuredImage = `/uploads/images/${req.file.filename}`;
+    }
+
+    event.title = title ?? event.title;
+    event.date = date ?? event.date;
+    event.time = time ?? event.time;
+    event.location = location ?? event.location;
+    event.body = body ?? event.body;
+    event.status = status ?? event.status;
+
+    await event.save();
     res.json({ success: true, message: 'Event updated successfully', data: event });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error updating event', error: error.message });

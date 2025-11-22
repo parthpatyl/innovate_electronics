@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const Newsletter = require('../models/Newsletter');
+const upload = require('../middleware/uploadMiddleware');
 
 // Helper function to replace relative image paths with absolute paths
 const makeImagePathsAbsolute = (htmlContent) => {
 	// In a real-world scenario, this should come from a config file or environment variable
-	const baseUrl = 'http://localhost:5000'; 
+	const baseUrl = 'http://localhost:5000';
 	// This regex finds src attributes in img tags that start with a "/"
 	return htmlContent.replace(/<img src="\/([^"]+)"/g, `<img src="${baseUrl}/$1"`);
-  };
-  
+};
+
 
 // List newsletters
 router.get('/', async (req, res) => {
@@ -38,8 +39,14 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create newsletter (force all-subscribers audience)
-router.post('/', async (req, res) => {
+router.post('/', upload.single('featuredImage'), async (req, res) => {
 	try {
+		// Construct the image URL from the uploaded file
+		let imageUrl = '';
+		if (req.file) {
+			imageUrl = `/uploads/images/${req.file.filename}`;
+		}
+
 		const payload = {
 			subject: req.body.subject,
 			htmlBody: req.body.htmlBody,
@@ -47,19 +54,19 @@ router.post('/', async (req, res) => {
 			audience: 'all-subscribers',
 			recipients: [],
 			sentBy: (req.user && req.user.id) ? req.user.id : null,
-			imageData: req.body.imageData || ''
+			featuredImage: imageUrl
 		};
 		const newsletter = new Newsletter(payload);
 		await newsletter.save();
 
 		// If published, send to all active subscribers
 		if (newsletter.status === 'published') {
-		  const Subscriber = require('../models/Subscriber');
-		  const emailService = require('../services/emailService');
-		  const subscribers = await Subscriber.find({ isActive: true });
-		  const recipients = subscribers.map(sub => ({ email: sub.email, unsubscribeToken: sub.unsubscribeToken }));
-		  const absoluteHtmlBody = makeImagePathsAbsolute(newsletter.htmlBody);
-		  await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody, { imageData: newsletter.imageData });
+			const Subscriber = require('../models/Subscriber');
+			const emailService = require('../services/emailService');
+			const subscribers = await Subscriber.find({ isActive: true });
+			const recipients = subscribers.map(sub => ({ email: sub.email, unsubscribeToken: sub.unsubscribeToken }));
+			const absoluteHtmlBody = makeImagePathsAbsolute(newsletter.htmlBody);
+			await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody);
 		}
 
 		res.status(201).json({ success: true, data: newsletter });
@@ -69,7 +76,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update newsletter (ignore audience/recipients)
-router.put('/:id', async (req, res) => {
+router.put('/:id', upload.single('featuredImage'), async (req, res) => {
 	try {
 		const newsletter = await Newsletter.findById(req.params.id);
 		if (!newsletter) {
@@ -81,7 +88,11 @@ router.put('/:id', async (req, res) => {
 		newsletter.status = req.body.status ?? newsletter.status;
 		newsletter.audience = 'all-subscribers';
 		newsletter.recipients = [];
-		if (req.body.imageData) newsletter.imageData = req.body.imageData;
+
+		// Update image URL if a new file was uploaded
+		if (req.file) {
+			newsletter.featuredImage = `/uploads/images/${req.file.filename}`;
+		}
 
 		await newsletter.save();
 
@@ -93,7 +104,7 @@ router.put('/:id', async (req, res) => {
 			if (subscribers.length > 0) {
 				const recipients = subscribers.map(sub => ({ email: sub.email, unsubscribeToken: sub.unsubscribeToken }));
 				const absoluteHtmlBody = makeImagePathsAbsolute(newsletter.htmlBody);
-				await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody, { imageData: newsletter.imageData });
+				await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody);
 			}
 		}
 
@@ -133,7 +144,7 @@ router.post('/:id/send', async (req, res) => {
 			return res.status(400).json({ success: false, message: 'No active subscribers to send to' });
 		}
 		const absoluteHtmlBody = makeImagePathsAbsolute(newsletter.htmlBody);
-		const results = await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody, { imageData: newsletter.imageData });
+		const results = await emailService.sendBulkEmails(recipients, newsletter.subject, absoluteHtmlBody);
 		const sent = results.filter(r => r.success).length;
 		const failed = results.length - sent;
 

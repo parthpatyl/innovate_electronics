@@ -78,7 +78,7 @@ const getProductsBySubcategory = async (req, res) => {
 
     // Find the category document by normalized key
     const allProducts = await UnifiedProduct.find({}).lean();
-    
+
     const productCategory = allProducts.find(doc => {
       const key = doc.title.toLowerCase().replace(/ & /g, 'and').replace(/\s+/g, '');
       return key === categoryKey;
@@ -120,7 +120,7 @@ const getProductByName = async (req, res) => {
 
     // Fetch all documents from the UnifiedProduct collection
     const allProducts = await UnifiedProduct.find({}).lean();
-    
+
     let foundProduct = null;
     let foundCategory = null;
     let foundSubcategory = null;
@@ -134,7 +134,7 @@ const getProductByName = async (req, res) => {
               // Normalize both the product name and the search term for comparison
               const normalizedProductName = product.name ? product.name.toLowerCase().replace(/\s+/g, '') : '';
               const normalizedSearchName = productName.toLowerCase().replace(/\s+/g, '');
-              
+
               if (normalizedProductName === normalizedSearchName) {
                 foundProduct = product;
                 foundCategory = category;
@@ -197,9 +197,33 @@ const createProduct = async (req, res) => {
 
     // Construct the image URL from the uploaded file
     let imageUrl = '';
-    if (req.file) {
-      imageUrl = `/uploads/images/${req.file.filename}`;
+    if (req.files && req.files.productImage && req.files.productImage[0]) {
+      imageUrl = `/uploads/images/${req.files.productImage[0].filename}`;
     }
+
+    // Process PDF uploads for library
+    const library = {
+      catalogue: [],
+      drawings: [],
+      testReports: [],
+      executionFiles: []
+    };
+
+    // Helper function to process PDF files
+    const processPDFs = (files, fieldName) => {
+      if (files && files[fieldName]) {
+        return files[fieldName].map(file => ({
+          name: file.originalname,
+          link: `/uploads/pdfs/${file.filename}`
+        }));
+      }
+      return [];
+    };
+
+    library.catalogue = processPDFs(req.files, 'catalogue');
+    library.drawings = processPDFs(req.files, 'drawings');
+    library.testReports = processPDFs(req.files, 'testReports');
+    library.executionFiles = processPDFs(req.files, 'executionFiles');
 
     const newProduct = {
       _id: new mongoose.Types.ObjectId(),
@@ -208,7 +232,7 @@ const createProduct = async (req, res) => {
       overview: overview || {},
       tableSpecs: {}, // Default empty object
       specifications: {}, // Default empty object
-      library: {} // Default empty object
+      library: library
     };
 
     subcategoryItem.products.push(newProduct);
@@ -261,14 +285,55 @@ const updateProduct = async (req, res) => {
     product.overview = overview ?? product.overview; // The overview object is passed directly
 
     // If a new image is uploaded, update the imageUrl and delete the old one
-    if (req.file) {
-      product.imageUrl = `/uploads/images/${req.file.filename}`;
+    if (req.files && req.files.productImage && req.files.productImage[0]) {
+      product.imageUrl = `/uploads/images/${req.files.productImage[0].filename}`;
       if (oldImageUrl) {
         const oldImagePath = path.join(__dirname, '..', 'public', oldImageUrl);
         if (fs.existsSync(oldImagePath)) {
           fs.unlinkSync(oldImagePath);
         }
       }
+    }
+
+    // Process PDF uploads and append to existing library
+    // Initialize library if it doesn't exist
+    if (!product.library) {
+      product.library = {
+        catalogue: [],
+        drawings: [],
+        testReports: [],
+        executionFiles: []
+      };
+    }
+
+    // Helper function to process and append PDF files
+    const processPDFs = (files, fieldName) => {
+      if (files && files[fieldName]) {
+        return files[fieldName].map(file => ({
+          name: file.originalname,
+          link: `/uploads/pdfs/${file.filename}`
+        }));
+      }
+      return [];
+    };
+
+    // Append new PDFs to existing arrays
+    const newCatalogue = processPDFs(req.files, 'catalogue');
+    const newDrawings = processPDFs(req.files, 'drawings');
+    const newTestReports = processPDFs(req.files, 'testReports');
+    const newExecutionFiles = processPDFs(req.files, 'executionFiles');
+
+    if (newCatalogue.length > 0) {
+      product.library.catalogue = [...(product.library.catalogue || []), ...newCatalogue];
+    }
+    if (newDrawings.length > 0) {
+      product.library.drawings = [...(product.library.drawings || []), ...newDrawings];
+    }
+    if (newTestReports.length > 0) {
+      product.library.testReports = [...(product.library.testReports || []), ...newTestReports];
+    }
+    if (newExecutionFiles.length > 0) {
+      product.library.executionFiles = [...(product.library.executionFiles || []), ...newExecutionFiles];
     }
 
     // Note: This logic doesn't handle moving a product to a different category/subcategory.

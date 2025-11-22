@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link rel="stylesheet" href="css/chatbot.css">
     <title>Products Page</title>
 </head>
+
 <body>
     <!-- Header -->
     <div id="header-section"></div>
@@ -18,23 +20,23 @@
     <script src="js/chatbot.js"></script>
     <script src="js/config.js"></script>
     <script>
-      // WhatsApp Button (left corner, all pages)
-      (function() {
-        if (!document.getElementById('whatsapp-btn')) {
-          var wa = document.createElement('div');
-          wa.id = 'whatsapp-btn';
-          wa.innerHTML = '<img src="assets/whatsapp_icon.png" alt="WhatsApp">';
-          wa.title = 'Chat on WhatsApp';
-          wa.onclick = function() {
-            window.open('https://wa.me/918123155600', '_blank');
-          };
-          document.body.appendChild(wa);
-        }
-      })();
+        // WhatsApp Button (left corner, all pages)
+        (function () {
+            if (!document.getElementById('whatsapp-btn')) {
+                var wa = document.createElement('div');
+                wa.id = 'whatsapp-btn';
+                wa.innerHTML = '<img src="assets/whatsapp_icon.png" alt="WhatsApp">';
+                wa.title = 'Chat on WhatsApp';
+                wa.onclick = function () {
+                    window.open('https://wa.me/918123155600', '_blank');
+                };
+                document.body.appendChild(wa);
+            }
+        })();
     </script>
     <script>
         // Load the header component dynamically with correct path
-        (function() {
+        (function () {
             const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
             fetch(basePath + 'header.html')
                 .then(response => response.text())
@@ -44,7 +46,7 @@
                 });
         })();
     </script>
-        
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
@@ -55,14 +57,16 @@
             <img id="category-image" src="" alt="">
         </div>
     </section>
-    
-    
+
+
     <!-- Main Content -->
     <div class="main-content">
         <div class="intro-text">
-            <p id="intro-text">Explore our precision-engineered RF and microwave solutions designed specifically for aerospace applications. Our high-reliability solutions meet rigorous aerospace standards with exceptional performance in extreme environments.</p>
+            <p id="intro-text">Explore our precision-engineered RF and microwave solutions designed specifically for
+                aerospace applications. Our high-reliability solutions meet rigorous aerospace standards with
+                exceptional performance in extreme environments.</p>
         </div>
-        
+
         <!-- Products Table -->
         <table class="products-table">
             <thead>
@@ -80,13 +84,13 @@
             </tbody>
         </table>
     </div>
-    
+
     <!-- Footer -->
     <div id="footer-section"></div>
 
     <script>
         // Load the footer component dynamically with correct path
-        (function() {
+        (function () {
             const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
             fetch(basePath + 'footer.html')
                 .then(response => response.text())
@@ -96,90 +100,91 @@
         })();
     </script>
 
-<script>
-    async function populatePage() {
-        const params = new URLSearchParams(window.location.search);
-        const category = params.get('category');
-        const productName = params.get('productName'); // treated as subcategory
+    <script>
+        async function populatePage() {
+            const params = new URLSearchParams(window.location.search);
+            const category = params.get('category');
+            const productName = params.get('productName'); // treated as subcategory
 
-        if (!category || !productName) {
-            document.getElementById('products-tbody').innerHTML = `
+            if (!category || !productName) {
+                document.getElementById('products-tbody').innerHTML = `
                 <tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Category and product name must be provided in the URL.</td></tr>
             `;
-            document.getElementById('category-title').textContent = "Invalid Page";
-            return;
-        }
-
-        // Update hero section with subcategory info
-        const formattedTitle = productName.charAt(0).toUpperCase() + productName.slice(1);
-        document.getElementById('category-title').textContent = formattedTitle;
-        document.title = `${formattedTitle} - Innovate Electronics`;
-        const defaultDescription = `Explore our precision-engineered ${productName.toLowerCase()} solutions. Our high-reliability products meet rigorous standards with exceptional performance in extreme environments.`;
-        document.getElementById('category-description').textContent = defaultDescription;
-        document.getElementById('intro-text').textContent = defaultDescription;
-
-        // Construct the new unified products API endpoint URL
-        // Convert category to normalized key (e.g., "RF and Microwave" -> "rfandmicrowave")
-        const normalizedCategory = category.toLowerCase().replace(/ & /g, 'and').replace(/\s+/g, '');
-        const endpoint = `${getApiUrl(API_CONFIG.ENDPOINTS.UNIFIED_PRODUCTS)}/${encodeURIComponent(normalizedCategory)}/subcategory/${encodeURIComponent(productName)}`;
-        document.getElementById('products-tbody').innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;">Loading products...</td></tr>`;
-
-        try {
-            const res = await fetch(endpoint);
-            if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
-            const apiResponse = await res.json();
-            
-            if (!apiResponse.success || !apiResponse.data) {
-                throw new Error('Failed to load product data.');
-            }
-
-            const products = apiResponse.data;
-
-            // Update hero image
-            // Use the first product's image as the hero image for the subcategory page
-            const subcategoryImage = products.length > 0 ? products[0].image : '';
-            const categoryImageElement = document.getElementById('category-image');
-            categoryImageElement.src = subcategoryImage || 'assets/image35.png';
-            categoryImageElement.alt = formattedTitle;
-            
-            if (products.length === 0) {
-                document.getElementById('products-tbody').innerHTML = `
-                    <tr><td colspan="6" style="text-align:center;color:#666;padding:20px;">No products found for "${productName}".</td></tr>
-                `;
+                document.getElementById('category-title').textContent = "Invalid Page";
                 return;
             }
 
-            // Render the products in the table
-            const tbody = document.getElementById('products-tbody');
-            tbody.innerHTML = '';
-            
-            products.forEach(product => {
-                const tr = document.createElement('tr');
-                tr.style.cursor = 'pointer';
-                tr.innerHTML = `
-                    <td><img src="${product.image || 'assets/placeholder-product.png'}" style="width:60px;height:60px;border-radius:4px;object-fit:cover;" onerror="this.src='assets/placeholder-product.png';"></td>
+            // Update hero section with subcategory info
+            const formattedTitle = productName.charAt(0).toUpperCase() + productName.slice(1);
+            document.getElementById('category-title').textContent = formattedTitle;
+            document.title = `${formattedTitle} - Innovate Electronics`;
+            const defaultDescription = `Explore our precision-engineered ${productName.toLowerCase()} solutions. Our high-reliability products meet rigorous standards with exceptional performance in extreme environments.`;
+            document.getElementById('category-description').textContent = defaultDescription;
+            document.getElementById('intro-text').textContent = defaultDescription;
+
+            // Construct the new unified products API endpoint URL
+            // Convert category to normalized key (e.g., "RF and Microwave" -> "rfandmicrowave")
+            const normalizedCategory = category.toLowerCase().replace(/ & /g, 'and').replace(/\s+/g, '');
+            const endpoint = `${getApiUrl(API_CONFIG.ENDPOINTS.UNIFIED_PRODUCTS)}/${encodeURIComponent(normalizedCategory)}/subcategory/${encodeURIComponent(productName)}`;
+            document.getElementById('products-tbody').innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;">Loading products...</td></tr>`;
+
+            try {
+                const res = await fetch(endpoint);
+                if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+                const apiResponse = await res.json();
+
+                if (!apiResponse.success || !apiResponse.data) {
+                    throw new Error('Failed to load product data.');
+                }
+
+                const products = apiResponse.data;
+
+                // Update hero image
+                // Use the first product's image as the hero image for the subcategory page
+                const subcategoryImage = products.length > 0 ? products[0].image : '';
+                const categoryImageElement = document.getElementById('category-image');
+                categoryImageElement.src = subcategoryImage || 'assets/image35.png';
+                categoryImageElement.alt = formattedTitle;
+
+                if (products.length === 0) {
+                    document.getElementById('products-tbody').innerHTML = `
+                    <tr><td colspan="6" style="text-align:center;color:#666;padding:20px;">No products found for "${productName}".</td></tr>
+                `;
+                    return;
+                }
+
+                // Render the products in the table
+                const tbody = document.getElementById('products-tbody');
+                tbody.innerHTML = '';
+
+                products.forEach(product => {
+                    const tr = document.createElement('tr');
+                    tr.style.cursor = 'pointer';
+                    tr.innerHTML = `
+                    <td><img src="${product.imageUrl || 'assets/placeholder-product.png'}" style="width:60px;height:60px;border-radius:4px;object-fit:cover;" onerror="this.src='assets/placeholder-product.png';"></td>
                     <td>${product.name}</td>
                     <td>${product.tableSpecs?.specifications || 'N/A'}</td>
                     <td>${product.tableSpecs?.performance || 'N/A'}</td>
                     <td>${product.tableSpecs?.outputLevel || 'N/A'}</td>
                     <td>${product.tableSpecs?.additionalFeatures || 'N/A'}</td>
                 `;
-                // Navigate to the detailed product page on click
-                tr.onclick = () => {
-                    window.location.href = `productpagemain.html?category=${encodeURIComponent(category)}&name=${encodeURIComponent(product.name)}`;
-                };
-                tbody.appendChild(tr);
-            });
+                    // Navigate to the detailed product page on click
+                    tr.onclick = () => {
+                        window.location.href = `productpagemain.html?category=${encodeURIComponent(category)}&name=${encodeURIComponent(product.name)}`;
+                    };
+                    tbody.appendChild(tr);
+                });
 
-        } catch (err) {
-            console.error('Fetch error:', err);
-            document.getElementById('products-tbody').innerHTML = `
+            } catch (err) {
+                console.error('Fetch error:', err);
+                document.getElementById('products-tbody').innerHTML = `
                 <tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Error loading products: ${err.message}</td></tr>
             `;
+            }
         }
-    }
 
-    document.addEventListener('DOMContentLoaded', populatePage);
-</script>
+        document.addEventListener('DOMContentLoaded', populatePage);
+    </script>
 </body>
+
 </html>

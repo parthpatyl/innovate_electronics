@@ -8,7 +8,7 @@ class CMS {
         this.apiBaseUrl = getApiUrl('api');
         this._formBound = false; // Add guard property
         this._isSaving = false; // Prevent double submissions
-        
+
         this.init();
     }
 
@@ -21,7 +21,7 @@ class CMS {
             const errorText = await response.text();
             throw new Error(`Server error (${response.status}): ${errorText}`);
         }
-        
+
         const result = await response.json();
         if (!result.success) {
             throw new Error(result.message || `Failed to ${operation} content`);
@@ -99,7 +99,7 @@ class CMS {
         document.querySelectorAll('.nav-link').forEach(link => {
             link.classList.remove('active');
         });
-        
+
         // Fix Bug 6: Check if element exists before adding class
         const navElement = document.querySelector(`[data-section="${section}"]`);
         if (navElement) {
@@ -113,7 +113,7 @@ class CMS {
         document.querySelectorAll('.content-section').forEach(sectionEl => {
             sectionEl.classList.remove('active');
         });
-        
+
         const contentElement = document.getElementById(section);
         if (contentElement) {
             contentElement.classList.add('active');
@@ -170,10 +170,10 @@ class CMS {
 
         const contentType = section.slice(0, -1); // Remove 's' from end
         const listElement = document.getElementById(`${section}-list`);
-        
+
         try {
             listElement.innerHTML = '<div class="loading">Loading...</div>';
-            
+
             const content = await this.fetchContent(contentType);
             this.renderContentList(content, section);
 
@@ -237,7 +237,7 @@ class CMS {
                 editBtn = `<button class="btn btn-sm btn-secondary" onclick="cms.editContent('${item._id || ''}')">
                     <i class="fas fa-edit"></i> Edit
                 </button>`;
-            } 
+            }
             return `
             <div class="content-item">
                 <div class="content-info">
@@ -262,7 +262,7 @@ class CMS {
     }
 
 
-        generateForm() {
+    generateForm() {
         const form = document.getElementById('content-form');
         const contentType = this.currentContentType;
 
@@ -455,7 +455,7 @@ class CMS {
         }
     }
 
-        generateProductForm() {
+    generateProductForm() {
         const form = document.getElementById('content-form');
         // Add image upload input and preview
         const imageInputHTML = `
@@ -648,8 +648,8 @@ class CMS {
 
     showCreateModal() {
         this.editingItem = null;
-        
-        
+
+
         if (this.currentContentType === 'product') {
             document.getElementById('modal-title').textContent = 'Create New Product';
             this.generateProductForm();
@@ -657,7 +657,7 @@ class CMS {
             document.getElementById('modal-title').textContent = `Create New ${this.currentContentType.charAt(0).toUpperCase() + this.currentContentType.slice(1)}`;
             this.generateForm();
         }
-        
+
         this.showModal();
     }
 
@@ -667,11 +667,11 @@ class CMS {
             // Fix Bug 3: Use product ID if available, fallback to name
             const productId = this.getProductId(productName);
             const endpoint = getApiUrl(`api/products/${encodeURIComponent(productId || productName)}`);
-            
+
             const response = await fetch(endpoint);
             if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
             const data = await response.json();
-            
+
             if (data.success) {
                 // Use the same navigation pattern as subcategory.html
                 const category = data.data.category || 'Products';
@@ -720,20 +720,20 @@ class CMS {
         document.getElementById('category').value = product.category || '';
         document.getElementById('subcategory').value = product.subcategory || '';
         // Store the current image for later use in save
-        this.currentProductImage = product.image || '';
+        this.currentProductImage = product.imageUrl || '';
         // Show preview if editing and image exists
         const previewContainer = document.getElementById('image-preview-container');
-        if (previewContainer && product.image) {
-            previewContainer.innerHTML = `<img src="${product.image}" alt="Preview" style="max-width:100%;max-height:120px;">`;
+        if (previewContainer && product.imageUrl) {
+            previewContainer.innerHTML = `<img src="${product.imageUrl}" alt="Preview" style="max-width:100%;max-height:120px;">`;
         }
-        
+
         // Handle description
         if (product.overview && product.overview.body) {
             document.getElementById('description').value = Array.isArray(product.overview.body) ? product.overview.body.join('\n') : (product.overview.body || '');
         } else {
             document.getElementById('description').value = '';
         }
-        
+
         // The `populateProductForm` was missing the logic to find the category and subcategory
         // for the product being edited. This is needed for the backend to find the document.
         // We will add this information to the `editingItem` object.
@@ -744,7 +744,7 @@ class CMS {
         if (product.overview && product.overview.features) {
             document.getElementById('features').value = product.overview.features.join('\n');
         }
-        
+
         // Handle applications
         if (product.overview && product.overview.applications) {
             document.getElementById('applications').value = product.overview.applications.join('\n');
@@ -941,7 +941,7 @@ class CMS {
             category: formData.category,
             subcategory: formData.subcategory,
             // Use uploaded image if present, else use the current image (for edit)
-            image: formData.uploadedImage || this.currentProductImage || '',
+            imageUrl: formData.uploadedImage || this.currentProductImage || '',
             // Pass the original product ID if editing, so backend can find it in the nested array
             _id: this.isEditing() ? this.editingItem._id : undefined,
             // Structure the overview object correctly for the backend
@@ -963,7 +963,7 @@ class CMS {
     async confirmDelete() {
         try {
             let response;
-            
+
             // Fix Bug 4: Clarify deletion logic and use consistent identifiers
             if (this.currentSection === 'products') {
                 response = await fetch(`${getApiUrl(API_CONFIG.ENDPOINTS.UNIFIED_PRODUCTS)}/${this.itemToDelete}`, {
@@ -1000,10 +1000,10 @@ class CMS {
 
             if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
             const result = await response.json();
-            
+
             if (result.success) {
                 this.hideDeleteModal();
-                
+
                 this.loadSectionContent(this.currentSection);
                 if (this.currentSection === 'dashboard') {
                     this.loadDashboard();
@@ -1018,16 +1018,16 @@ class CMS {
 
     handleSearch(query, section) {
         // Implement search functionality
-        
+
         // You can implement debounced search here
     }
 
     showModal() {
-        
+
         const modalOverlay = document.getElementById('modal-overlay');
-        
+
         modalOverlay.classList.add('active');
-        
+
     }
 
     hideModal() {
@@ -1049,7 +1049,7 @@ class CMS {
     // Fix Bug 9: Add form validation method
     validateFormData(data) {
         const requiredFields = [];
-        
+
         // Define required fields based on content type
         if (this.currentContentType === 'product') {
             requiredFields.push('name', 'category');
@@ -1061,7 +1061,7 @@ class CMS {
         } else if (this.currentContentType === 'testimonial') {
             requiredFields.push('name', 'text', 'rating');
         }
-        
+
         // Check required fields
         for (const field of requiredFields) {
             if (!data[field] || data[field].trim() === '') {
@@ -1069,7 +1069,7 @@ class CMS {
                 return false;
             }
         }
-        
+
         // Additional newsletter validation for custom audience
         if (this.currentContentType === 'newsletter' && data.audience === 'custom') {
             const parsedRecipients = (data.recipients || '')
@@ -1081,7 +1081,7 @@ class CMS {
                 return false;
             }
         }
-        
+
         // Validate date format
         if (data.date) {
             const dateValue = new Date(data.date);
@@ -1090,7 +1090,7 @@ class CMS {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -1131,7 +1131,7 @@ class CMS {
             this.editingItem = result.data;
             this.currentContentType = type;
             document.getElementById('modal-title').textContent = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)}`;
-            
+
             if (type === 'blog') {
                 this.generateForm();
                 // Populate blog fields

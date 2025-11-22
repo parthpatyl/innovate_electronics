@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog');
+const upload = require('../middleware/uploadMiddleware');
 
 // Fetch all blogs
 router.get('/', async (req, res) => {
@@ -34,9 +35,9 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create a new blog
-router.post('/', async (req, res) => {
+router.post('/', upload.single('featuredImage'), async (req, res) => {
   try {
-    const { title, date, body, author, status, excerpt, tags, featuredImage, metaTitle, metaDescription, imageData } = req.body;
+    const { title, date, body, author, status, excerpt, tags, metaTitle, metaDescription } = req.body;
     if (!title || !body || !author || !date) {
       return res.status(400).json({ success: false, message: 'Title, date, body, and author are required fields' });
     }
@@ -51,6 +52,12 @@ router.post('/', async (req, res) => {
       ? tags
       : (typeof tags === 'string' ? tags.split(',').map(t => t.trim()).filter(Boolean) : undefined);
 
+    // Construct the image URL from the uploaded file
+    let imageUrl = '';
+    if (req.file) {
+      imageUrl = `/uploads/images/${req.file.filename}`;
+    }
+
     const contentData = {
       title,
       date,
@@ -59,10 +66,9 @@ router.post('/', async (req, res) => {
       ...(normalizedStatus ? { status: normalizedStatus } : {}),
       excerpt,
       ...(normalizedTags ? { tags: normalizedTags } : {}),
-      featuredImage: featuredImage || imageData || '',
+      featuredImage: imageUrl,
       metaTitle,
-      metaDescription,
-      imageData: imageData || ''
+      metaDescription
     };
     const blog = new Blog(contentData);
     await blog.save();
@@ -73,9 +79,9 @@ router.post('/', async (req, res) => {
 });
 
 // Update a blog
-router.put('/:id', async (req, res) => {
+router.put('/:id', upload.single('featuredImage'), async (req, res) => {
   try {
-    const { title, date, body, author, status, excerpt, tags, featuredImage, metaTitle, metaDescription, imageData } = req.body;
+    const { title, date, body, author, status, excerpt, tags, metaTitle, metaDescription } = req.body;
     const blog = await Blog.findById(req.params.id);
     if (!blog) {
       return res.status(404).json({ success: false, message: 'Blog not found' });
@@ -91,6 +97,11 @@ router.put('/:id', async (req, res) => {
       ? tags
       : (typeof tags === 'string' ? tags.split(',').map(t => t.trim()).filter(Boolean) : undefined);
 
+    // Update image URL if a new file was uploaded
+    if (req.file) {
+      blog.featuredImage = `/uploads/images/${req.file.filename}`;
+    }
+
     blog.title = title ?? blog.title;
     blog.date = date ?? blog.date;
     blog.body = body ?? blog.body;
@@ -98,8 +109,6 @@ router.put('/:id', async (req, res) => {
     blog.status = (normalizedStatus !== undefined ? normalizedStatus : blog.status);
     blog.excerpt = excerpt ?? blog.excerpt;
     blog.tags = (normalizedTags !== undefined ? normalizedTags : blog.tags);
-    blog.featuredImage = featuredImage ?? imageData ?? blog.featuredImage;
-    blog.imageData = imageData ?? blog.imageData;
     blog.metaTitle = metaTitle ?? blog.metaTitle;
     blog.metaDescription = metaDescription ?? blog.metaDescription;
 
